@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".scanActivity">
+
+    <ImageButton
+        android:id="@+id/scanButton"
+        android:background="@drawable/add"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_toRightOf="@id/add"
+        android:layout_alignParentBottom="true"/>
+
+    <EditText
+        android:id="@+id/add"
+        android:text="Enter Code"
+        android:textStyle="italic"
+        android:layout_width="370dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_alignParentBottom="true"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/scan"
+        android:textStyle="bold"
+        android:text="Tap to scan the code"/>
+
+    <ImageButton
+        android:id="@+id/scan"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/scan"
+        android:layout_centerInParent="true"
+        />
+
+
+
+</RelativeLayout>
