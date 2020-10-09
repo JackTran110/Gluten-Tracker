@@ -9,8 +9,15 @@
     <ListView
         android:id="@+id/purchases"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_above="@+id/checkout"/>
+
+    <Button
+        android:id="@+id/addNewProductButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add New Product"
+        android:layout_alignParentBottom="true"/>
 
     <TextView
         android:id="@+id/checkout"
