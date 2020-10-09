@@ -9,6 +9,15 @@ public class Product {
     private double price = 0;
     private boolean isGlutenFree = false;
 
+    public Product(int id, String productName, String productDescription, String barCode, double price, boolean isGlutenFree){
+        setId(id);
+        setProductName(productName);
+        setProductDescription(productDescription);
+        setBarCode(barCode);
+        setPrice(price);
+        setIsGlutenFree(isGlutenFree);
+    }
+
     public Product setId(int id){
         this.id = id;
         return this;

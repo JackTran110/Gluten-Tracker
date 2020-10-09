@@ -10,6 +10,13 @@ public class Receipt {
     private String receiptFile = "default";
     private double taxDeductionTotal = 0;
 
+    public Receipt(int id, List<Product> products, String receiptFile, double taxDeductionTotal){
+        setId(id);
+        setProducts(products);
+        setReceiptFile(receiptFile);
+        setTaxDeductionTotal(taxDeductionTotal);
+    }
+
     public int getId() {
         return id;
     }
