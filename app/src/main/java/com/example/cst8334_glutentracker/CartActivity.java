@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class cartActivity extends AppCompatActivity {
+public class CartActivity extends AppCompatActivity {
 
     private Adapter adapter = new Adapter();
     private ArrayList<TestProduct> productsArrayList = new ArrayList<TestProduct>();
@@ -32,9 +32,9 @@ public class cartActivity extends AppCompatActivity {
         purchases.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-        addProductButton.setOnClickListener((View v)->{
-
-        });
+//        addProductButton.setOnClickListener((View v)->{
+//
+//        });
 
        /* if(productsArrayList.size() > 0){
             Button removeButton = findViewById(R.id.removeFromCart);
@@ -100,6 +100,34 @@ public class cartActivity extends AppCompatActivity {
             });
             return newView;
             //return null;
+        }
+    }
+
+    public class TestProduct{
+
+        private int id;
+        private String productName;
+        private double price;
+
+        public TestProduct(String test, double amount){
+            this.productName=test;
+            this.price=amount;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getProductName(){
+            return productName;
+        }
+
+        public void setPrice(double price) {
+            this.price = price;
+        }
+
+        public double getPrice() {
+            return price;
         }
     }
 }

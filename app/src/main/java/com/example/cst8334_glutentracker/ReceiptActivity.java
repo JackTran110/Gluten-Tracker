@@ -17,17 +17,30 @@ import android.widget.ListView;
 import android.widget.TextView;
 import java.util.ArrayList;
 
-public class receiptActivity extends AppCompatActivity {
-    ArrayList<receiptSummary> receipt;
+public class ReceiptActivity extends AppCompatActivity {
+    ArrayList<ReceiptSummary> receipt;
     ListView receiptList;
-    private static receiptAdapter adapter;
+    private static ReceiptAdapter adapter;
 
-    public class receiptSummary{
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_receipt);
+        receiptList=(ListView)findViewById(R.id.receiptList);
+        receipt= new ArrayList<>();
+        receipt.add(new ReceiptSummary(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                R.drawable.image),57.78,"10/8/2020"));
+        adapter=new ReceiptAdapter(receipt,this);
+        receiptList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    public class ReceiptSummary{
         private Bitmap image;
         private double amount;
         private String date;
 
-        public receiptSummary(Bitmap image,double amount, String date){
+        public ReceiptSummary(Bitmap image,double amount, String date){
             this.image=image;
             this.amount=amount;
             this.date=date;
@@ -48,8 +61,8 @@ public class receiptActivity extends AppCompatActivity {
 
     }
 
-    public class receiptAdapter extends ArrayAdapter<receiptSummary> {
-        private ArrayList<receiptSummary> rData;
+    public class ReceiptAdapter extends ArrayAdapter<ReceiptSummary> {
+        private ArrayList<ReceiptSummary> rData;
 
         Context mContext;
         ImageView img;
@@ -58,7 +71,7 @@ public class receiptActivity extends AppCompatActivity {
 
 
 
-        public receiptAdapter(ArrayList<receiptSummary> data, Context context)  {
+        public ReceiptAdapter(ArrayList<ReceiptSummary> data, Context context)  {
             super(context,R.layout.receipt_layout,data);
             this.rData=data;
             this.mContext=context;
@@ -68,7 +81,7 @@ public class receiptActivity extends AppCompatActivity {
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            receiptSummary rS = getItem(position);
+            ReceiptSummary rS = getItem(position);
 
                 LayoutInflater inflater = LayoutInflater.from(mContext);
                 convertView = inflater.inflate(R.layout.receipt_layout, parent, false);
@@ -84,18 +97,7 @@ public class receiptActivity extends AppCompatActivity {
         }
     }
     
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_receipt);
-        receiptList=(ListView)findViewById(R.id.receiptList);
-        receipt= new ArrayList<>();
-        receipt.add(new receiptSummary(BitmapFactory.decodeResource(getApplicationContext().getResources(),
-                R.drawable.image),57.78,"10/8/2020"));
-        adapter=new receiptAdapter(receipt,this);
-        receiptList.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-    }
+
 
 
 }

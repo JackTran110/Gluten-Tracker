@@ -1,4 +1,4 @@
 package com.example.cst8334_glutentracker;
 
-public class reportActivity {
+public class ReportActivity {
 }
