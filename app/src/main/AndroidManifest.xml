@@ -9,18 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".receiptActivity">
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".scanActivity" ></activity>
-        <activity android:name=".cartActivity" >
-
-        </activity>
-        <activity android:name=".MainActivity" ></activity>
+        <activity android:name=".scanActivity"></activity>
+        <activity android:name=".cartActivity" />
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
