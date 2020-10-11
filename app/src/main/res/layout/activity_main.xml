@@ -12,5 +12,12 @@
         android:id="@+id/toCart"
         android:text="To Cart" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/toReceiptPage"
+        android:text="Receipts"
+        android:layout_toRightOf="@+id/toCart"/>
+
 
 </RelativeLayout>

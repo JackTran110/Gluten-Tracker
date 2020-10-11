@@ -7,6 +7,8 @@ public class Product {
     private String productDescription = "default";
     private String barCode = "default";
     private double price = 0;
+    private double displayedPrice = 0;
+    private int quantity = 0;
     private boolean isGlutenFree = false;
 
     public Product(int id, String productName, String productDescription, String barCode, double price, boolean isGlutenFree){
@@ -16,6 +18,8 @@ public class Product {
         setBarCode(barCode);
         setPrice(price);
         setIsGlutenFree(isGlutenFree);
+        setQuantity(1);
+        setDisplayedPrice(price);
     }
 
     public Product setId(int id){
@@ -70,5 +74,21 @@ public class Product {
 
     public boolean isGlutenFree(){
         return isGlutenFree;
+    }
+
+    public double getDisplayedPrice() {
+        return displayedPrice;
+    }
+
+    public void setDisplayedPrice(double displayedPrice) {
+        this.displayedPrice = displayedPrice;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

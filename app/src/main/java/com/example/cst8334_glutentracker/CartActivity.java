@@ -13,12 +13,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.entity.Product;
+
 import java.util.ArrayList;
 
 public class CartActivity extends AppCompatActivity {
 
     private Adapter adapter = new Adapter();
-    private ArrayList<TestProduct> productsArrayList = new ArrayList<TestProduct>();
+    private ArrayList<Product> productsArrayList = new ArrayList<Product>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +29,8 @@ public class CartActivity extends AppCompatActivity {
 
         ListView purchases = findViewById(R.id.purchases);
         Button addProductButton = findViewById(R.id.addNewProductButton);
-        productsArrayList.add(new TestProduct("Testing", 3.00));
-        productsArrayList.add(new TestProduct("Testing 2", 5.00));
+        productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", "test", 3.00, false));
+        productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", "test", 5.00, true));
         purchases.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -56,7 +58,7 @@ public class CartActivity extends AppCompatActivity {
         }
 
         @Override
-        public TestProduct getItem(int position) {
+        public Product getItem(int position) {
             return productsArrayList.get(position);
         }
 
@@ -67,15 +69,16 @@ public class CartActivity extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            TestProduct product = (TestProduct) getItem(position);
+            Product product = (Product) getItem(position);
             LayoutInflater inflater = getLayoutInflater();
             View newView = inflater.inflate(R.layout.activity_product_list, parent, false);
             TextView productName = newView.findViewById(R.id.productName);
             productName.setText(product.getProductName());
             TextView price = newView.findViewById(R.id.price);
-            price.setText(product.getPrice() + "");
+            price.setText(product.getDisplayedPrice() + "");
             EditText quantity = newView.findViewById(R.id.quantity);
-            quantity.setText("1");
+            //quantity.setText("1");
+            quantity.setText(Integer.toString(product.getQuantity()));
 
             Button plusButton = newView.findViewById(R.id.plusButton);
             plusButton.setOnClickListener((v) ->{
@@ -88,8 +91,19 @@ public class CartActivity extends AppCompatActivity {
                 price.setText(Double.toString(multiPrice));
                 adapter.notifyDataSetChanged(); */
                 int convertedToInt = Integer.parseInt(quantity.getText().toString());
-                product.setPrice(product.getPrice() * (convertedToInt + 1));
+                product.setDisplayedPrice(product.getPrice() * (convertedToInt + 1));
+                product.setQuantity(convertedToInt + 1);
                 adapter.notifyDataSetChanged();
+            });
+
+            Button minusButton = newView.findViewById(R.id.minusButton);
+            minusButton.setOnClickListener((v) ->{
+                if(product.getQuantity() > 1) {
+                    int convertedToInt = Integer.parseInt(quantity.getText().toString());
+                    product.setDisplayedPrice(product.getPrice() * (convertedToInt - 1));
+                    product.setQuantity(convertedToInt - 1);
+                    adapter.notifyDataSetChanged();
+                }
             });
 
            Button removeButton = newView.findViewById(R.id.removeFromCart);
@@ -103,31 +117,5 @@ public class CartActivity extends AppCompatActivity {
         }
     }
 
-    public class TestProduct{
 
-        private int id;
-        private String productName;
-        private double price;
-
-        public TestProduct(String test, double amount){
-            this.productName=test;
-            this.price=amount;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public String getProductName(){
-            return productName;
-        }
-
-        public void setPrice(double price) {
-            this.price = price;
-        }
-
-        public double getPrice() {
-            return price;
-        }
-    }
 }
