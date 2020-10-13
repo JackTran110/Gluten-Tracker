@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReportActivity">
+
+    <TextView
+        android:id="@+id/txtReport"
+        android:layout_width="420dp"
+        android:layout_height="39dp"
+        android:text="Customer Report"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        tools:layout_editor_absoluteX="93dp"
+        tools:layout_editor_absoluteY="4dp" />
+
+    <TextView
+        android:id="@+id/txtRec"
+        android:layout_width="170dp"
+        android:layout_height="39dp"
+        android:layout_below="@+id/txtReport"
+        android:text="Receipts Management"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="93dp"
+        tools:layout_editor_absoluteY="4dp" />
+    <TextView
+        android:id="@+id/txtFind"
+        android:layout_width="120dp"
+        android:layout_height="39dp"
+        android:layout_below="@+id/txtRec"
+        android:text="Find Receipt:"
+        tools:layout_editor_absoluteX="93dp"
+        tools:layout_editor_absoluteY="4dp" />
+
+    <EditText
+        android:id="@+id/edtFindRec"
+        android:layout_toRightOf="@+id/txtFind"
+        android:layout_width="120dp"
+        android:layout_below="@+id/txtRec"
+        android:textSize="12dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Input date or id" />
+
+
+    <RadioButton
+        android:id="@+id/rdoId"
+        android:layout_toRightOf="@+id/edtFindRec"
+        android:layout_below="@+id/txtRec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="by Rec Id" />
+    <RadioButton
+        android:id="@+id/rdoDate"
+        android:layout_toRightOf="@+id/rdoId"
+        android:layout_below="@+id/txtRec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="by Date" />
+
+    <TextView
+        android:id="@+id/txtRpt"
+        android:layout_width="150dp"
+        android:layout_height="39dp"
+        android:layout_below="@+id/txtFind"
+        android:text="Report Management:"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="93dp"
+        tools:layout_editor_absoluteY="4dp" />
+    <TextView
+        android:id="@+id/txtFindrpt"
+        android:layout_width="150dp"
+        android:layout_height="39dp"
+        android:layout_below="@+id/txtRpt"
+        android:text="Find Report:"
+        tools:layout_editor_absoluteX="93dp"
+        tools:layout_editor_absoluteY="4dp" />
+
+    <RadioButton
+        android:id="@+id/rdoMonthly"
+        android:layout_toRightOf="@+id/txtFindrpt"
+        android:layout_below="@+id/txtRpt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="by Monthly" />
+    <RadioButton
+        android:id="@+id/rdoCust"
+        android:layout_toRightOf="@+id/rdoMonthly"
+        android:layout_below="@+id/txtRpt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="by Customer setting" />
+
+
+    <TextView
+        android:id="@+id/txtRecnt"
+        android:layout_width="220dp"
+        android:layout_height="39dp"
+        android:layout_below="@+id/txtFindrpt"
+        android:text="Recent records:"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="93dp"
+        tools:layout_editor_absoluteY="4dp" />
+    <TextView
+        android:id="@+id/txtR"
+        android:layout_width="220dp"
+        android:layout_height="39dp"
+        android:layout_below="@+id/txtFindrpt"
+
+        tools:layout_editor_absoluteX="93dp"
+        tools:layout_editor_absoluteY="4dp" />
+
+    <ListView
+        android:id="@+id/rptlst"
+        android:layout_below="@+id/txtR"
+        android:layout_width="wrap_content"
+
+        android:layout_height="match_parent"/>
+
+
+
+
+</RelativeLayout>
