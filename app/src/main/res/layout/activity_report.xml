@@ -47,22 +47,29 @@
         android:inputType="textPersonName"
         android:hint="Input date or id" />
 
-
-    <RadioButton
-        android:id="@+id/rdoId"
-        android:layout_toRightOf="@+id/edtFindRec"
-        android:layout_below="@+id/txtRec"
-        android:layout_width="wrap_content"
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="by Rec Id" />
-    <RadioButton
-        android:id="@+id/rdoDate"
-        android:layout_toRightOf="@+id/rdoId"
-        android:layout_below="@+id/txtRec"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="by Date" />
+        android:orientation="horizontal"
+        android:layout_above="@+id/txtRpt"
+        android:layout_toRightOf="@+id/edtFindRec" >
 
+        <RadioButton
+            android:id="@+id/radio1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="By Id" />
+
+        <RadioButton
+            android:id="@+id/radio2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="By Date" />
+    </RadioGroup>
     <TextView
         android:id="@+id/txtRpt"
         android:layout_width="150dp"
@@ -82,21 +89,31 @@
         tools:layout_editor_absoluteX="93dp"
         tools:layout_editor_absoluteY="4dp" />
 
-    <RadioButton
-        android:id="@+id/rdoMonthly"
-        android:layout_toRightOf="@+id/txtFindrpt"
-        android:layout_below="@+id/txtRpt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="by Monthly" />
-    <RadioButton
-        android:id="@+id/rdoCust"
-        android:layout_toRightOf="@+id/rdoMonthly"
-        android:layout_below="@+id/txtRpt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="by Customer setting" />
 
+    <RadioGroup
+        android:id="@+id/radio_group2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_above="@+id/txtR"
+        android:layout_toRightOf="@+id/txtFindrpt" >
+
+        <RadioButton
+            android:id="@+id/rdoMonthly"
+            android:layout_toRightOf="@+id/txtFindrpt"
+            android:layout_below="@+id/txtRpt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="by Monthly" />
+        <RadioButton
+            android:id="@+id/rdoCust"
+            android:layout_toRightOf="@+id/rdoMonthly"
+            android:layout_below="@+id/txtRpt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="by Customer" />
+
+    </RadioGroup>
 
     <TextView
         android:id="@+id/txtRecnt"

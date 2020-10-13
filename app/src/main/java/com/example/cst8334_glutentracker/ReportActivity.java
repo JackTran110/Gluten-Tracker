@@ -14,7 +14,7 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
-        String[] strLst = {"Rec.Id   Date   Item    SubTotal   Taxdec.","No.563   Oatmeal    $56.23   $1.56","No.003    Pasta   $34.23   $0.86","No.897   Cereals    $126.50   $5.06"};
+        String[] strLst = {"Rec.Id      Date     Item      SubTotal     Tax Deduction","No.563       Oatmeal         $56.23        $1.56","No.003        Pasta          $34.23        $0.86","No.897       Cereals         $126.50        $5.06"};
         ListAdapter theAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,strLst);
         ListView theListView = (ListView) findViewById(R.id.rptlst);
         theListView.setAdapter(theAdapter);
