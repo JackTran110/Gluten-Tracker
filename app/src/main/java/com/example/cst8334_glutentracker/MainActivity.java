@@ -21,5 +21,8 @@ public class MainActivity extends AppCompatActivity {
 
         Button toReceipt = findViewById(R.id.toReceiptPage);
         toReceipt.setOnClickListener((v) -> {startActivity(new Intent(MainActivity.this, ReceiptActivity.class));});
+
+        Button toReport = findViewById(R.id.toReport);
+        toReport.setOnClickListener((v) -> {startActivity(new Intent(MainActivity.this, ReportActivity.class));});
     }
 }
