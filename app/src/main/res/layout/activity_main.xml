@@ -28,5 +28,11 @@
         android:layout_toRightOf="@+id/toCart"
         android:text="Receipts" />
 
-
+    <Button
+        android:id="@+id/toScannerPage"
+        android:layout_width="104dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="19dp"
+        android:layout_below="@+id/toCart"
+        android:text="Barcode Scanner" />
 </RelativeLayout>

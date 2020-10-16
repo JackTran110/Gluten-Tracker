@@ -24,5 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
         Button toReport = findViewById(R.id.toReport);
         toReport.setOnClickListener((v) -> {startActivity(new Intent(MainActivity.this, ReportActivity.class));});
+
+        Button toScanner = findViewById(R.id.toScannerPage);
+        toScanner.setOnClickListener((v) -> {startActivity(new Intent(MainActivity.this, ScanActivity.class));});
     }
 }
