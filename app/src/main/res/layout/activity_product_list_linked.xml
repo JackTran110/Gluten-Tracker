@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <!--<TextView
+   <!-- <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/price"
@@ -53,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/linkButton"
-        android:text="Link Product"
+        android:text="Linked!"
         android:layout_below="@+id/removeFromCart"
         android:layout_toRightOf="@+id/minusButton"/>
 
@@ -62,15 +62,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/deductibleView"
         android:text="Deductible: $"
-        android:visibility="invisible"
-        android:layout_below="@+id/plusButton" />
+        android:layout_below="@+id/plusButton"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/deductibleText"
         android:layout_below="@+id/minusButton"
-        android:visibility="invisible"
         android:layout_toRightOf="@+id/deductibleView"/>
+
 
 </RelativeLayout>
