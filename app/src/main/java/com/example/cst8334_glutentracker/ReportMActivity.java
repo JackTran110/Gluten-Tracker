@@ -23,7 +23,7 @@ public class ReportMActivity extends AppCompatActivity {
 
      AlertDialog.Builder dialogBuilder;
      AlertDialog dialog;
-     TextView txtA, txtB,txtC, txtD, txtE;
+     TextView txtA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

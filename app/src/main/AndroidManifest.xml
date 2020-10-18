@@ -12,6 +12,7 @@
         <activity android:name=".Link"></activity>
         <activity android:name=".EmptyActivity" />
         <activity android:name=".ReportActivity" />
+        <activity android:name=".ReportMActivity" />
         <activity android:name=".ScanActivity" />
         <activity android:name=".CartActivity" />
         <activity android:name=".ReceiptActivity" />
