@@ -10,45 +10,54 @@ import java.net.MalformedURLException;
 import java.io.IOException;
 import java.net.URL;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import androidx.annotation.NonNull;
 
-public class EdamamQuery extends AsyncTask<String, Integer, String> {
+import com.example.entity.Product;
 
-    Integer upc;
+public class EdamamQuery extends AsyncTask<String, Long, String> {
+
+    long upc;
     String appId = "90fb7f7d";
     String appKey = "ec9b27a10f3bb159f17fd932ac559526";
     String response;
     JSONObject jObject;
-    public EdamamQuery(String response, Integer upc){
+    String jProductLabel;
+
+    public EdamamQuery(String response, long upc){
         this.response = response;
         this.upc = upc;
     }
 
     @Override
     public String doInBackground(String... strings){
-        String ret = null;
-        String queryURL = "https://api.edamam.com/api/food-database/v2/parser?upc=" + upc + "&app_id=" + appId + "^app_key=" + appKey;
+            String ret = null;
+            String queryURL = "https://api.edamam.com/api/food-database/v2/parser?upc=" + upc + "&app_id=" + appId + "&app_key=" + appKey;
 
-        try {
-            URL url = new URL(queryURL);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            InputStream inputStream = urlConnection.getInputStream();
+            try {
+                URL url = new URL(queryURL);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = urlConnection.getInputStream();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-            StringBuilder sb = new StringBuilder();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+                StringBuilder sb = new StringBuilder();
 
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
 
-            String result = sb.toString();
-            jObject = new JSONObject(result);
+                String result = sb.toString();
+                jObject = new JSONObject(result);
+                //String jUPC = jObject.getString("upc");
+                jProductLabel = jObject.getJSONArray("hints").getJSONObject(0).getJSONObject("food").getString("label");
 
-        } catch (MalformedURLException mfe) {
+                CartActivity.getProductsArrayList().add(new Product( upc,jProductLabel,"",String.valueOf(upc),0,false));
+                int test = 3;
+            } catch (MalformedURLException mfe) {
             ret = "Malformed URL exception";
         } catch (IOException ioe) {
             ret = "IO Exception. Is the Wifi connected?";

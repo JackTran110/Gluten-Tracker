@@ -20,7 +20,12 @@ import java.util.ArrayList;
 public class CartActivity extends AppCompatActivity {
 
     private Adapter adapter = new Adapter();
-    private ArrayList<Product> productsArrayList = new ArrayList<Product>();
+
+    public static ArrayList<Product> getProductsArrayList() {
+        return productsArrayList;
+    }
+
+    private static ArrayList<Product> productsArrayList = new ArrayList<Product>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +34,8 @@ public class CartActivity extends AppCompatActivity {
 
         ListView purchases = findViewById(R.id.purchases);
         Button addProductButton = findViewById(R.id.addNewProductButton);
-        productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", "test", 3.00, false));
-        productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", "test", 5.00, true));
+        //productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", "test", 3.00, false));
+        //productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", "test", 5.00, true));
         purchases.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
