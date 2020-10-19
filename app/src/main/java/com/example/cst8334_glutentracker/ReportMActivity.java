@@ -64,7 +64,7 @@ public class ReportMActivity extends AppCompatActivity {
         arrayList.add("2020-Nov   Total:$230.50         dTax:$23.80");
         arrayList.add("2020-Dec   Total:$230.50          dTax:$23.80");
 
-
+//
           lstMReport = (ListView) findViewById(R.id.lstMReport);
 
           ArrayAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,arrayList);
