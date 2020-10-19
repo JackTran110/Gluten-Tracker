@@ -1,5 +1,7 @@
 package com.example.entity;
 
+
+
 public class Product {
 
     private long id = 0;
@@ -10,6 +12,7 @@ public class Product {
     private double displayedPrice = 0;
     private int quantity = 0;
     private boolean isGlutenFree = false;
+    private Product linkedProduct = null;
 
     public Product(long id, String productName, String productDescription, String barCode, double price, boolean isGlutenFree){
         setId(id);
@@ -90,5 +93,13 @@ public class Product {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public Product getLinkedProduct(){
+        return linkedProduct;
+    }
+
+    public void setLinkedProduct(Product linkedProduct){
+        this.linkedProduct = linkedProduct;
     }
 }
