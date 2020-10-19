@@ -27,7 +27,7 @@
         />
 
     <Button
-        android:id="@+id/okEditTextButton"
+        android:id="@+id/acceptScannerButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Accept"
@@ -36,11 +36,11 @@
         />
 
     <Button
-        android:id="@+id/cancelEditTextButton"
+        android:id="@+id/cancelScannerButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cancel"
         app:layout_constraintTop_toBottomOf="@+id/barcodeEditText"
-        app:layout_constraintLeft_toRightOf="@+id/okEditTextButton"
+        app:layout_constraintLeft_toRightOf="@+id/acceptScannerButton"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

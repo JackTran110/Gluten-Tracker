@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.cst8334_glutentracker">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Link"></activity>
+        <activity android:name=".DigitalReceipt"></activity>
+        <activity android:name=".Link" />
         <activity android:name=".EmptyActivity" />
         <activity android:name=".ReportActivity" />
         <activity android:name=".ReportMActivity" />

@@ -4,7 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -15,12 +19,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.example.entity.Receipt;
+
 import java.util.ArrayList;
 
 public class ReceiptActivity extends AppCompatActivity {
-    ArrayList<ReceiptSummary> receipt;
+    ArrayList<Receipt> receipt;
     ListView receiptList;
     private static ReceiptAdapter adapter;
+    private SQLiteDatabase database;
+    private glutenDbHelper dbOpener = new glutenDbHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,76 +37,86 @@ public class ReceiptActivity extends AppCompatActivity {
         setContentView(R.layout.activity_receipt);
         receiptList=(ListView)findViewById(R.id.receiptList);
         receipt= new ArrayList<>();
-        receipt.add(new ReceiptSummary(BitmapFactory.decodeResource(getApplicationContext().getResources(),
-                R.drawable.image),57.78,"10/8/2020"));
+
+//      insertTestValuesIntoDatabase();
+        readFromDatabase();
         adapter=new ReceiptAdapter(receipt,this);
         receiptList.setAdapter(adapter);
+        receiptList.setOnItemClickListener((list,item,position,id)->{
+            position=position+1;
+            Intent intent= new Intent(ReceiptActivity.this,DigitalReceipt.class);
+            intent.putExtra("index",position);
+            startActivity(intent);
+            });
         adapter.notifyDataSetChanged();
     }
 
-    public class ReceiptSummary{
-        private Bitmap image;
-        private double amount;
-        private String date;
+    private void readFromDatabase(){
+        database = dbOpener.getReadableDatabase();
+        Cursor pc = database.query(false, databaseActivity.Products.TABLE_NAME, new String[]{databaseActivity.Products.COLUMN_NAME_ID, databaseActivity.Products.COLUMN_NAME_RID,databaseActivity.Products.COLUMN_NAME_PNAME,databaseActivity.Products.COLUMN_NAME_DESCRIPTION,databaseActivity.Products.COLUMN_NAME_GLUTEN,databaseActivity.Products.COLUMN_NAME_PRICE}, null, null, null, null, null, null, null);
+        Cursor rc = database.query(false, databaseActivity.Receipts.TABLE_NAME, new String[]{databaseActivity.Receipts.COLUMN_NAME_ID, databaseActivity.Receipts.COLUMN_NAME_FILE, databaseActivity.Receipts.COLUMN_NAME_DATE,databaseActivity.Receipts.COLUMN_NAME_DEDUCTION}, null, null, null, null, null, null, null);
+        int idIndex=rc.getColumnIndex(databaseActivity.Receipts.COLUMN_NAME_ID);
+        int fileNamename=rc.getColumnIndex(databaseActivity.Receipts.COLUMN_NAME_FILE);
+        int dateIndex= rc.getColumnIndex(databaseActivity.Receipts.COLUMN_NAME_DATE);
+        int deductionIndex= rc.getColumnIndex(databaseActivity.Receipts.COLUMN_NAME_DEDUCTION);
 
-        public ReceiptSummary(Bitmap image,double amount, String date){
-            this.image=image;
-            this.amount=amount;
-            this.date=date;
+        while(rc.moveToNext()){
+        int rid=rc.getInt(idIndex);
+        String fileName= rc.getString(fileNamename);
+        String date=rc.getString(dateIndex);
+        Double deduction=rc.getDouble(deductionIndex);
+
+        receipt.add(new Receipt(rid,null,fileName,deduction,date));
         }
-
-        public Bitmap getImage(){
-            return image;
-        }
-
-        public double getAmount(){
-            return amount;
-        }
-
-        public String getDate(){
-            return date;
-        }
-
-
     }
 
-    public class ReceiptAdapter extends ArrayAdapter<ReceiptSummary> {
-        private ArrayList<ReceiptSummary> rData;
+    private void insertTestValuesIntoDatabase(){
+        database = dbOpener.getWritableDatabase();
+//        ContentValues newRowValues = new ContentValues();
+//        newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_FILE, "test2");
+//        newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_DATE,"2020-08-15");
+//        newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_DEDUCTION,20);
+//        database.insert(databaseActivity.Receipts.TABLE_NAME, null, newRowValues);
+
+        ContentValues productRowValues = new ContentValues();
+        productRowValues.put(databaseActivity.Products.COLUMN_NAME_PNAME, "Real Apple Juice");
+        productRowValues.put(databaseActivity.Products.COLUMN_NAME_DESCRIPTION, "Apple Juice 1L");
+        productRowValues.put(databaseActivity.Products.COLUMN_NAME_PRICE, 6.25);
+        productRowValues.put(databaseActivity.Products.COLUMN_NAME_GLUTEN, 0);
+        productRowValues.put(databaseActivity.Products.COLUMN_NAME_RID, 2);
+        database.insert(databaseActivity.Products.TABLE_NAME, null, productRowValues);
+    }
+
+    public class ReceiptAdapter extends ArrayAdapter<Receipt> {
+        private ArrayList<Receipt> rData;
 
         Context mContext;
-        ImageView img;
+        TextView id;
+        TextView img;
         TextView amt;
         TextView dte;
 
-
-
-        public ReceiptAdapter(ArrayList<ReceiptSummary> data, Context context)  {
+        public ReceiptAdapter(ArrayList<Receipt> data, Context context)  {
             super(context,R.layout.receipt_layout,data);
             this.rData=data;
             this.mContext=context;
         }
 
-
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            ReceiptSummary rS = getItem(position);
-
+            Receipt rS = getItem(position);
                 LayoutInflater inflater = LayoutInflater.from(mContext);
                 convertView = inflater.inflate(R.layout.receipt_layout, parent, false);
-                img = (ImageView) convertView.findViewById(R.id.rpt);
+                id=(TextView) convertView.findViewById(R.id.rid);
+                img = (TextView) convertView.findViewById(R.id.rpt);
                 amt = (TextView) convertView.findViewById(R.id.deduction);
                 dte = (TextView) convertView.findViewById(R.id.summarydate);
-
-                img.setImageBitmap(rS.getImage());
-                amt.setText(Double.toString(rS.getAmount()));
+                id.setText(Integer.toString(rS.getId()));
+                img.setText(rS.getReceiptFile());
+                amt.setText(Double.toString(rS.getTaxDeductionTotal()));
                 dte.setText(rS.getDate());
-
             return convertView;
         }
     }
-    
-
-
-
 }
