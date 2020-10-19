@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Filter;
@@ -22,6 +24,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.entity.ItemsModel;
 
@@ -31,12 +34,16 @@ import java.util.List;
 public class ReportActivity extends AppCompatActivity {
 
     ListView lstView;
+    Button btnRpt;
+
+
     int images = R.drawable.image;
-    String rId[] = {"10001","10002","10003"};
-    String rDate[] = {"2020-9-3","2020-8-12","2020-10-8"};
-    String rItem[] = {"Purchease detail is Oatmeal","Purchease detail is Pasta","Purchease detail is Banana"};
-    String rSub[] = {"23.50","105.89","78.45"};
-    String rTax[] = {"0.8","5.25","1.05"};
+    String rId[] = {"12301","14502","30003","45601","67834","002345"};
+    String rDate[] = {"2020-9-3","2020-8-12","2020-10-8","2020-6-5","2020-4-22","2020-10-1"};
+    String rItem[] = {"Purchease detail is Oatmeal","Purchease detail is Pasta","Purchease detail is Banana","Purchease detail is Oatmeal","Purchease detail is orange","Purchease detail is apple"};
+    String rSub[] = {"23.50","105.89","78.45","23.50","105.89","78.45"};
+    String rTax[] = {"0.8","5.25","1.05","0.8","5.25","1.05"};
+
 
     List<ItemsModel> listItems = new ArrayList<>();
 
@@ -47,7 +54,20 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
-        lstView = (ListView) findViewById(R.id.rptlst);
+
+
+        lstView = (ListView) findViewById(R.id.lstReceipt);
+        btnRpt = (Button) findViewById(R.id.btnReport);
+
+        btnRpt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ReportActivity.this,ReportMActivity.class));
+
+            }
+        });
+
+
 
         for(int i = 0; i < rId.length; i++){
 
@@ -63,7 +83,11 @@ public class ReportActivity extends AppCompatActivity {
 
 
 
+
     }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

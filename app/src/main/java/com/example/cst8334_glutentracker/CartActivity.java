@@ -35,8 +35,9 @@ public class CartActivity extends AppCompatActivity {
         addNewProductButton.setOnClickListener((v) -> {
             startActivity(new Intent(CartActivity.this, ScanActivity.class));
         });
-        productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", "test", 3.00, false));
-        productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", "test", 5.00, true));
+        Double.valueOf("5");
+        //productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", "test", 3.00, false));
+        //productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", "test", 5.00, true));
         purchases.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         

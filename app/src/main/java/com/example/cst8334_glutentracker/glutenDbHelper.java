@@ -26,6 +26,7 @@ public class glutenDbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // Method added by Joel
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(SQL_DELETE_PRODUCTS);
