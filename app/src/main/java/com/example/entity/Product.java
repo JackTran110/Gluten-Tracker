@@ -4,7 +4,7 @@ package com.example.entity;
 
 public class Product {
 
-    private int id = 0;
+    private long id = 0;
     private String productName = "default";
     private String productDescription = "default";
     private String barCode = "default";
@@ -14,7 +14,7 @@ public class Product {
     private boolean isGlutenFree = false;
     private Product linkedProduct = null;
 
-    public Product(int id, String productName, String productDescription, String barCode, double price, boolean isGlutenFree){
+    public Product(long id, String productName, String productDescription, String barCode, double price, boolean isGlutenFree){
         setId(id);
         setProductName(productName);
         setProductDescription(productDescription);
@@ -25,12 +25,12 @@ public class Product {
         setDisplayedPrice(price);
     }
 
-    public Product setId(int id){
+    public Product setId(long id){
         this.id = id;
         return this;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
