@@ -39,6 +39,7 @@ public class CartActivity extends AppCompatActivity {
         productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", "test", 5.00, true));
         purchases.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        
 
 //        addProductButton.setOnClickListener((View v)->{
 //
@@ -106,6 +107,8 @@ public class CartActivity extends AppCompatActivity {
             productName.setText(product.getProductName());
             //TextView price = newView.findViewById(R.id.price);
             EditText price = newView.findViewById(R.id.price);
+            //price.setText("1.0");
+            //product.setDisplayedPrice(Double.valueOf(price.getText().toString()));
             price.setText(product.getDisplayedPrice() + "");
             EditText quantity = newView.findViewById(R.id.quantity);
             //quantity.setText("1");

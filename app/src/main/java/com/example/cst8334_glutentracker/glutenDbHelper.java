@@ -26,12 +26,19 @@ public class glutenDbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL(SQL_DELETE_PRODUCTS);
+        db.execSQL(SQL_DELETE_RECEIPTS);
+        onCreate(db);
+    }
+
     private static final String SQL_CREATE_PRODUCTS = "CREATE TABLE " +
             databaseActivity.Products.TABLE_NAME + " (" +
             databaseActivity.Products.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             databaseActivity.Products.COLUMN_NAME_PNAME + " TEXT, " +
             databaseActivity.Products.COLUMN_NAME_DESCRIPTION + " TEXT, " +
-            databaseActivity.Products.COLUMN_NAME_PRICE + "REAL, " +
+            databaseActivity.Products.COLUMN_NAME_PRICE + " REAL, " +
             databaseActivity.Products.COLUMN_NAME_GLUTEN + " INTEGER, " +
             databaseActivity.Products.COLUMN_NAME_RID + " INTEGER, " +
             "CONSTRAINT " + "fk_" + databaseActivity.Receipts.TABLE_NAME +
