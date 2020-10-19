@@ -9,12 +9,14 @@ public class Receipt {
     private List<Product> products = new ArrayList<>();
     private String receiptFile = "default";
     private double taxDeductionTotal = 0;
+    private String date;
 
-    public Receipt(int id, List<Product> products, String receiptFile, double taxDeductionTotal){
+    public Receipt(int id, List<Product> products, String receiptFile, double taxDeductionTotal,String date){
         setId(id);
         setProducts(products);
         setReceiptFile(receiptFile);
         setTaxDeductionTotal(taxDeductionTotal);
+        setDate(date);
     }
 
     public int getId() {
@@ -50,6 +52,13 @@ public class Receipt {
 
     public Receipt setTaxDeductionTotal(double taxDeductionTotal) {
         this.taxDeductionTotal = taxDeductionTotal;
+        return this;
+    }
+
+    public String getDate(){return date;}
+
+    public Receipt setDate(String date){
+        this.date=date;
         return this;
     }
 }
