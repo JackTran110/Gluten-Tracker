@@ -72,7 +72,12 @@ public class DigitalReceipt extends AppCompatActivity {
             rdate.setText(date);
             ded.setText(Double.toString(deduction));
         }
-        Cursor pc = database.query(false, databaseActivity.Products.TABLE_NAME, new String[]{databaseActivity.Products.COLUMN_NAME_ID,databaseActivity.Products.COLUMN_NAME_PNAME,databaseActivity.Products.COLUMN_NAME_DESCRIPTION,databaseActivity.Products.COLUMN_NAME_GLUTEN,databaseActivity.Products.COLUMN_NAME_PRICE}, "receiptID=?",new String[]{Integer.toString(passedIndex)}, null, null, null, null, null);
+//        Cursor pc = database.query(false, databaseActivity.Products.TABLE_NAME, new String[]{databaseActivity.Products.COLUMN_NAME_ID,databaseActivity.Products.COLUMN_NAME_PNAME,databaseActivity.Products.COLUMN_NAME_DESCRIPTION,databaseActivity.Products.COLUMN_NAME_GLUTEN,databaseActivity.Products.COLUMN_NAME_PRICE}, "receiptID=?",new String[]{Integer.toString(passedIndex)}, null, null, null, null, null);
+        Cursor pc=database.rawQuery("SELECT * FROM "+databaseActivity.Products.TABLE_NAME+ " JOIN " +
+                databaseActivity.ProductReceipt.TABLE_NAME+" ON products."+databaseActivity.Products.COLUMN_NAME_ID+" = productReceipt." +
+                databaseActivity.ProductReceipt.COLUMN_NAME_PRODUCT_ID+" WHERE "+
+                databaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? ",new String[]{Integer.toString(passedIndex)});
+
         int pid=pc.getColumnIndex(databaseActivity.Products.COLUMN_NAME_ID);
         int nameIndex=pc.getColumnIndex(databaseActivity.Products.COLUMN_NAME_PNAME);
         int descIndex=pc.getColumnIndex(databaseActivity.Products.COLUMN_NAME_DESCRIPTION);

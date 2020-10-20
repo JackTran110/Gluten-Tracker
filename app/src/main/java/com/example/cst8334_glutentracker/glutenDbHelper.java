@@ -28,6 +28,7 @@ public class glutenDbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_PRODUCT_RECEIPT);
     }
 
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(SQL_DELETE_PRODUCTS);
@@ -36,8 +37,17 @@ public class glutenDbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL(SQL_DELETE_PRODUCTS);
+        db.execSQL(SQL_DELETE_RECEIPTS);
+        db.execSQL(SQL_DELETE_PRODUCT_RECEIPT);
+        onCreate(db);    }
+
     public long insertIntoProductsTable(SQLiteDatabase db, Product product){
         ContentValues cv = new ContentValues();
+        //Added by Joel
+        cv.put(databaseActivity.Products.COLUMN_NAME_ID, product.getId());
         cv.put(databaseActivity.Products.COLUMN_NAME_PNAME, product.getProductName());
         cv.put(databaseActivity.Products.COLUMN_NAME_DESCRIPTION, product.getProductDescription());
         cv.put(databaseActivity.Products.COLUMN_NAME_PRICE, product.getPrice());
@@ -95,9 +105,18 @@ public class glutenDbHelper extends SQLiteOpenHelper {
         return receipt;
     }
 
+//    private static final String SQL_CREATE_PRODUCTS = "CREATE TABLE " +
+//            databaseActivity.Products.TABLE_NAME + " (" +
+//            databaseActivity.Products.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+//            databaseActivity.Products.COLUMN_NAME_PNAME + " TEXT, " +
+//            databaseActivity.Products.COLUMN_NAME_DESCRIPTION + " TEXT, " +
+//            databaseActivity.Products.COLUMN_NAME_BARCODE + " BIGINT, " +
+//            databaseActivity.Products.COLUMN_NAME_PRICE + " REAL, " +
+//            databaseActivity.Products.COLUMN_NAME_GLUTEN + " INTEGER)";
+
     private static final String SQL_CREATE_PRODUCTS = "CREATE TABLE " +
             databaseActivity.Products.TABLE_NAME + " (" +
-            databaseActivity.Products.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            databaseActivity.Products.COLUMN_NAME_ID + " INTEGER PRIMARY KEY, " +
             databaseActivity.Products.COLUMN_NAME_PNAME + " TEXT, " +
             databaseActivity.Products.COLUMN_NAME_DESCRIPTION + " TEXT, " +
             databaseActivity.Products.COLUMN_NAME_BARCODE + " BIGINT, " +
