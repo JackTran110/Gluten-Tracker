@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -64,6 +65,18 @@ public class ReportActivity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(ReportActivity.this,ReportMActivity.class));
 
+            }
+        });
+
+
+
+        lstView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                position=position+1;
+                Intent intent= new Intent(ReportActivity.this,DigitalReceipt.class);
+                intent.putExtra("index",position);
+                startActivity(intent);
             }
         });
 
