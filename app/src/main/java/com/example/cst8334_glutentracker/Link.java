@@ -93,8 +93,8 @@ public class Link extends AppCompatActivity {
             View newView = inflater.inflate(R.layout.activity_fragment_populate_listview, parent, false);
             TextView nameText = newView.findViewById(R.id.productFoundName);
             TextView descriptionText = newView.findViewById(R.id.productFoundDescription);
-            //TextView priceText = newView.findViewById(R.id.productFoundPrice);
-            EditText priceText = newView.findViewById(R.id.productFoundPrice);
+            TextView priceText = newView.findViewById(R.id.productFoundPrice);
+            //EditText priceText = newView.findViewById(R.id.productFoundPrice);
             nameText.setText(product.getProductName() + " ");
             descriptionText.setText(product.getProductDescription() + " ");
             priceText.setText(product.getDisplayedPrice() + " ");
@@ -107,7 +107,7 @@ public class Link extends AppCompatActivity {
    //   worked      testPrice.setText(CartActivity.getProductsArrayList().get(passedIndex).getPrice() + "");
             //Product passedProduct = (Product) dataFromActivity.getSerializable("Product");
 
-            Button testButton = newView.findViewById(R.id.testChange);
+            Button testButton = newView.findViewById(R.id.linkCommit);
             testButton.setOnClickListener((v) -> {
                 //passedProduct.setPrice(product.getPrice());
                /* CartActivity.getProductsArrayList().get(passedIndex).setDisplayedPrice(product.getPrice());
@@ -115,6 +115,23 @@ public class Link extends AppCompatActivity {
                 CartActivity.getProductsArrayList().get(passedIndex).setLinkedProduct(product);
                 adapter.notifyDataSetChanged();
                 finish();
+            });
+
+            EditText changeFoundPrice = newView.findViewById(R.id.changeFoundPriceAndQuantityText);
+            Button changePriceButton = newView.findViewById(R.id.changeFoundPrice);
+            changePriceButton.setOnClickListener((v) ->{
+                product.setQuantity(1);
+                product.setPrice(Double.valueOf(changeFoundPrice.getText().toString()));
+                //quantity.setText(Integer.toString(product.getQuantity()));
+                product.setDisplayedPrice(product.getPrice() * product.getQuantity());
+                priceText.setText(product.getDisplayedPrice() + "");
+                /*if(product.getLinkedProduct() != null){
+                    product.getLinkedProduct().setQuantity(product.getQuantity());
+                    product.getLinkedProduct().setDisplayedPrice(product.getLinkedProduct().getPrice() * product.getLinkedProduct().getQuantity());
+                    deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+                }*/
+                adapter.notifyDataSetChanged();
+
             });
 
 

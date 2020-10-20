@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,8 @@ import android.widget.Toast;
 
 import com.example.entity.Product;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class CartActivity extends AppCompatActivity {
@@ -23,6 +27,8 @@ public class CartActivity extends AppCompatActivity {
     private Adapter adapter = new Adapter();
     //private ArrayList<Product> productsArrayList = new ArrayList<Product>();
     private static ArrayList<Product> productsArrayList = new ArrayList<Product>();
+   // EditText changePrice;
+    int editTextTemp = 0;
 
 
     @Override
@@ -31,11 +37,11 @@ public class CartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cart);
 
         ListView purchases = findViewById(R.id.purchases);
+
         Button addNewProductButton = findViewById(R.id.addNewProductButton);
         addNewProductButton.setOnClickListener((v) -> {
             startActivity(new Intent(CartActivity.this, ScanActivity.class));
         });
-        Double.valueOf("5");
         //productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", "test", 3.00, false));
         //productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", "test", 5.00, true));
         purchases.setAdapter(adapter);
@@ -66,6 +72,12 @@ public class CartActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //getProductsArrayList().get(1).setPrice(9.00);
+       /* if(changePrice != null){
+            if(changePrice.getText().toString().trim().length() > 0){
+                editTextTemp = Integer.parseInt((changePrice.getText().toString()));
+                int test = 2;
+            }
+        } */
         adapter.notifyDataSetChanged();
     }
 
@@ -105,9 +117,38 @@ public class CartActivity extends AppCompatActivity {
                 deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + ""); //changed to displayed price
             }
             TextView productName = newView.findViewById(R.id.productName);
-            productName.setText(product.getProductName());
+            productName.setText(product.getProductName() + " "); // adds a space
+            EditText changePrice = newView.findViewById(R.id.changePriceAndQuantityText);
+            /*changePrice.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    //changePrice.setText(s);
+                    //editTextTemp = Integer.valueOf(s.toString());
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    //notifyDataSetChanged();
+                }
+            });*/
+            /*if(editTextTemp != 0){
+                changePrice.setText(editTextTemp + "");
+            }*/
+            //changePrice = newView.findViewById(R.id.changePriceAndQuantityText);
+          /* if(changePrice.getText() != null || !changePrice.getText().toString().equals("")){
+                changePrice.setText(changePrice.getText());
+                adapter.notifyDataSetChanged();
+            } */
+
+
             //TextView price = newView.findViewById(R.id.price);
-            EditText price = newView.findViewById(R.id.price);
+            TextView price = newView.findViewById(R.id.price);
             //price.setText("1.0");
             //product.setDisplayedPrice(Double.valueOf(price.getText().toString()));
             price.setText(product.getDisplayedPrice() + "");
@@ -174,6 +215,22 @@ public class CartActivity extends AppCompatActivity {
                 startActivity(intent); // may need to be changed
             });
 
+            Button changePriceButton = newView.findViewById(R.id.changePrice);
+            changePriceButton.setOnClickListener((v) ->{
+                product.setQuantity(1);
+                product.setPrice(Double.valueOf(changePrice.getText().toString()));
+                quantity.setText(Integer.toString(product.getQuantity()));
+                product.setDisplayedPrice(product.getPrice() * product.getQuantity());
+                price.setText(product.getDisplayedPrice() + "");
+                if(product.getLinkedProduct() != null){
+                    product.getLinkedProduct().setQuantity(product.getQuantity());
+                    product.getLinkedProduct().setDisplayedPrice(product.getLinkedProduct().getPrice() * product.getLinkedProduct().getQuantity());
+                    deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+                }
+                adapter.notifyDataSetChanged();
+
+            });
+            //adapter.notifyDataSetChanged(); //used this to try figure out why I can't change value in changeprice edittext, did not work
             return newView;
             //return null;
         }

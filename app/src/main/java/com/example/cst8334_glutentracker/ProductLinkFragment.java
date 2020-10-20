@@ -119,7 +119,7 @@ public class ProductLinkFragment extends Fragment {
    //         testPrice.setText(CartActivity.getProductsArrayList().get(passedIndex).getPrice() + "");
             //Product passedProduct = (Product) dataFromActivity.getSerializable("Product");
 
-            Button testButton = newView.findViewById(R.id.testChange);
+            Button testButton = newView.findViewById(R.id.linkCommit);
             testButton.setOnClickListener((v) -> {
                 //passedProduct.setPrice(product.getPrice());
                 CartActivity.getProductsArrayList().get(passedIndex).setDisplayedPrice(product.getPrice());
