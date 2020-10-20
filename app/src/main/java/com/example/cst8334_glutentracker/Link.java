@@ -37,7 +37,7 @@ public class Link extends AppCompatActivity {
         fromActivity = getIntent();
         passedIndex = fromActivity.getIntExtra("Index", 3);
         ListView linkTest = findViewById(R.id.linkTest);
-        listOfProducts.add(new Product(3, "Chip", "A bag of chips", "test", 1.00, false));
+        listOfProducts.add(new Product(3, "Chip", "A bag of chips", 0, 1.00, false));
         linkTest.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -60,7 +60,7 @@ public class Link extends AppCompatActivity {
             String name = resultsQuery.getString(nameColIndex);
             String description = resultsQuery.getString(descriptionColIndex);
             double price = resultsQuery.getDouble(priceColIndex);
-            listOfProducts.add(new Product(id, name, description, "notImplemented", price, false));
+            listOfProducts.add(new Product(id, name, description, 0, price, false));
         }
 
         resultsQuery.close();

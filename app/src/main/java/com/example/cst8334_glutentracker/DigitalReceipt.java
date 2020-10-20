@@ -72,7 +72,7 @@ public class DigitalReceipt extends AppCompatActivity {
             rdate.setText(date);
             ded.setText(Double.toString(deduction));
         }
-        Cursor pc = database.query(false, databaseActivity.Products.TABLE_NAME, new String[]{databaseActivity.Products.COLUMN_NAME_ID, databaseActivity.Products.COLUMN_NAME_RID,databaseActivity.Products.COLUMN_NAME_PNAME,databaseActivity.Products.COLUMN_NAME_DESCRIPTION,databaseActivity.Products.COLUMN_NAME_GLUTEN,databaseActivity.Products.COLUMN_NAME_PRICE}, "receiptID=?",new String[]{Integer.toString(passedIndex)}, null, null, null, null, null);
+        Cursor pc = database.query(false, databaseActivity.Products.TABLE_NAME, new String[]{databaseActivity.Products.COLUMN_NAME_ID,databaseActivity.Products.COLUMN_NAME_PNAME,databaseActivity.Products.COLUMN_NAME_DESCRIPTION,databaseActivity.Products.COLUMN_NAME_GLUTEN,databaseActivity.Products.COLUMN_NAME_PRICE}, "receiptID=?",new String[]{Integer.toString(passedIndex)}, null, null, null, null, null);
         int pid=pc.getColumnIndex(databaseActivity.Products.COLUMN_NAME_ID);
         int nameIndex=pc.getColumnIndex(databaseActivity.Products.COLUMN_NAME_PNAME);
         int descIndex=pc.getColumnIndex(databaseActivity.Products.COLUMN_NAME_DESCRIPTION);
@@ -94,7 +94,7 @@ public class DigitalReceipt extends AppCompatActivity {
 
             double ded=pc.getDouble(dedIndex);
 
-            products.add(new Product(productId,name,desc,"test",ded,glutenf));
+            products.add(new Product(productId,name,desc,0,ded,glutenf));
         }
     }
 

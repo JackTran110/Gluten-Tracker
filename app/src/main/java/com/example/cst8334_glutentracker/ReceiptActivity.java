@@ -53,7 +53,7 @@ public class ReceiptActivity extends AppCompatActivity {
 
     private void readFromDatabase(){
         database = dbOpener.getReadableDatabase();
-        Cursor pc = database.query(false, databaseActivity.Products.TABLE_NAME, new String[]{databaseActivity.Products.COLUMN_NAME_ID, databaseActivity.Products.COLUMN_NAME_RID,databaseActivity.Products.COLUMN_NAME_PNAME,databaseActivity.Products.COLUMN_NAME_DESCRIPTION,databaseActivity.Products.COLUMN_NAME_GLUTEN,databaseActivity.Products.COLUMN_NAME_PRICE}, null, null, null, null, null, null, null);
+        Cursor pc = database.query(false, databaseActivity.Products.TABLE_NAME, new String[]{databaseActivity.Products.COLUMN_NAME_ID, databaseActivity.Products.COLUMN_NAME_PNAME,databaseActivity.Products.COLUMN_NAME_DESCRIPTION,databaseActivity.Products.COLUMN_NAME_GLUTEN,databaseActivity.Products.COLUMN_NAME_PRICE}, null, null, null, null, null, null, null);
         Cursor rc = database.query(false, databaseActivity.Receipts.TABLE_NAME, new String[]{databaseActivity.Receipts.COLUMN_NAME_ID, databaseActivity.Receipts.COLUMN_NAME_FILE, databaseActivity.Receipts.COLUMN_NAME_DATE,databaseActivity.Receipts.COLUMN_NAME_DEDUCTION}, null, null, null, null, null, null, null);
         int idIndex=rc.getColumnIndex(databaseActivity.Receipts.COLUMN_NAME_ID);
         int fileNamename=rc.getColumnIndex(databaseActivity.Receipts.COLUMN_NAME_FILE);
@@ -83,7 +83,6 @@ public class ReceiptActivity extends AppCompatActivity {
         productRowValues.put(databaseActivity.Products.COLUMN_NAME_DESCRIPTION, "Apple Juice 1L");
         productRowValues.put(databaseActivity.Products.COLUMN_NAME_PRICE, 6.25);
         productRowValues.put(databaseActivity.Products.COLUMN_NAME_GLUTEN, 0);
-        productRowValues.put(databaseActivity.Products.COLUMN_NAME_RID, 2);
         database.insert(databaseActivity.Products.TABLE_NAME, null, productRowValues);
     }
 
@@ -112,7 +111,7 @@ public class ReceiptActivity extends AppCompatActivity {
                 img = (TextView) convertView.findViewById(R.id.rpt);
                 amt = (TextView) convertView.findViewById(R.id.deduction);
                 dte = (TextView) convertView.findViewById(R.id.summarydate);
-                id.setText(Integer.toString(rS.getId()));
+                id.setText(Long.toString(rS.getId()));
                 img.setText(rS.getReceiptFile());
                 amt.setText(Double.toString(rS.getTaxDeductionTotal()));
                 dte.setText(rS.getDate());

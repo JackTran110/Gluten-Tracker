@@ -5,25 +5,22 @@ import java.util.List;
 
 public class Receipt {
 
-    private int id = 0;
+    private long id = 0;
     private List<Product> products = new ArrayList<>();
     private String receiptFile = "default";
     private double taxDeductionTotal = 0;
-    private String date;
+    private String date = "now";
 
-    public Receipt(int id, List<Product> products, String receiptFile, double taxDeductionTotal,String date){
-        setId(id);
-        setProducts(products);
-        setReceiptFile(receiptFile);
-        setTaxDeductionTotal(taxDeductionTotal);
-        setDate(date);
+    public Receipt(long id, List<Product> products, String receiptFile, double taxDeductionTotal, String date){
+        setId(id).setProducts(products).setReceiptFile(receiptFile).setTaxDeductionTotal(taxDeductionTotal).setDate(date);
+
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public Receipt setId(int id) {
+    public Receipt setId(long id) {
         this.id = id;
         return this;
     }
@@ -55,10 +52,12 @@ public class Receipt {
         return this;
     }
 
-    public String getDate(){return date;}
+    public String getDate() {
+        return date;
+    }
 
-    public Receipt setDate(String date){
-        this.date=date;
+    public Receipt setDate(String date) {
+        this.date = date;
         return this;
     }
 }

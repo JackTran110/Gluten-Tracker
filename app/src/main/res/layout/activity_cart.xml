@@ -18,6 +18,13 @@
         android:layout_height="wrap_content"
         android:text="Add New Product"
         android:layout_alignParentBottom="true"/>
+    <Button
+        android:id="@+id/checkout_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Check out"
+        android:layout_toRightOf="@id/addNewProductButton"
+        android:layout_alignTop="@id/addNewProductButton"/>
 
     <TextView
         android:id="@+id/checkout"

@@ -2,6 +2,9 @@ package com.example.cst8334_glutentracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -25,18 +28,29 @@ import java.util.ArrayList;
 public class CartActivity extends AppCompatActivity {
 
     private Adapter adapter = new Adapter();
-    //private ArrayList<Product> productsArrayList = new ArrayList<Product>();
     private static ArrayList<Product> productsArrayList = new ArrayList<Product>();
-   // EditText changePrice;
-    int editTextTemp = 0;
-
+    private int productCount = 0;
+    private glutenDbHelper helper = new glutenDbHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
+        SharedPreferences pre = getSharedPreferences("cart_activity", Context.MODE_PRIVATE);
+        productCount = pre.getInt("Product count", 0);
+        for(int i = 1; i <= productCount; i++){
+//            productsArrayList.add()
+        }
+
         ListView purchases = findViewById(R.id.purchases);
+        Button checkoutButton = findViewById(R.id.checkout_button);
+        SQLiteDatabase db = helper.getWritableDatabase();
+
+//        productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", 0, 3.00, false));
+//        productCount += 1;
+//        productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", 0, 5.00, true));
+//        productCount += 1;
 
         Button addNewProductButton = findViewById(R.id.addNewProductButton);
         addNewProductButton.setOnClickListener((v) -> {
@@ -46,7 +60,6 @@ public class CartActivity extends AppCompatActivity {
         //productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", "test", 5.00, true));
         purchases.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        
 
 //        addProductButton.setOnClickListener((View v)->{
 //
@@ -61,7 +74,12 @@ public class CartActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             });
         } */
-
+        checkoutButton.setOnClickListener((View v) -> {
+            for(Product product: productsArrayList){
+                helper.insertIntoProductsTable(db, product);
+            }
+            helper.insertIntoReceiptsTable(db, productsArrayList, "file", 0, "0/0/0000");
+        });
     }
 
     public static ArrayList<Product> getProductsArrayList(){
@@ -79,6 +97,15 @@ public class CartActivity extends AppCompatActivity {
             }
         } */
         adapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        SharedPreferences pre = getSharedPreferences("cart_activity", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = pre.edit();
     }
 
     class Adapter extends BaseAdapter{
@@ -102,7 +129,8 @@ public class CartActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             Product product = (Product) getItem(position);
             LayoutInflater inflater = getLayoutInflater();
-            View newView;
+            View newView = inflater.inflate(R.layout.activity_product_list, parent, false);
+
             if(product.getLinkedProduct() == null){
                 newView = inflater.inflate(R.layout.activity_product_list, parent, false);
             }
@@ -111,46 +139,17 @@ public class CartActivity extends AppCompatActivity {
                 /*TextView deductibleText = newView.findViewById(R.id.deductibleText);
                 deductibleText.setText((product.getPrice() - product.getLinkedProduct().getPrice()) + ""); */
             }
-           // View newView = inflater.inflate(R.layout.activity_product_list, parent, false);   worked
+
             TextView deductibleText = newView.findViewById(R.id.deductibleText);
             if(product.getLinkedProduct() != null) {
                 deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + ""); //changed to displayed price
             }
+
             TextView productName = newView.findViewById(R.id.productName);
-            productName.setText(product.getProductName() + " "); // adds a space
+            productName.setText(product.getProductName());
             EditText changePrice = newView.findViewById(R.id.changePriceAndQuantityText);
-            /*changePrice.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    //changePrice.setText(s);
-                    //editTextTemp = Integer.valueOf(s.toString());
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    //notifyDataSetChanged();
-                }
-            });*/
-            /*if(editTextTemp != 0){
-                changePrice.setText(editTextTemp + "");
-            }*/
-            //changePrice = newView.findViewById(R.id.changePriceAndQuantityText);
-          /* if(changePrice.getText() != null || !changePrice.getText().toString().equals("")){
-                changePrice.setText(changePrice.getText());
-                adapter.notifyDataSetChanged();
-            } */
-
-
-            //TextView price = newView.findViewById(R.id.price);
             TextView price = newView.findViewById(R.id.price);
-            //price.setText("1.0");
-            //product.setDisplayedPrice(Double.valueOf(price.getText().toString()));
             price.setText(product.getDisplayedPrice() + "");
             EditText quantity = newView.findViewById(R.id.quantity);
             //quantity.setText("1");
