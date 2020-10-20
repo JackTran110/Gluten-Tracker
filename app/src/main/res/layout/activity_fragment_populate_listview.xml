@@ -33,23 +33,38 @@
         android:id="@+id/productFoundDescription"
         android:layout_toRightOf="@+id/productFoundName"/>
 
-   <!-- <TextView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/productFoundPrice"
-        android:layout_toRightOf="@+id/productFoundDescription"/> -->
-    <EditText
+        android:layout_toRightOf="@+id/productFoundDescription"/>
+    <!--<EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/productFoundPrice"
         android:inputType="numberDecimal"
-        android:layout_toRightOf="@+id/productFoundDescription"/>
+        android:layout_toRightOf="@+id/productFoundDescription"/> -->
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/testChange"
+        android:id="@+id/linkCommit"
         android:text="Link"
         android:layout_alignParentRight="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/changeFoundPrice"
+        android:layout_below="@+id/linkCommit"
+        android:text="Change Price" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:id="@+id/changeFoundPriceAndQuantityText"
+        android:layout_toRightOf="@+id/changeFoundPrice"
+        android:layout_below="@+id/linkCommit"/>
 
 </RelativeLayout>
