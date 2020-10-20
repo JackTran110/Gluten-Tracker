@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DigitalReceipt">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Digital Receipt"
+        android:textStyle="bold"
+        android:textSize="22dp"/>
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="19dp"
+        android:text="Date:"
+        android:layout_below="@+id/title"/>
+    <TextView
+        android:id="@+id/datef"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="19dp"
+        android:textStyle="italic"
+        android:layout_below="@+id/title"
+        android:layout_toRightOf="@+id/date"/>
+    <TextView
+        android:id="@+id/rid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Receipt Num:"
+        android:textSize="19dp"
+        android:layout_toLeftOf="@+id/ridf"
+        android:layout_below="@+id/title"/>
+
+    <TextView
+        android:id="@+id/ridf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="19dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/title"/>
+
+    <TextView
+        android:id="@+id/protitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Purchases"
+        android:textSize="19dp"
+        android:textAlignment="center"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/date"/>
+    <ListView
+        android:id="@+id/products"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/protitle"/>
+    <TextView
+        android:id="@+id/ded"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Claimable Amount: "
+        android:textSize="19dp"
+        android:layout_alignParentBottom="true"/>
+    <TextView
+        android:id="@+id/dedf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_toRightOf="@+id/ded"
+        android:textSize="19dp"
+        android:layout_alignParentBottom="true"/>
+</RelativeLayout>

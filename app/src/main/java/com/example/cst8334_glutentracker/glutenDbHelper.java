@@ -15,7 +15,7 @@ import java.util.List;
 public class glutenDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "GlutenTracker.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     public glutenDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -25,22 +25,23 @@ public class glutenDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_PRODUCTS);
         db.execSQL(SQL_CREATE_RECEIPTS);
+        db.execSQL(SQL_CREATE_PRODUCT_RECEIPT);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(SQL_DELETE_PRODUCTS);
         db.execSQL(SQL_DELETE_RECEIPTS);
-        db.execSQL(SQL_CREATE_PRODUCT_RECEIPT);
+        db.execSQL(SQL_DELETE_PRODUCT_RECEIPT);
         onCreate(db);
     }
 
-    public long insertIntoProductsTable(SQLiteDatabase db, String productName, String description, double price, boolean isGlutenFree){
+    public long insertIntoProductsTable(SQLiteDatabase db, Product product){
         ContentValues cv = new ContentValues();
-        cv.put(databaseActivity.Products.COLUMN_NAME_PNAME, productName);
-        cv.put(databaseActivity.Products.COLUMN_NAME_DESCRIPTION, description);
-        cv.put(databaseActivity.Products.COLUMN_NAME_PRICE, price);
-        cv.put(databaseActivity.Products.COLUMN_NAME_GLUTEN, (isGlutenFree ? 0:1));
+        cv.put(databaseActivity.Products.COLUMN_NAME_PNAME, product.getProductName());
+        cv.put(databaseActivity.Products.COLUMN_NAME_DESCRIPTION, product.getProductDescription());
+        cv.put(databaseActivity.Products.COLUMN_NAME_PRICE, product.getPrice());
+        cv.put(databaseActivity.Products.COLUMN_NAME_GLUTEN, (product.isGlutenFree() ? 0:1));
         return db.insert(databaseActivity.Products.TABLE_NAME, null, cv);
     }
 
@@ -130,4 +131,7 @@ public class glutenDbHelper extends SQLiteOpenHelper {
             databaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID + ") REFERENCES " +
             databaseActivity.Receipts.TABLE_NAME + "(" +
             databaseActivity.Receipts.COLUMN_NAME_ID + "))";
+
+    private static final String SQL_DELETE_PRODUCT_RECEIPT = "DROP TABLE IF EXISTS " +
+            databaseActivity.ProductReceipt.TABLE_NAME;
 }

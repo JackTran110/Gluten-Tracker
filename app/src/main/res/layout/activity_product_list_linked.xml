@@ -9,7 +9,6 @@
         android:id="@+id/productName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +21,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/price"
         android:layout_toRightOf="@id/dollarSign"/>
-     <!--<EditText
+    <!--<EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/price"
@@ -41,7 +40,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/plusButton"
         android:text="Plus"
-        android:layout_below="@+id/price" />
+        android:layout_below="@+id/price"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -62,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/linkButton"
-        android:text="Link Product"
+        android:text="Linked!"
         android:layout_below="@+id/removeFromCart"
         android:layout_alignParentRight="true"/>
 
@@ -71,8 +70,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/deductibleView"
         android:text="Deductible: $"
-        android:visibility="invisible"
-        android:layout_below="@+id/plusButton" />
+        android:layout_below="@+id/plusButton"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -85,7 +84,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/deductibleText"
         android:layout_below="@+id/minusButton"
-        android:visibility="invisible"
         android:layout_toRightOf="@+id/deductibleView"/>
 
     <EditText
@@ -96,5 +94,6 @@
         android:id="@+id/changePriceAndQuantityText"
         android:layout_toRightOf="@+id/changePrice"
         android:layout_below="@+id/linkButton"/>
+
 
 </RelativeLayout>

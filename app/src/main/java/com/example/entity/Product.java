@@ -10,15 +10,17 @@ public class Product {
     private double displayedPrice = 0;
     private int quantity = 0;
     private boolean isGlutenFree = false;
+    private Product linkedProduct = null;
+
 
     public Product(long id, String productName, String productDescription, long barCode, double price, boolean isGlutenFree){
-        setId(id).
-        setProductName(productName).
-        setProductDescription(productDescription).
-        setBarCode(barCode).
-        setPrice(price).
-        setIsGlutenFree(isGlutenFree).
-        setQuantity(1).
+        setId(id);
+        setProductName(productName);
+        setProductDescription(productDescription);
+        setBarCode(barCode);
+        setPrice(price);
+        setIsGlutenFree(isGlutenFree);
+        setQuantity(1);
         setDisplayedPrice(price);
     }
 
@@ -92,5 +94,13 @@ public class Product {
     public Product setQuantity(int quantity) {
         this.quantity = quantity;
         return this;
+    }
+
+    public Product getLinkedProduct(){
+        return linkedProduct;
+    }
+
+    public void setLinkedProduct(Product linkedProduct){
+        this.linkedProduct = linkedProduct;
     }
 }
