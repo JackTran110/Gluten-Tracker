@@ -72,11 +72,11 @@ public class ReceiptActivity extends AppCompatActivity {
 
     private void insertTestValuesIntoDatabase(){
         database = dbOpener.getWritableDatabase();
-//        ContentValues newRowValues = new ContentValues();
-//        newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_FILE, "test2");
-//        newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_DATE,"2020-08-15");
-//        newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_DEDUCTION,20);
-//        database.insert(databaseActivity.Receipts.TABLE_NAME, null, newRowValues);
+//      ContentValues newRowValues = new ContentValues();
+//      newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_FILE, "test2");
+//      newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_DATE,"2020-08-15");
+//      newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_DEDUCTION,20);
+//      database.insert(databaseActivity.Receipts.TABLE_NAME, null, newRowValues);
 
         ContentValues productRowValues = new ContentValues();
         productRowValues.put(databaseActivity.Products.COLUMN_NAME_PNAME, "Real Apple Juice");
@@ -108,7 +108,7 @@ public class ReceiptActivity extends AppCompatActivity {
             Receipt rS = getItem(position);
                 LayoutInflater inflater = LayoutInflater.from(mContext);
                 convertView = inflater.inflate(R.layout.receipt_layout, parent, false);
-                id=(TextView) convertView.findViewById(R.id.rid);
+                id= (TextView) convertView.findViewById(R.id.rid);
                 img = (TextView) convertView.findViewById(R.id.rpt);
                 amt = (TextView) convertView.findViewById(R.id.deduction);
                 dte = (TextView) convertView.findViewById(R.id.summarydate);
