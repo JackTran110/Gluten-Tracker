@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/productName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dollarSign"
+        android:text="$"
+        android:layout_toRightOf="@+id/productName"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/price"
+        android:layout_toRightOf="@id/dollarSign"/>
+     <!--<EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/price"
+        android:inputType="numberDecimal"
+        android:layout_toRightOf="@id/productName"/> -->
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/quantity"
+        android:layout_toRightOf="@id/plusButton"
+        android:layout_below="@+id/price"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/plusButton"
+        android:text="Plus"
+        android:layout_below="@+id/price" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/minusButton"
+        android:text="Minus"
+        android:layout_toRightOf="@+id/quantity"
+        android:layout_below="@+id/price"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/removeFromCart"
+        android:text="Remove"
+        android:layout_alignParentRight="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linkButton"
+        android:text="Link Product"
+        android:layout_below="@+id/removeFromCart"
+        android:layout_alignParentRight="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/deductibleView"
+        android:text="Deductible: $"
+        android:visibility="invisible"
+        android:layout_below="@+id/plusButton" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/changePrice"
+        android:layout_below="@+id/linkButton"
+        android:text="Change Price" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/deductibleText"
+        android:layout_below="@+id/minusButton"
+        android:visibility="invisible"
+        android:layout_toRightOf="@+id/deductibleView"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+
+        android:id="@+id/changePriceAndQuantityText"
+        android:layout_toRightOf="@+id/changePrice"
+        android:layout_below="@+id/linkButton"/>
+
+</RelativeLayout>
