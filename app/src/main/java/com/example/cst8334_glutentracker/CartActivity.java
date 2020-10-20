@@ -2,7 +2,11 @@ package com.example.cst8334_glutentracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.JsonWriter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,28 +19,44 @@ import android.widget.Toast;
 
 import com.example.entity.Product;
 
+import org.json.JSONObject;
+import org.json.JSONStringer;
+
 import java.util.ArrayList;
 
 public class CartActivity extends AppCompatActivity {
 
     private Adapter adapter = new Adapter();
     private ArrayList<Product> productsArrayList = new ArrayList<Product>();
+    private int productCount = 0;
+    private glutenDbHelper helper = new glutenDbHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
+        SharedPreferences pre = getSharedPreferences("cart_activity", Context.MODE_PRIVATE);
+        productCount = pre.getInt("Product count", 0);
+        for(int i = 1; i <= productCount; i++){
+//            productsArrayList.add()
+        }
+
         ListView purchases = findViewById(R.id.purchases);
         Button addProductButton = findViewById(R.id.addNewProductButton);
-        productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", "test", 3.00, false));
-        productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", "test", 5.00, true));
+        Button checkoutButton = findViewById(R.id.checkout_button);
+        SQLiteDatabase db = helper.getWritableDatabase();
+
+        productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", 0, 3.00, false));
+        productCount += 1;
+        productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", 0, 5.00, true));
+        productCount += 1;
         purchases.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-//        addProductButton.setOnClickListener((View v)->{
-//
-//        });
+        addProductButton.setOnClickListener((View v)->{
+
+        });
 
        /* if(productsArrayList.size() > 0){
             Button removeButton = findViewById(R.id.removeFromCart);
@@ -48,6 +68,17 @@ public class CartActivity extends AppCompatActivity {
             });
         } */
 
+       checkoutButton.setOnClickListener((View v) -> {
+            helper.insertIntoReceiptsTable(db, productsArrayList, "file", 0, "0/0/0000");
+       });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        SharedPreferences pre = getSharedPreferences("cart_activity", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = pre.edit();
     }
 
     class Adapter extends BaseAdapter{
