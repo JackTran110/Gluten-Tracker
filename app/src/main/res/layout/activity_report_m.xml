@@ -32,7 +32,14 @@
 
     <!--Custom report function #43 -->
     <!--The csv file report output #42 -->
+    <Button
+        android:id="@+id/btnCsvFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txtRecnt_m"
 
+        android:text="Save to csv File"
+        />
 
 
     <!--The csv file report output #42 -->
