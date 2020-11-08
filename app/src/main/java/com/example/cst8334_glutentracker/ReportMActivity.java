@@ -38,6 +38,12 @@ public class ReportMActivity extends AppCompatActivity {
             }
         });
 
+
+        //    receipts.receiptID
+        //    receipts.receiptFile
+        //    receipts.totalTaxDeduction
+        //    receipts.date
+
         arrayList = new ArrayList<>();
         arrayList.add("2019-Jan   Total:$230.50          dTax:$23.80");
         arrayList.add("2019-Feb   Total:$230.50          dTax:$23.80");
