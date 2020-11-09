@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.cst8334_glutentracker">
 
+
     <uses-permission android:name="android.permission.INTERNET" />
+
 
     <application
         android:allowBackup="true"
@@ -26,6 +28,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--The csv file report output #42 -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.cst8334_glutentracker.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+           <meta-data
+               android:name="android.support.FILE_PROVIDER_PATHS"
+               android:resource="@xml/provider_paths"/>
+        </provider>
+
+        <!--The csv file report output #42 -->
+
     </application>
 
 </manifest>
