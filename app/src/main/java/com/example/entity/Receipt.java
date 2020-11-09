@@ -3,8 +3,7 @@ package com.example.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Receipt {
-
+public class Receipt {  
     private long id = 0;
     private List<Product> products = new ArrayList<>();
     private String receiptFile = "default";
