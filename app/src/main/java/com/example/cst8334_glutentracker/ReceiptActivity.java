@@ -2,6 +2,7 @@ package com.example.cst8334_glutentracker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -70,21 +72,21 @@ public class ReceiptActivity extends AppCompatActivity {
         }
     }
 
-    private void insertTestValuesIntoDatabase(){
-        database = dbOpener.getWritableDatabase();
-//      ContentValues newRowValues = new ContentValues();
-//      newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_FILE, "test2");
-//      newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_DATE,"2020-08-15");
-//      newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_DEDUCTION,20);
-//      database.insert(databaseActivity.Receipts.TABLE_NAME, null, newRowValues);
-
-        ContentValues productRowValues = new ContentValues();
-        productRowValues.put(databaseActivity.Products.COLUMN_NAME_PNAME, "Real Apple Juice");
-        productRowValues.put(databaseActivity.Products.COLUMN_NAME_DESCRIPTION, "Apple Juice 1L");
-        productRowValues.put(databaseActivity.Products.COLUMN_NAME_PRICE, 6.25);
-        productRowValues.put(databaseActivity.Products.COLUMN_NAME_GLUTEN, 0);
-        database.insert(databaseActivity.Products.TABLE_NAME, null, productRowValues);
-    }
+//    private void insertTestValuesIntoDatabase(){
+//        database = dbOpener.getWritableDatabase();
+//        ContentValues newRowValues = new ContentValues();
+//        newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_FILE, "test2");
+//        newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_DATE,"2020-08-15");
+//        newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_DEDUCTION,20);
+//        database.insert(databaseActivity.Receipts.TABLE_NAME, null, newRowValues);
+//
+//        ContentValues productRowValues = new ContentValues();
+//        productRowValues.put(databaseActivity.Products.COLUMN_NAME_PNAME, "Real Apple Juice");
+//        productRowValues.put(databaseActivity.Products.COLUMN_NAME_DESCRIPTION, "Apple Juice 1L");
+//        productRowValues.put(databaseActivity.Products.COLUMN_NAME_PRICE, 6.25);
+//        productRowValues.put(databaseActivity.Products.COLUMN_NAME_GLUTEN, 0);
+//        database.insert(databaseActivity.Products.TABLE_NAME, null, productRowValues);
+//    }
 
     public class ReceiptAdapter extends ArrayAdapter<Receipt> {
         private ArrayList<Receipt> rData;
@@ -94,6 +96,7 @@ public class ReceiptActivity extends AppCompatActivity {
         TextView img;
         TextView amt;
         TextView dte;
+        Button edit;
 
         public ReceiptAdapter(ArrayList<Receipt> data, Context context)  {
             super(context,R.layout.receipt_layout,data);
@@ -111,6 +114,7 @@ public class ReceiptActivity extends AppCompatActivity {
                 img = (TextView) convertView.findViewById(R.id.rpt);
                 amt = (TextView) convertView.findViewById(R.id.deduction);
                 dte = (TextView) convertView.findViewById(R.id.summarydate);
+                edit=convertView.findViewById(R.id.edit);
                 id.setText(Long.toString(rS.getId()));
                 img.setText(rS.getReceiptFile());
                 amt.setText(Double.toString(rS.getTaxDeductionTotal()));
