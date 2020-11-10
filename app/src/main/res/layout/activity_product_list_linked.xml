@@ -39,14 +39,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/plusButton"
-        android:text="Plus"
+        android:text="plus"
         android:layout_below="@+id/price"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/minusButton"
-        android:text="Minus"
+        android:text="minus"
         android:layout_toRightOf="@+id/quantity"
         android:layout_below="@+id/price"/>
 
