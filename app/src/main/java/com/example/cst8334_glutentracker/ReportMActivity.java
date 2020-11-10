@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.entity.ItemsModel;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -29,14 +31,21 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
 
      ListView lstMReport;
      ArrayList<String> arrayList;
+     ArrayList<ItemsModel> arrayReceipt;
+     StringBuilder data;
      Button btnReport;
      Button btnCsvFile;
+     Button btnMonth;
+     Button btnSearch;
 
      AlertDialog.Builder dialogBuilder;
      AlertDialog dialog;
      TextView txtA;
      TextView txtFrom;
      TextView txtTo;
+
+     int dateFromD,dateFromM,dateFromY, dateToD,dateToM,dateToY;
+     boolean isFrom = false;
 
      String pickDate;
 
@@ -45,11 +54,55 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report_m);
 
+        lstMReport = (ListView) findViewById(R.id.lstMReport);
+
         btnReport = (Button)findViewById(R.id.btnReceipt);
         btnCsvFile = (Button)findViewById(R.id.btnCsvFile);
 
+        btnMonth = (Button)findViewById(R.id.btnMonth);
+        btnSearch = (Button)findViewById(R.id.btnSearch);
+
         txtFrom =(TextView)findViewById(R.id.txtFrom_data);
         txtTo = (TextView)findViewById(R.id.txtTo_data);
+
+        arrayList = new ArrayList<>();
+       // arrayList.add("2020-Oct   Total:$450.23         dTax:$67.25");
+       // arrayList.add("2020-Nov   Total:$230.50         dTax:$56.98");
+
+// 2020-8
+
+        arrayReceipt = new ArrayList<>();
+        arrayReceipt.add(new ItemsModel("90001", "2020-8-5",2020,8,5, "Purchease detail is Oatmeal", "23.50", "0.8"));
+        arrayReceipt.add(new ItemsModel("90002", "2020-8-12",2020,8,12, "Purchease detail is Apple", "120.78", "23.45"));
+        arrayReceipt.add(new ItemsModel("90003", "2020-8-15",2020,8,15, "Purchease detail is Orange", "45.60", "4.8"));
+        arrayReceipt.add(new ItemsModel("90004", "2020-8-20",2020,8,20, "Purchease detail is rice", "29.50", "2.3"));
+
+// 2020-9
+
+
+        arrayReceipt.add(new ItemsModel("90005", "2020-9-2",2020,9,2, "Purchease detail is Oatmeal", "213.50", "1.8"));
+        arrayReceipt.add(new ItemsModel("90006", "2020-9-10",2020,9,10, "Purchease detail is Apple", "20.75", "20.45"));
+        arrayReceipt.add(new ItemsModel("90007", "2020-9-11",2020,9,11, "Purchease detail is Orange", "65.30", "14.8"));
+        arrayReceipt.add(new ItemsModel("90008", "2020-9-22",2020,9,22, "Purchease detail is rice", "19.56", "21.3"));
+
+// 2020-10
+
+
+        arrayReceipt.add(new ItemsModel("90009", "2020-10-15",2020,10,15, "Purchease detail is Oatmeal", "56.50", "10.18"));
+        arrayReceipt.add(new ItemsModel("90010", "2020-10-16",2020,10,16, "Purchease detail is Apple", "120.78", "7.45"));
+        arrayReceipt.add(new ItemsModel("90011", "2020-10-19",2020,10,19, "Purchease detail is Orange", "45.60", "40.83"));
+        arrayReceipt.add(new ItemsModel("90012", "2020-10-27",2020,10,27, "Purchease detail is rice", "29.50", "20.53"));
+// 2020-11
+
+
+        arrayReceipt.add(new ItemsModel("90013", "2020-11-2",2020,11,2, "Purchease detail is Oatmeal", "203.50", "0.98"));
+        arrayReceipt.add(new ItemsModel("90014", "2020-11-10",2020,11,10, "Purchease detail is Apple", "20.78", "3.52"));
+        arrayReceipt.add(new ItemsModel("90015", "2020-11-11",2020,11,11, "Purchease detail is Orange", "49.60", "14.38"));
+        arrayReceipt.add(new ItemsModel("90016", "2020-11-17",2020,11,17, "Purchease detail is rice", "79.10", "21.36"));
+
+
+        ArrayAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,arrayList);
+        lstMReport.setAdapter(adapter);
 
         btnReport.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,11 +118,86 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
             }
         });
 
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                arrayList.clear();
+                arrayList.add("Receipt No.           Date                Total                Tax");
+                data = new StringBuilder();
+                data.append("ID,Date,Total,Tax");
+
+                for (int i = 0; i < arrayReceipt.size(); i++){
+
+                            int tmpday = arrayReceipt.get(i).getrMonth()*100 + arrayReceipt.get(i).getrDay();
+
+
+                        if (tmpday >= (dateFromD-100) && tmpday <= dateToD) {
+
+                                String str = arrayReceipt.get(i).getrId() + "         " + arrayReceipt.get(i).getrDate() + "           " + arrayReceipt.get(i).getrSub() + "          " + arrayReceipt.get(i).getrTax();
+                                arrayList.add(str);
+                                data.append("\n" + arrayReceipt.get(i).getrId() + "," + arrayReceipt.get(i).getrDate() + "," + arrayReceipt.get(i).getrSub() + "," + arrayReceipt.get(i).getrTax());
+
+                        }
+
+                }
+
+
+
+                adapter.notifyDataSetChanged();
+                Toast.makeText(ReportMActivity.this,"Report for Monthly",Toast.LENGTH_LONG).show();
+
+
+
+            }
+        });
+
+        btnMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                arrayList.clear();
+                arrayList.add("Month                    Total                    Tax");
+                data = new StringBuilder();
+                data.append("Date,Total,Tax");
+
+                int tmpMonth = 0;
+                double total = 0, tax = 0;
+                String str = "";
+
+                for (int i = 0; i < arrayReceipt.size(); i++){
+
+
+                    if(tmpMonth == arrayReceipt.get(i).getrMonth()) {
+                        total = total + Double.valueOf(arrayReceipt.get(i).getrSub());
+                        tax = tax + Double.valueOf(arrayReceipt.get(i).getrTax());
+                    }else{
+
+                            str = Integer.toString(tmpMonth) + "                        " + Double.toString(total) + "                       " + Double.toString(tax);
+                        if (tmpMonth != 0 ) {
+                            arrayList.add(str);
+                            data.append("\n" + Integer.toString(tmpMonth) + "," + Double.toString(total) + "," + Double.toString(tax));
+
+                        }
+                            tmpMonth = arrayReceipt.get(i).getrMonth();
+
+                    }
+                }
+
+
+                adapter.notifyDataSetChanged();
+                Toast.makeText(ReportMActivity.this,"Report for Customer Search",Toast.LENGTH_LONG).show();
+
+            }
+        });
+
         txtFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isFrom = true;
                 showDatePickerDailog();
-                txtFrom.setText(pickDate);
+
 
             }
         });
@@ -77,51 +205,14 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
         txtTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isFrom = false;
                 showDatePickerDailog();
-                txtTo.setText(pickDate);
+
+
+
             }
         });
 
-
-
-
-        //    receipts.receiptID
-        //    receipts.receiptFile
-        //    receipts.totalTaxDeduction
-        //    receipts.date
-
-        arrayList = new ArrayList<>();
-        arrayList.add("DATE        TOTAL                  TAX     ");
-        arrayList.add("2019-Jan   Total:$230.50          dTax:$23.80");
-        arrayList.add("2019-Feb   Total:$230.50          dTax:$23.80");
-        arrayList.add("2019-Mar   Total:$230.50          dTax:$23.80");
-        arrayList.add("2019-Apr   Total:$230.50         dTax:$23.80");
-        arrayList.add("2019-May   Total:$230.50         dTax:$23.80");
-        arrayList.add("2019-Jun   Total:$230.50          dTax:$23.80");
-        arrayList.add("2019-Jul   Total:$230.50          dTax:$23.80");
-        arrayList.add("2019-Aug   Total:$230.50          dTax:$23.80");
-        arrayList.add("2019-Sept   Total:$230.50         dTax:$23.80");
-        arrayList.add("2019-Oct   Total:$230.50         dTax:$23.80");
-        arrayList.add("2019-Nov   Total:$230.50         dTax:$23.80");
-        arrayList.add("2019-Dec   Total:$230.50          dTax:$23.80");
-        arrayList.add("2020-Jan   Total:$230.50          dTax:$23.80");
-        arrayList.add("2020-Feb   Total:$230.50          dTax:$23.80");
-        arrayList.add("2020-Mar   Total:$230.50          dTax:$23.80");
-        arrayList.add("2020-Apr   Total:$230.50         dTax:$23.80");
-        arrayList.add("2020-May   Total:$230.50         dTax:$23.80");
-        arrayList.add("2020-Jun   Total:$230.50          dTax:$23.80");
-        arrayList.add("2020-Jul   Total:$230.50          dTax:$23.80");
-        arrayList.add("2020-Aug   Total:$230.50          dTax:$23.80");
-        arrayList.add("2020-Sept   Total:$230.50         dTax:$23.80");
-        arrayList.add("2020-Oct   Total:$230.50         dTax:$23.80");
-        arrayList.add("2020-Nov   Total:$230.50         dTax:$23.80");
-        arrayList.add("2020-Dec   Total:$230.50          dTax:$23.80");
-
-//
-          lstMReport = (ListView) findViewById(R.id.lstMReport);
-
-          ArrayAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,arrayList);
-          lstMReport.setAdapter(adapter);
 
           lstMReport.setOnItemClickListener(new AdapterView.OnItemClickListener() {
               @Override
@@ -146,11 +237,29 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         );
         datePickerDialog.show();
+
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        pickDate = month + "/" + dayOfMonth + "/" + year;
+        pickDate = (month + 1) + "/" + dayOfMonth + "/" + year;
+
+        if( isFrom == false ){
+
+            txtTo.setText(pickDate);
+            dateToY = year;
+            dateToM = month + 1;
+            dateToD = ( month + 1)*100 + dayOfMonth;
+
+        }else{
+
+            txtFrom.setText(pickDate);
+            dateFromY = year;
+            dateFromM = month  + 1;
+            dateFromD = ( month + 1)*100 + dayOfMonth;
+        }
+
+
 
 
     }
@@ -169,15 +278,7 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
     //#34
     public void outputCsvFile()  {
         //generate data
-        StringBuilder data = new StringBuilder();
-        data.append("Date,Total,Tax");
 
-        data.append("\n" + "2020-5" + "," + "$125.50" + "," + "8.10");
-        data.append("\n" + "2020-6" + "," + "$625.50" + "," + "12.51");
-        data.append("\n" + "2020-7" + "," + "$30.40" + "," + "7.12");
-        data.append("\n" + "2020-8" + "," + "$88.14" + "," + "12.78");
-        data.append("\n" + "2020-10" + "," + "$56.90" + "," + "6.23");
-        data.append("\n" + "2020-12" + "," + "$15.00" + "," + "12.50");
 
 
 
