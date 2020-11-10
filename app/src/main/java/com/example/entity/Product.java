@@ -103,4 +103,31 @@ public class Product {
     public void setLinkedProduct(Product linkedProduct){
         this.linkedProduct = linkedProduct;
     }
+
+    public void changeQuantityAndDisplayedPrice(int newQuantity){
+        setQuantity(newQuantity);
+        setDisplayedPrice(getPrice() * getQuantity());
+        //quantityEdit.setText(editedProduct.getQuantity() + "");
+        if(getLinkedProduct() != null){
+            getLinkedProduct().setQuantity(getQuantity());
+            getLinkedProduct().setDisplayedPrice(getLinkedProduct().getPrice() * getLinkedProduct().getQuantity());
+            //deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+        }
+    }
+
+    public void changeQuantityAndOriginalPrice(double newPrice){
+        setQuantity(1);
+        setPrice(newPrice);
+        //quantity.setText(Integer.toString(product.getQuantity()));
+        //quantityEdit.setText(Integer.toString(1));
+        setDisplayedPrice(getPrice() * getQuantity());
+        //priceEdit.setText(editedProduct.getDisplayedPrice() + "");
+        //changePriceEdit.setText("");
+        if (getLinkedProduct() != null) {
+            getLinkedProduct().setQuantity(getQuantity());
+            getLinkedProduct().setDisplayedPrice(getLinkedProduct().getPrice() * getLinkedProduct().getQuantity());
+            //deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+            //deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+        }
+    }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 public class glutenDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "GlutenTracker.db";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
 
     public glutenDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -105,7 +105,7 @@ public class glutenDbHelper extends SQLiteOpenHelper {
         return receipt;
     }
 
-//    private static final String SQL_CREATE_PRODUCTS = "CREATE TABLE " +
+//   private static final String SQL_CREATE_PRODUCTS = "CREATE TABLE " +
 //            databaseActivity.Products.TABLE_NAME + " (" +
 //            databaseActivity.Products.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 //            databaseActivity.Products.COLUMN_NAME_PNAME + " TEXT, " +
@@ -122,6 +122,15 @@ public class glutenDbHelper extends SQLiteOpenHelper {
             databaseActivity.Products.COLUMN_NAME_BARCODE + " BIGINT, " +
             databaseActivity.Products.COLUMN_NAME_PRICE + " REAL, " +
             databaseActivity.Products.COLUMN_NAME_GLUTEN + " INTEGER)";
+
+
+    public void updateProductById(SQLiteDatabase db,long id, double price){
+        ContentValues cv= new ContentValues();
+        cv.put(databaseActivity.Products.COLUMN_NAME_PRICE,price);
+        db.update(databaseActivity.Products.TABLE_NAME,cv,databaseActivity.Products.COLUMN_NAME_ID+" = ? ",new String[]{Long.toString(id)});
+
+    }
+
 
     private static final String SQL_DELETE_PRODUCTS = "DROP TABLE IF EXISTS " +
             databaseActivity.Products.TABLE_NAME;

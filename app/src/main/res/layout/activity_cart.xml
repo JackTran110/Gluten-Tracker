@@ -48,7 +48,15 @@
         android:textSize="20dp"
         android:textStyle="bold" />
 
-    <EditText
+    <!--<EditText
+        android:id="@+id/amount"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_alignParentBottom="true"
+        android:text="amount"
+        android:textSize="13dp"
+        android:layout_alignParentRight="true"/> -->
+    <TextView
         android:id="@+id/amount"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
@@ -56,6 +64,7 @@
         android:text="amount"
         android:textSize="13dp"
         android:layout_alignParentRight="true"/>
+
 
 
 
