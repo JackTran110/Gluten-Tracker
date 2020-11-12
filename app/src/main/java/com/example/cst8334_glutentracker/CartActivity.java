@@ -38,6 +38,8 @@ public class CartActivity extends AppCompatActivity {
     public static ArrayList<String> editTextList = new ArrayList<String>(); //test
     private Context context;
     private TextView totalDeductibleDisplay;
+    private TextView total;
+    private  double totalPaid = 0;
     private double totalDeductible = 0;
 
     @Override
@@ -67,7 +69,9 @@ public class CartActivity extends AppCompatActivity {
 
         //productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", "test", 3.00, false));
         //productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", "test", 5.00, true));
-        totalDeductibleDisplay = findViewById(R.id.amount);
+        //totalDeductibleDisplay = findViewById(R.id.amount);
+        totalDeductibleDisplay = findViewById(R.id.totalDeductible);
+        total = findViewById(R.id.amount);
         purchases.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -100,6 +104,7 @@ public class CartActivity extends AppCompatActivity {
                             helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, new Date().toString());
                             getProductsArrayList().clear();
                             totalDeductibleDisplay.setText("");
+                            total.setText("");
                             adapter.notifyDataSetChanged();
                             Toast.makeText(this, "Purchase finalized", Toast.LENGTH_SHORT).show();
                             break;
@@ -387,10 +392,14 @@ public class CartActivity extends AppCompatActivity {
             });
             //adapter.notifyDataSetChanged(); //used this to try figure out why I can't change value in changeprice edittext, did not work
             double totalDeductibleAsDouble = 0;
+            double totalAsDouble = 0;
             for(Product products: getProductsArrayList()){
                 if(products.getLinkedProduct() != null){
                     totalDeductibleAsDouble += products.getDisplayedPrice() - products.getLinkedProduct().getDisplayedPrice();
                 }
+                totalAsDouble += products.getDisplayedPrice();
+                total.setText(totalAsDouble + "");
+                totalPaid = totalAsDouble;
                 totalDeductibleDisplay.setText(totalDeductibleAsDouble + "");
                 totalDeductible = totalDeductibleAsDouble;
             }
