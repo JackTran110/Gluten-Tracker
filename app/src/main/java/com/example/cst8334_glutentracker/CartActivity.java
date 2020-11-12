@@ -85,29 +85,31 @@ public class CartActivity extends AppCompatActivity {
             });
         } */
         checkoutButton.setOnClickListener((View v) -> {
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-            // DialogInterface learned from https://stackoverflow.com/questions/20494542/using-dialoginterfaces-onclick-method
-            DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
-                        break;
+            if(!productsArrayList.isEmpty()) {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                // DialogInterface learned from https://stackoverflow.com/questions/20494542/using-dialoginterfaces-onclick-method
+                DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            break;
 
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        for(Product product: productsArrayList){
-                            helper.insertIntoProductsTable(db, product);
-                        }
-                        helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, new Date().toString());
-                        getProductsArrayList().clear();
-                        totalDeductibleDisplay.setText("");
-                        adapter.notifyDataSetChanged();
-                        break;
-                }
-            };
-            alertDialog.setTitle("Finalize Purchase");
-            alertDialog.setMessage("Are you sure you would like to checkout? This will clear your current cart.");
-            alertDialog.setPositiveButton("No", dialogClickListener);
-            alertDialog.setNegativeButton("Yes", dialogClickListener);
-            alertDialog.create().show();
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            for (Product product : productsArrayList) {
+                                helper.insertIntoProductsTable(db, product);
+                            }
+                            helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, new Date().toString());
+                            getProductsArrayList().clear();
+                            totalDeductibleDisplay.setText("");
+                            adapter.notifyDataSetChanged();
+                            Toast.makeText(this, "Purchase finalized", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                };
+                alertDialog.setTitle("Finalize Purchase");
+                alertDialog.setMessage("Are you sure you would like to checkout? This will clear your current cart.");
+                alertDialog.setPositiveButton("No", dialogClickListener);
+                alertDialog.setNegativeButton("Yes", dialogClickListener);
+                alertDialog.create().show();
           /*  for(Product product: productsArrayList){
                 helper.insertIntoProductsTable(db, product);
             }
@@ -116,6 +118,10 @@ public class CartActivity extends AppCompatActivity {
             getProductsArrayList().clear();
             totalDeductibleDisplay.setText("");
             adapter.notifyDataSetChanged(); */
+            }
+            else{
+                Toast.makeText(this, "Cart is empty, unable to checkout", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
