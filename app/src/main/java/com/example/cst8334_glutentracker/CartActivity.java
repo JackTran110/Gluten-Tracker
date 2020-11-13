@@ -30,6 +30,7 @@ import org.w3c.dom.Text;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CartActivity extends AppCompatActivity {
 
@@ -40,6 +41,8 @@ public class CartActivity extends AppCompatActivity {
     public static ArrayList<String> editTextList = new ArrayList<String>(); //test
     private Context context;
     private TextView totalDeductibleDisplay;
+    private TextView total;
+    private  double totalPaid = 0;
     private double totalDeductible = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -88,12 +91,13 @@ public class CartActivity extends AppCompatActivity {
             });
         } */
         checkoutButton.setOnClickListener((View v) -> {
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-            // DialogInterface learned from https://stackoverflow.com/questions/20494542/using-dialoginterfaces-onclick-method
-            DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
-                        break;
+            if(!productsArrayList.isEmpty()) {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                // DialogInterface learned from https://stackoverflow.com/questions/20494542/using-dialoginterfaces-onclick-method
+                DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
                         Double totalPrice = 0.0;
@@ -105,7 +109,9 @@ public class CartActivity extends AppCompatActivity {
                         helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, totalPrice, LocalDateTime.now().format(formatter));
                         getProductsArrayList().clear();
                         totalDeductibleDisplay.setText("");
+                        total.setText("");
                         adapter.notifyDataSetChanged();
+                        Toast.makeText(this, "Purchase finalized", Toast.LENGTH_SHORT).show();
                         break;
                 }
             };
@@ -122,6 +128,10 @@ public class CartActivity extends AppCompatActivity {
             getProductsArrayList().clear();
             totalDeductibleDisplay.setText("");
             adapter.notifyDataSetChanged(); */
+            }
+            else{
+                Toast.makeText(this, "Cart is empty, unable to checkout", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -387,10 +397,14 @@ public class CartActivity extends AppCompatActivity {
             });
             //adapter.notifyDataSetChanged(); //used this to try figure out why I can't change value in changeprice edittext, did not work
             double totalDeductibleAsDouble = 0;
+            double totalAsDouble = 0;
             for(Product products: getProductsArrayList()){
                 if(products.getLinkedProduct() != null){
                     totalDeductibleAsDouble += products.getDisplayedPrice() - products.getLinkedProduct().getDisplayedPrice();
                 }
+                totalAsDouble += products.getDisplayedPrice();
+                total.setText(totalAsDouble + "");
+                totalPaid = totalAsDouble;
                 totalDeductibleDisplay.setText(totalDeductibleAsDouble + "");
                 totalDeductible = totalDeductibleAsDouble;
             }

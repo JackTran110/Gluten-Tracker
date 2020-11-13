@@ -1,11 +1,16 @@
 package com.example.cst8334_glutentracker;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +30,7 @@ public class Link extends AppCompatActivity {
     FragmentAdapter adapter = new FragmentAdapter();
     Intent fromActivity;
     int passedIndex;
+    Context context;
     private SQLiteDatabase database;
     private GlutenDbHelper dbOpener = new GlutenDbHelper(this);
 
@@ -91,6 +97,7 @@ public class Link extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
             //View newView = inflater.inflate(R.layout.activity_product_list, parent, false);
             View newView = inflater.inflate(R.layout.activity_fragment_populate_listview, parent, false);
+            context = newView.getContext();
             TextView nameText = newView.findViewById(R.id.productFoundName);
             TextView descriptionText = newView.findViewById(R.id.productFoundDescription);
             TextView priceText = newView.findViewById(R.id.productFoundPrice);
@@ -117,7 +124,7 @@ public class Link extends AppCompatActivity {
                 finish();
             });
 
-            EditText changeFoundPrice = newView.findViewById(R.id.changeFoundPriceAndQuantityText);
+           /* EditText changeFoundPrice = newView.findViewById(R.id.changeFoundPriceAndQuantityText);
             Button changePriceButton = newView.findViewById(R.id.changeFoundPrice);
             changePriceButton.setOnClickListener((v) ->{
                 product.setQuantity(1);
@@ -125,13 +132,145 @@ public class Link extends AppCompatActivity {
                 //quantity.setText(Integer.toString(product.getQuantity()));
                 product.setDisplayedPrice(product.getPrice() * product.getQuantity());
                 priceText.setText(product.getDisplayedPrice() + "");
-                /*if(product.getLinkedProduct() != null){
-                    product.getLinkedProduct().setQuantity(product.getQuantity());
-                    product.getLinkedProduct().setDisplayedPrice(product.getLinkedProduct().getPrice() * product.getLinkedProduct().getQuantity());
-                    deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
-                }*/
+//                if(product.getLinkedProduct() != null){
+//                    product.getLinkedProduct().setQuantity(product.getQuantity());
+//                    product.getLinkedProduct().setDisplayedPrice(product.getLinkedProduct().getPrice() * product.getLinkedProduct().getQuantity());
+//                    deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+//                }
                 adapter.notifyDataSetChanged();
 
+            }); */
+           Button editButton = newView.findViewById(R.id.editGlutenButton);
+           editButton.setOnClickListener((v) -> {
+               View row = getLayoutInflater().inflate(R.layout.activity_edit_product, parent, false);
+               CartListViewHolder.editProduct(context, product, adapter, row);
+          /*     Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(), product.getBarCode(),
+                       product.getPrice(), product.isGlutenFree());
+               editedProduct.setQuantity(product.getQuantity());
+               editedProduct.setDisplayedPrice(product.getDisplayedPrice());
+               if(product.getLinkedProduct() != null) {
+                   //editedProduct.setLinkedProduct(product.getLinkedProduct());
+                   editedProduct.setLinkedProduct(new Product(product.getLinkedProduct().getId(), product.getLinkedProduct().getProductName(),
+                           product.getLinkedProduct().getProductDescription(), product.getLinkedProduct().getBarCode(), product.getLinkedProduct().getPrice(),
+                           product.getLinkedProduct().isGlutenFree())); // testing
+                   editedProduct.getLinkedProduct().setQuantity(product.getLinkedProduct().getQuantity());
+                   editedProduct.getLinkedProduct().setDisplayedPrice(editedProduct.getLinkedProduct().getPrice() * editedProduct.getLinkedProduct().getQuantity());
+               }
+               AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+               // DialogInterface learned from https://stackoverflow.com/questions/20494542/using-dialoginterfaces-onclick-method
+               DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                   switch (which){
+                       case DialogInterface.BUTTON_POSITIVE:
+                           break;
+
+                       case DialogInterface.BUTTON_NEGATIVE:
+                           product.setQuantity(editedProduct.getQuantity());
+                           product.setPrice(editedProduct.getPrice());
+                           product.setDisplayedPrice(editedProduct.getDisplayedPrice());
+                           if(product.getLinkedProduct() != null && editedProduct.getLinkedProduct() != null){
+                               product.setLinkedProduct(editedProduct.getLinkedProduct());
+                           }
+                           adapter.notifyDataSetChanged();
+                           break;
+                   }
+               };
+               alertDialog.setTitle("Edit Product");
+               alertDialog.setMessage(editedProduct.getProductName());
+               alertDialog.setNegativeButton("Save", dialogClickListener).
+                       setPositiveButton("Cancel", dialogClickListener);
+               //EditText test = new EditText(context);
+               //alertDialog.setView(test);
+               //View row = getLayoutInflater().inflate(R.layout.activity_product_list, parent, false); // worked
+               View row = getLayoutInflater().inflate(R.layout.activity_edit_product, parent, false);
+               TextView deductibleEdit = row.findViewById(R.id.deductibleTextEdit);
+               TextView deductibleViewEdit = row.findViewById(R.id.deductibleViewEdit);
+               if(editedProduct.getLinkedProduct() == null){
+                   deductibleViewEdit.setVisibility(row.INVISIBLE);
+                   deductibleEdit.setVisibility(row.INVISIBLE);
+               }
+               else{
+                   deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+               }
+               EditText changePriceEdit = row.findViewById(R.id.changePriceAndQuantityTextEdit);
+               Button changePriceEditButton = row.findViewById(R.id.changePriceEdit);
+               TextView priceEdit = row.findViewById(R.id.priceEdit);
+               //priceEdit.setText(product.getDisplayedPrice() + ""); originally there
+               priceEdit.setText(editedProduct.getDisplayedPrice() + "");
+               EditText quantityEdit = row.findViewById(R.id.quantityEdit);
+               quantityEdit.setText(editedProduct.getQuantity() + "");
+               changePriceEditButton.setOnClickListener((view) -> {
+                   if(changePriceEdit.getText().toString().trim().length() > 0) {
+                       double newPrice = Double.valueOf(changePriceEdit.getText().toString());
+                       editedProduct.changeQuantityAndOriginalPrice(newPrice);
+                       quantityEdit.setText(Integer.toString(1));
+                       priceEdit.setText(editedProduct.getDisplayedPrice() + "");
+                       changePriceEdit.setText("");
+                       if (editedProduct.getLinkedProduct() != null) {
+                           deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+                       }
+                       adapter.notifyDataSetChanged();
+                   }
+               });
+               quantityEdit.addTextChangedListener(new TextWatcher(){
+
+                   @Override
+                   public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                   }
+
+                   @Override
+                   public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                   }
+
+                   @Override
+                   public void afterTextChanged(Editable s) {
+                       int newQuantity;
+                       if(s.toString() == null || s.toString() == "" || s.toString().isEmpty()){
+                           newQuantity = 1;
+                       }
+                       else{
+                           newQuantity = Integer.parseInt(s.toString());
+                       }
+                       editedProduct.changeQuantityAndDisplayedPrice(newQuantity);
+                       priceEdit.setText(editedProduct.getDisplayedPrice() + "");
+                       if(editedProduct.getLinkedProduct() != null){
+                           deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+                       }
+                       adapter.notifyDataSetChanged();
+
+                   }
+               });
+
+               Button plusButtonEdit = row.findViewById(R.id.plusButtonEdit);
+               Button minusButtonEdit = row.findViewById(R.id.minusButtonEdit);
+               plusButtonEdit.setOnClickListener((view) ->{
+                   if(quantityEdit.getText().toString().trim().length() == 0){
+                       quantityEdit.setText(1 + "");
+                   }
+                   int convertedToInt = (Integer.parseInt(quantityEdit.getText().toString())) + 1;
+                   editedProduct.changeQuantityAndDisplayedPrice(convertedToInt);
+                   quantityEdit.setText(editedProduct.getQuantity() + "");
+                   if(editedProduct.getLinkedProduct() != null){
+                       deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+                   }
+                   adapter.notifyDataSetChanged();
+               });
+
+               minusButtonEdit.setOnClickListener((view) -> {
+                   if(editedProduct.getQuantity() > 1 && quantityEdit.getText().toString().trim().length() > 0) {
+                       int convertedToInt = (Integer.parseInt(quantityEdit.getText().toString())) - 1;
+                       editedProduct.changeQuantityAndDisplayedPrice(convertedToInt);
+                       quantityEdit.setText(editedProduct.getQuantity() + "");
+                       if(editedProduct.getLinkedProduct() != null){
+                           deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+                       }
+                       adapter.notifyDataSetChanged();
+                   }
+               });
+               alertDialog.setView(row);
+               //alertDialog.setView(testView);
+               alertDialog.create().show(); */
             });
 
 
