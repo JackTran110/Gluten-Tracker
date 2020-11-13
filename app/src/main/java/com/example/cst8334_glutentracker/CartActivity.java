@@ -196,7 +196,6 @@ public class CartActivity extends AppCompatActivity {
                 /*TextView deductibleText = newView.findViewById(R.id.deductibleText);
                 deductibleText.setText((product.getPrice() - product.getLinkedProduct().getPrice()) + ""); */
             }
-            //context = parent.getContext();
             context = newView.getContext();
             //final View testView = newView;
             TextView deductibleText = newView.findViewById(R.id.deductibleText);
