@@ -2,23 +2,18 @@ package com.example.cst8334_glutentracker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -31,7 +26,7 @@ public class ReceiptActivity extends AppCompatActivity {
     ListView receiptList;
     private static ReceiptAdapter adapter;
     private SQLiteDatabase database;
-    private glutenDbHelper dbOpener = new glutenDbHelper(this);
+    private GlutenDbHelper dbOpener = new GlutenDbHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +50,12 @@ public class ReceiptActivity extends AppCompatActivity {
 
     private void readFromDatabase(){
         database = dbOpener.getReadableDatabase();
-        Cursor pc = database.query(false, databaseActivity.Products.TABLE_NAME, new String[]{databaseActivity.Products.COLUMN_NAME_ID, databaseActivity.Products.COLUMN_NAME_PNAME,databaseActivity.Products.COLUMN_NAME_DESCRIPTION,databaseActivity.Products.COLUMN_NAME_GLUTEN,databaseActivity.Products.COLUMN_NAME_PRICE}, null, null, null, null, null, null, null);
-        Cursor rc = database.query(false, databaseActivity.Receipts.TABLE_NAME, new String[]{databaseActivity.Receipts.COLUMN_NAME_ID, databaseActivity.Receipts.COLUMN_NAME_FILE, databaseActivity.Receipts.COLUMN_NAME_DATE,databaseActivity.Receipts.COLUMN_NAME_DEDUCTION}, null, null, null, null, null, null, null);
-        int idIndex=rc.getColumnIndex(databaseActivity.Receipts.COLUMN_NAME_ID);
-        int fileNamename=rc.getColumnIndex(databaseActivity.Receipts.COLUMN_NAME_FILE);
-        int dateIndex= rc.getColumnIndex(databaseActivity.Receipts.COLUMN_NAME_DATE);
-        int deductionIndex= rc.getColumnIndex(databaseActivity.Receipts.COLUMN_NAME_DEDUCTION);
+        Cursor pc = database.query(false, DatabaseActivity.Products.TABLE_NAME, new String[]{DatabaseActivity.Products.COLUMN_NAME_ID, DatabaseActivity.Products.COLUMN_NAME_PNAME, DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION, DatabaseActivity.Products.COLUMN_NAME_GLUTEN, DatabaseActivity.Products.COLUMN_NAME_PRICE}, null, null, null, null, null, null, null);
+        Cursor rc = database.query(false, DatabaseActivity.Receipts.TABLE_NAME, new String[]{DatabaseActivity.Receipts.COLUMN_NAME_ID, DatabaseActivity.Receipts.COLUMN_NAME_FILE, DatabaseActivity.Receipts.COLUMN_NAME_DATE, DatabaseActivity.Receipts.COLUMN_NAME_DEDUCTION}, null, null, null, null, null, null, null);
+        int idIndex=rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_ID);
+        int fileNamename=rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_FILE);
+        int dateIndex= rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_DATE);
+        int deductionIndex= rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_DEDUCTION);
 
         while(rc.moveToNext()){
         int rid=rc.getInt(idIndex);

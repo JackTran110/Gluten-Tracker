@@ -17,7 +17,7 @@ public class ScanActivity extends AppCompatActivity {
     Button acceptScannerButton;
     Button cancelScannerButton;
     EditText upcBarcode;
-    glutenDbHelper dbOpener;
+    GlutenDbHelper dbOpener;
     JSONObject edamamObject;
     SQLiteDatabase db;
     SurfaceView cameraView;
@@ -30,7 +30,7 @@ public class ScanActivity extends AppCompatActivity {
         upcBarcode = (EditText) findViewById(R.id.barcodeEditText);
         acceptScannerButton = (Button) findViewById(R.id.acceptScannerButton);
         cancelScannerButton = (Button) findViewById(R.id.cancelScannerButton);
-        dbOpener = new glutenDbHelper(this);
+        dbOpener = new GlutenDbHelper(this);
         db = dbOpener.getWritableDatabase();
         cameraView = (SurfaceView) findViewById(R.id.scanSurfaceView);
 

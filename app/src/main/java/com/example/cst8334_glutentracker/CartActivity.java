@@ -1,5 +1,6 @@
 package com.example.cst8334_glutentracker;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,21 +27,22 @@ import android.widget.Toast;
 import com.example.entity.Product;
 
 import org.w3c.dom.Text;
-
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class CartActivity extends AppCompatActivity {
 
     private Adapter adapter = new Adapter();
     private static ArrayList<Product> productsArrayList = new ArrayList<Product>();
     private int productCount = 0;
-    private glutenDbHelper helper = new glutenDbHelper(this);
+    private GlutenDbHelper helper = new GlutenDbHelper(this);
     public static ArrayList<String> editTextList = new ArrayList<String>(); //test
     private Context context;
     private TextView totalDeductibleDisplay;
     private double totalDeductible = 0;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,10 +96,13 @@ public class CartActivity extends AppCompatActivity {
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
+                        Double totalPrice = 0.0;
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                         for(Product product: productsArrayList){
                             helper.insertIntoProductsTable(db, product);
+                            totalPrice += product.getPrice();
                         }
-                        helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, new Date().toString());
+                        helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, totalPrice, LocalDateTime.now().format(formatter));
                         getProductsArrayList().clear();
                         totalDeductibleDisplay.setText("");
                         adapter.notifyDataSetChanged();
@@ -251,14 +257,14 @@ public class CartActivity extends AppCompatActivity {
             Button editButton = newView.findViewById(R.id.editProduct);
             editButton.setOnClickListener((v) -> {
                 //Product editedProduct = product;
-                Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(), product.getBarCode(),
+                Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(),
                         product.getPrice(), product.isGlutenFree());
                 editedProduct.setQuantity(product.getQuantity());
                 editedProduct.setDisplayedPrice(product.getDisplayedPrice());
                 if(product.getLinkedProduct() != null) {
                     //editedProduct.setLinkedProduct(product.getLinkedProduct());
                     editedProduct.setLinkedProduct(new Product(product.getLinkedProduct().getId(), product.getLinkedProduct().getProductName(),
-                            product.getLinkedProduct().getProductDescription(), product.getLinkedProduct().getBarCode(), product.getLinkedProduct().getPrice(),
+                            product.getLinkedProduct().getProductDescription(), product.getLinkedProduct().getPrice(),
                             product.getLinkedProduct().isGlutenFree())); // testing
                     editedProduct.getLinkedProduct().setQuantity(product.getLinkedProduct().getQuantity());
                     editedProduct.getLinkedProduct().setDisplayedPrice(editedProduct.getLinkedProduct().getPrice() * editedProduct.getLinkedProduct().getQuantity());
