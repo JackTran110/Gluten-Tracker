@@ -14,7 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.example.entity.Product;
 
-public class CartListViewHolder {s
+public class CartListViewHolder {
 
     public static void editProduct(Context context, Product product, BaseAdapter adapter, View row){
         Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(),
