@@ -63,11 +63,11 @@ public class DigitalReceipt extends AppCompatActivity {
     private void loadFromDatabase()
      {
         database = dbOpener.getReadableDatabase();
-        Cursor rc = database.query(false, DatabaseActivity.Receipts.TABLE_NAME, new String[]{DatabaseActivity.Receipts.COLUMN_NAME_ID, DatabaseActivity.Receipts.COLUMN_NAME_FILE, DatabaseActivity.Receipts.COLUMN_NAME_DATE, DatabaseActivity.Receipts.COLUMN_NAME_DEDUCTION}, "receiptID=?",new String[]{Integer.toString(passedIndex)}, null, null, null, null, null);
+        Cursor rc = database.query(false, DatabaseActivity.Receipts.TABLE_NAME, new String[]{DatabaseActivity.Receipts.COLUMN_NAME_ID, DatabaseActivity.Receipts.COLUMN_NAME_FILE, DatabaseActivity.Receipts.COLUMN_NAME_DATE, DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_DEDUCTION}, "receiptID=?",new String[]{Integer.toString(passedIndex)}, null, null, null, null, null);
 
         int idIndex=rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_ID);
         int dateIndex= rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_DATE);
-        int deductionIndex= rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_DEDUCTION);
+        int deductionIndex= rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_DEDUCTION);
 
         while(rc.moveToNext()){
             String rid= rc.getString(idIndex);
@@ -101,11 +101,12 @@ public class DigitalReceipt extends AppCompatActivity {
             if(gluten==0)
             {glutenf=false;}
             if(gluten==1)
+            if(gluten==1)
             {glutenf=true;}
 
             double ded=pc.getDouble(dedIndex);
 
-            products.add(new Product(productId,name,desc,0,ded,glutenf));
+            products.add(new Product(productId,name,desc,ded,glutenf));
         }
     }
 
@@ -146,7 +147,7 @@ public class DigitalReceipt extends AppCompatActivity {
 
             edit.setOnClickListener((v) -> {
                 //Product editedProduct = product;
-                Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(), product.getBarCode(),
+                Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(),
                         product.getPrice(), product.isGlutenFree());
                 editedProduct.setQuantity(product.getQuantity());
                 editedProduct.setDisplayedPrice(product.getDisplayedPrice());

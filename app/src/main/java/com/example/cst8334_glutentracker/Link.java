@@ -43,20 +43,20 @@ public class Link extends AppCompatActivity {
         fromActivity = getIntent();
         passedIndex = fromActivity.getIntExtra("Index", 3);
         ListView linkTest = findViewById(R.id.linkTest);
-        listOfProducts.add(new Product(3, "Chip", "A bag of chips", 0, 1.00, false));
+        listOfProducts.add(new Product(3, "Chip", "A bag of chips", 1.00, false));
         linkTest.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
     private void loadTestValuesFromDatabase(){
         database = dbOpener.getReadableDatabase();
-        String[] columns = {DatabaseActivity.Products.COLUMN_NAME_ID, DatabaseActivity.Products.COLUMN_NAME_PNAME, DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION,
+        String[] columns = {DatabaseActivity.Products.COLUMN_NAME_ID, DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME, DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION,
             DatabaseActivity.Products.COLUMN_NAME_GLUTEN, DatabaseActivity.Products.COLUMN_NAME_PRICE};
         Cursor resultsQuery = database.query(false, DatabaseActivity.Products.TABLE_NAME, columns, "isGlutenFree = ?", new String[]{"0"},
                 null, null, null, null);
 
         int idColIndex = resultsQuery.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_ID);
-        int nameColIndex = resultsQuery.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_PNAME);
+        int nameColIndex = resultsQuery.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME);
         int descriptionColIndex = resultsQuery.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION);
         int glutenColIndex = resultsQuery.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_GLUTEN);
         int priceColIndex = resultsQuery.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_PRICE);
@@ -66,7 +66,7 @@ public class Link extends AppCompatActivity {
             String name = resultsQuery.getString(nameColIndex);
             String description = resultsQuery.getString(descriptionColIndex);
             double price = resultsQuery.getDouble(priceColIndex);
-            listOfProducts.add(new Product(id, name, description, 0, price, false));
+            listOfProducts.add(new Product(id, name, description, price, false));
         }
 
         resultsQuery.close();

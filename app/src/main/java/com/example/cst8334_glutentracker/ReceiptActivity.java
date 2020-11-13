@@ -50,12 +50,12 @@ public class ReceiptActivity extends AppCompatActivity {
 
     private void readFromDatabase(){
         database = dbOpener.getReadableDatabase();
-        Cursor pc = database.query(false, DatabaseActivity.Products.TABLE_NAME, new String[]{DatabaseActivity.Products.COLUMN_NAME_ID, DatabaseActivity.Products.COLUMN_NAME_PNAME, DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION, DatabaseActivity.Products.COLUMN_NAME_GLUTEN, DatabaseActivity.Products.COLUMN_NAME_PRICE}, null, null, null, null, null, null, null);
-        Cursor rc = database.query(false, DatabaseActivity.Receipts.TABLE_NAME, new String[]{DatabaseActivity.Receipts.COLUMN_NAME_ID, DatabaseActivity.Receipts.COLUMN_NAME_FILE, DatabaseActivity.Receipts.COLUMN_NAME_DATE, DatabaseActivity.Receipts.COLUMN_NAME_DEDUCTION}, null, null, null, null, null, null, null);
+        Cursor pc = database.query(false, DatabaseActivity.Products.TABLE_NAME, new String[]{DatabaseActivity.Products.COLUMN_NAME_ID, DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME, DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION, DatabaseActivity.Products.COLUMN_NAME_GLUTEN, DatabaseActivity.Products.COLUMN_NAME_PRICE}, null, null, null, null, null, null, null);
+        Cursor rc = database.query(false, DatabaseActivity.Receipts.TABLE_NAME, new String[]{DatabaseActivity.Receipts.COLUMN_NAME_ID, DatabaseActivity.Receipts.COLUMN_NAME_FILE, DatabaseActivity.Receipts.COLUMN_NAME_DATE, DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_PRICE}, null, null, null, null, null, null, null);
         int idIndex=rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_ID);
         int fileNamename=rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_FILE);
         int dateIndex= rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_DATE);
-        int deductionIndex= rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_DEDUCTION);
+        int deductionIndex= rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_DEDUCTION);
 
         while(rc.moveToNext()){
         int rid=rc.getInt(idIndex);
@@ -63,7 +63,8 @@ public class ReceiptActivity extends AppCompatActivity {
         String date=rc.getString(dateIndex);
         Double deduction=rc.getDouble(deductionIndex);
 
-        receipt.add(new Receipt(rid,null,fileName,deduction,date));
+        //Fix receipt.add
+        receipt.add(new Receipt(rid,null,fileName,deduction, 0, date));
         }
     }
 
