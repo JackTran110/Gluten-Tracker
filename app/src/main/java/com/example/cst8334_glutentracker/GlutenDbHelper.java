@@ -15,7 +15,7 @@ import java.util.List;
 public class GlutenDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "GlutenTracker.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     public GlutenDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -187,7 +187,7 @@ public class GlutenDbHelper extends SQLiteOpenHelper {
             DatabaseActivity.ProductReceipt.COLUMN_NAME_PRICE + " REAL, " +
             DatabaseActivity.ProductReceipt.COLUMN_NAME_QUANTITY + " INTERGER, " +
             DatabaseActivity.ProductReceipt.COLUMN_NAME_DEDUCTION + " REAL, " +
-            DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID + "BIGINT, " +
+            DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID + " BIGINT, " +
             DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE + " REAL, " +
             "CONSTRAINT " + "fk_" + DatabaseActivity.ProductReceipt.TABLE_NAME +
             DatabaseActivity.Products.TABLE_NAME + " FOREIGN KEY (" +
