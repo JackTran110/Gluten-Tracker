@@ -37,7 +37,7 @@ public class ReportActivity extends AppCompatActivity {
     ListView lstView;
     Button btnRpt;
 
-    glutenDbHelper glt = new glutenDbHelper(this);
+    GlutenDbHelper glt = new GlutenDbHelper(this);
 
 
 
