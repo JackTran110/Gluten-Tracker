@@ -17,14 +17,14 @@ import com.example.entity.Product;
 public class CartListViewHolder {
 
     public static void editProduct(Context context, Product product, BaseAdapter adapter, View row){
-        Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(), product.getBarCode(),
+        Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(),
                 product.getPrice(), product.isGlutenFree());
         editedProduct.setQuantity(product.getQuantity());
         editedProduct.setDisplayedPrice(product.getDisplayedPrice());
         if(product.getLinkedProduct() != null) {
             //editedProduct.setLinkedProduct(product.getLinkedProduct());
             editedProduct.setLinkedProduct(new Product(product.getLinkedProduct().getId(), product.getLinkedProduct().getProductName(),
-                    product.getLinkedProduct().getProductDescription(), product.getLinkedProduct().getBarCode(), product.getLinkedProduct().getPrice(),
+                    product.getLinkedProduct().getProductDescription(), product.getLinkedProduct().getPrice(),
                     product.getLinkedProduct().isGlutenFree())); // testing
             editedProduct.getLinkedProduct().setQuantity(product.getLinkedProduct().getQuantity());
             editedProduct.getLinkedProduct().setDisplayedPrice(editedProduct.getLinkedProduct().getPrice() * editedProduct.getLinkedProduct().getQuantity());

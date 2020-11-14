@@ -20,7 +20,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,7 +32,7 @@ public class DigitalReceipt extends AppCompatActivity {
     private ArrayList<Product> products;
     private ListView productList;
     private SQLiteDatabase database;
-    private glutenDbHelper dbOpener = new glutenDbHelper(this);
+    private GlutenDbHelper dbOpener = new GlutenDbHelper(this);
     TextView rrid;
     TextView rdate;
     TextView ded;
@@ -64,11 +63,11 @@ public class DigitalReceipt extends AppCompatActivity {
     private void loadFromDatabase()
      {
         database = dbOpener.getReadableDatabase();
-        Cursor rc = database.query(false, databaseActivity.Receipts.TABLE_NAME, new String[]{databaseActivity.Receipts.COLUMN_NAME_ID, databaseActivity.Receipts.COLUMN_NAME_FILE, databaseActivity.Receipts.COLUMN_NAME_DATE,databaseActivity.Receipts.COLUMN_NAME_DEDUCTION}, "receiptID=?",new String[]{Integer.toString(passedIndex)}, null, null, null, null, null);
+        Cursor rc = database.query(false, DatabaseActivity.Receipts.TABLE_NAME, new String[]{DatabaseActivity.Receipts.COLUMN_NAME_ID, DatabaseActivity.Receipts.COLUMN_NAME_FILE, DatabaseActivity.Receipts.COLUMN_NAME_DATE, DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_DEDUCTION}, "receiptID=?",new String[]{Integer.toString(passedIndex)}, null, null, null, null, null);
 
-        int idIndex=rc.getColumnIndex(databaseActivity.Receipts.COLUMN_NAME_ID);
-        int dateIndex= rc.getColumnIndex(databaseActivity.Receipts.COLUMN_NAME_DATE);
-        int deductionIndex= rc.getColumnIndex(databaseActivity.Receipts.COLUMN_NAME_DEDUCTION);
+        int idIndex=rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_ID);
+        int dateIndex= rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_DATE);
+        int deductionIndex= rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_DEDUCTION);
 
         while(rc.moveToNext()){
             String rid= rc.getString(idIndex);
@@ -80,16 +79,16 @@ public class DigitalReceipt extends AppCompatActivity {
             ded.setText(Double.toString(deduction));
         }
 //        Cursor pc = database.query(false, databaseActivity.Products.TABLE_NAME, new String[]{databaseActivity.Products.COLUMN_NAME_ID,databaseActivity.Products.COLUMN_NAME_PNAME,databaseActivity.Products.COLUMN_NAME_DESCRIPTION,databaseActivity.Products.COLUMN_NAME_GLUTEN,databaseActivity.Products.COLUMN_NAME_PRICE}, "receiptID=?",new String[]{Integer.toString(passedIndex)}, null, null, null, null, null);
-        Cursor pc=database.rawQuery("SELECT * FROM "+databaseActivity.Products.TABLE_NAME+ " JOIN " +
-                databaseActivity.ProductReceipt.TABLE_NAME+" ON products."+databaseActivity.Products.COLUMN_NAME_ID+" = productReceipt." +
-                databaseActivity.ProductReceipt.COLUMN_NAME_PRODUCT_ID+" WHERE "+
-                databaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? ",new String[]{Integer.toString(passedIndex)});
+        Cursor pc=database.rawQuery("SELECT * FROM "+ DatabaseActivity.Products.TABLE_NAME+ " JOIN " +
+                DatabaseActivity.ProductReceipt.TABLE_NAME+" ON products."+ DatabaseActivity.Products.COLUMN_NAME_ID+" = productReceipt." +
+                DatabaseActivity.ProductReceipt.COLUMN_NAME_PRODUCT_ID+" WHERE "+
+                DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? ",new String[]{Integer.toString(passedIndex)});
 
-        int pid=pc.getColumnIndex(databaseActivity.Products.COLUMN_NAME_ID);
-        int nameIndex=pc.getColumnIndex(databaseActivity.Products.COLUMN_NAME_PNAME);
-        int descIndex=pc.getColumnIndex(databaseActivity.Products.COLUMN_NAME_DESCRIPTION);
-        int glutenIndex=pc.getColumnIndex(databaseActivity.Products.COLUMN_NAME_GLUTEN);
-        int dedIndex=pc.getColumnIndex(databaseActivity.Products.COLUMN_NAME_PRICE);
+        int pid=pc.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_ID);
+        int nameIndex=pc.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME);
+        int descIndex=pc.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION);
+        int glutenIndex=pc.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_GLUTEN);
+        int dedIndex=pc.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_PRICE);
 
 
         while(pc.moveToNext()){
@@ -102,11 +101,12 @@ public class DigitalReceipt extends AppCompatActivity {
             if(gluten==0)
             {glutenf=false;}
             if(gluten==1)
+            if(gluten==1)
             {glutenf=true;}
 
             double ded=pc.getDouble(dedIndex);
 
-            products.add(new Product(productId,name,desc,0,ded,glutenf));
+            products.add(new Product(productId,name,desc,ded,glutenf));
         }
     }
 
@@ -147,7 +147,7 @@ public class DigitalReceipt extends AppCompatActivity {
 
             edit.setOnClickListener((v) -> {
                 //Product editedProduct = product;
-                Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(), product.getBarCode(),
+                Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(),
                         product.getPrice(), product.isGlutenFree());
                 editedProduct.setQuantity(product.getQuantity());
                 editedProduct.setDisplayedPrice(product.getDisplayedPrice());

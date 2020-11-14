@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.SurfaceView;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -26,7 +27,7 @@ public class ScanActivity extends AppCompatActivity {
     Button acceptScannerButton;
     Button cancelScannerButton;
     EditText upcBarcode;
-    glutenDbHelper dbOpener;
+    GlutenDbHelper dbOpener;
     SQLiteDatabase db;
     CodeScanner codeScanner;
     CodeScannerView scannerView;
@@ -45,7 +46,7 @@ public class ScanActivity extends AppCompatActivity {
         upcBarcode = (EditText) findViewById(R.id.barcodeEditText);
         acceptScannerButton = (Button) findViewById(R.id.acceptScannerButton);
         cancelScannerButton = (Button) findViewById(R.id.cancelScannerButton);
-        dbOpener = new glutenDbHelper(this);
+        dbOpener = new GlutenDbHelper(this);
         db = dbOpener.getWritableDatabase();
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -76,6 +77,8 @@ public class ScanActivity extends AppCompatActivity {
 
         if (acceptScannerButton != null) {
             acceptScannerButton.setOnClickListener(acceptClick -> {
+                long test = Long.valueOf(upcBarcode.getText().toString());
+//                Integer test2 = Integer.parseInt(test);
                 if (upcBarcode.toString().trim().length() > 0) {
                     this.runQuery(getUPCEditText());
                 }
