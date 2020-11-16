@@ -27,6 +27,7 @@ import com.example.entity.Product;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CartActivity extends AppCompatActivity {
 
@@ -68,7 +69,8 @@ public class CartActivity extends AppCompatActivity {
 
         //productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", "test", 3.00, false));
         //productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", "test", 5.00, true));
-        totalDeductibleDisplay = findViewById(R.id.amount);
+        totalDeductibleDisplay = findViewById(R.id.totalDeductible);
+        total = findViewById(R.id.amount);
         purchases.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -95,13 +97,14 @@ public class CartActivity extends AppCompatActivity {
                             break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
-                        Double totalPrice = 0.0;
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                        //Double totalPrice = 0.0;
+                       // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                         for(Product product: productsArrayList){
                             db.insertIntoProductsTable(product);
-                            totalPrice += product.getPrice();
+                            //totalPrice += product.getPrice();
                         }
-                        db.insertIntoReceiptsTable(productsArrayList, "file", totalDeductible, totalPrice, LocalDateTime.now().format(formatter));
+                        //helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, totalPrice, LocalDateTime.now().format(formatter));
+                        db.insertIntoReceiptsTable(productsArrayList, "file", totalDeductible, totalPaid, new Date().toString());
                         getProductsArrayList().clear();
                         totalDeductibleDisplay.setText("");
                         total.setText("");

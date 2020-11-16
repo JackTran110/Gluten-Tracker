@@ -37,6 +37,9 @@ public class ReportActivity extends AppCompatActivity {
     ListView lstView;
     Button btnRpt;
 
+    GlutenDbHelper glt = new GlutenDbHelper(this);
+
+
 
 //    receipts.receiptID
 //    receipts.receiptFile
@@ -48,6 +51,8 @@ public class ReportActivity extends AppCompatActivity {
 //    products.productDescription
 //    products.price
 //    products.isGlutenFree
+
+
 
     int images = R.drawable.image;
     String rId[] = {"12301","14502","30003","45601","67834","002345"};
@@ -68,7 +73,7 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
-
+        //glt.insertIntoReceiptsTable()
 
         lstView = (ListView) findViewById(R.id.lstReceipt);
         btnRpt = (Button) findViewById(R.id.btnReport);
