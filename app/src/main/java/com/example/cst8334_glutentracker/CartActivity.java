@@ -7,13 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,18 +24,16 @@ import android.widget.Toast;
 
 import com.example.entity.Product;
 
-import org.w3c.dom.Text;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class CartActivity extends AppCompatActivity {
 
     private Adapter adapter = new Adapter();
     private static ArrayList<Product> productsArrayList = new ArrayList<Product>();
     private int productCount = 0;
-    private GlutenDbHelper helper = new GlutenDbHelper(this);
+    private GlutenDb db = new GlutenDb(this);
     public static ArrayList<String> editTextList = new ArrayList<String>(); //test
     private Context context;
     private TextView totalDeductibleDisplay;
@@ -59,7 +55,6 @@ public class CartActivity extends AppCompatActivity {
 
         ListView purchases = findViewById(R.id.purchases);
         Button checkoutButton = findViewById(R.id.checkout_button);
-        SQLiteDatabase db = helper.getWritableDatabase();
 
 //        productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", 0, 3.00, false));
 //        productCount += 1;
@@ -103,10 +98,10 @@ public class CartActivity extends AppCompatActivity {
                         Double totalPrice = 0.0;
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                         for(Product product: productsArrayList){
-                            helper.insertIntoProductsTable(db, product);
+                            db.insertIntoProductsTable(product);
                             totalPrice += product.getPrice();
                         }
-                        helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, totalPrice, LocalDateTime.now().format(formatter));
+                        db.insertIntoReceiptsTable(productsArrayList, "file", totalDeductible, totalPrice, LocalDateTime.now().format(formatter));
                         getProductsArrayList().clear();
                         totalDeductibleDisplay.setText("");
                         total.setText("");

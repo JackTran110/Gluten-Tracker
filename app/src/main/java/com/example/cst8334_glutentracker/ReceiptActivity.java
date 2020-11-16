@@ -26,7 +26,7 @@ public class ReceiptActivity extends AppCompatActivity {
     ListView receiptList;
     private static ReceiptAdapter adapter;
     private SQLiteDatabase database;
-    private GlutenDbHelper dbOpener = new GlutenDbHelper(this);
+    private GlutenDb dbOpener = new GlutenDb(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

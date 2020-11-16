@@ -12,12 +12,13 @@ import com.example.entity.Receipt;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GlutenDbHelper extends SQLiteOpenHelper {
+public class GlutenDb extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "GlutenTracker.db";
     public static final int DATABASE_VERSION = 1;
+    private SQLiteDatabase db;
 
-    public GlutenDbHelper(Context context) {
+    public GlutenDb(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -26,6 +27,7 @@ public class GlutenDbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_PRODUCTS);
         db.execSQL(SQL_CREATE_RECEIPTS);
         db.execSQL(SQL_CREATE_PRODUCT_RECEIPT);
+        this. db = db;
     }
 
 
@@ -44,7 +46,7 @@ public class GlutenDbHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_PRODUCT_RECEIPT);
         onCreate(db);    }
 
-    public long insertIntoProductsTable(SQLiteDatabase db, Product product){
+    public long insertIntoProductsTable(Product product){
         ContentValues cv = new ContentValues();
         //Added by Joel
         cv.put(DatabaseActivity.Products.COLUMN_NAME_ID, product.getId());
@@ -55,7 +57,7 @@ public class GlutenDbHelper extends SQLiteOpenHelper {
         return db.insert(DatabaseActivity.Products.TABLE_NAME, null, cv);
     }
 
-    public long insertIntoReceiptsTable(SQLiteDatabase db, List<Product> products, String file, double deduction, double totalPrice, String date){
+    public long insertIntoReceiptsTable(List<Product> products, String file, double deduction, double totalPrice, String date){
         ContentValues cv = new ContentValues();
 
         cv.put(DatabaseActivity.Receipts.COLUMN_NAME_FILE, file);
@@ -65,12 +67,12 @@ public class GlutenDbHelper extends SQLiteOpenHelper {
         long id = db.insert(DatabaseActivity.Receipts.TABLE_NAME, null, cv);
 
         for(Product product: products){
-            insertIntoProductReceiptTable(db, product, id, product.getLinkedProduct());
+            insertIntoProductReceiptTable(product, id, product.getLinkedProduct());
         }
         return id;
     }
 
-    private long insertIntoProductReceiptTable(SQLiteDatabase db, Product product, long receiptID, Product linkedProduct){
+    private long insertIntoProductReceiptTable(Product product, long receiptID, Product linkedProduct){
         ContentValues cv = new ContentValues();
         cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_PRODUCT_ID, product.getId());
         cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID, receiptID);
@@ -84,7 +86,7 @@ public class GlutenDbHelper extends SQLiteOpenHelper {
         return db.insert(DatabaseActivity.ProductReceipt.TABLE_NAME, null, cv);
     }
 
-    public Product selectProductByID(SQLiteDatabase db, long id){
+    public Product selectProductByID(long id){
         Cursor cs = db.rawQuery("SELECT * FROM " + DatabaseActivity.Products.TABLE_NAME + " WHERE ? = ?",
                 new String[]{DatabaseActivity.Products.COLUMN_NAME_ID, id + ""}, null);
         cs.moveToNext();
@@ -96,17 +98,17 @@ public class GlutenDbHelper extends SQLiteOpenHelper {
         return product;
     }
 
-    public Receipt selectReceiptByID(SQLiteDatabase db, long id){
+    public Receipt selectReceiptByID(long id){
         Cursor cs = db.rawQuery("SELECT * FROM " + DatabaseActivity.ProductReceipt.TABLE_NAME + " WHERE ? = ?",
                 new String[]{DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID, id + ""}, null);
         cs.moveToNext();
         List<Product> products = new ArrayList<>();
         do{
-            Product newProduct = selectProductByID(db, cs.getLong(0));
+            Product newProduct = selectProductByID(cs.getLong(0));
             newProduct.setPrice(cs.getDouble(2));
             newProduct.setQuantity(cs.getInt(3));
             try{
-                Product linkedProduct = selectProductByID(db, cs.getLong(5));
+                Product linkedProduct = selectProductByID(cs.getLong(5));
                 linkedProduct.setPrice(cs.getDouble(6));
                 linkedProduct.setQuantity(cs.getInt(3));
                 newProduct.setLinkedProduct(linkedProduct);
@@ -125,7 +127,7 @@ public class GlutenDbHelper extends SQLiteOpenHelper {
         return receipt;
     }
 
-    public int deleteReceiptByID(SQLiteDatabase db, long id){
+    public int deleteReceiptByID(long id){
         db.delete(DatabaseActivity.ProductReceipt.TABLE_NAME,
                 DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID + " = ?",
                 new String[]{id + ""});
@@ -187,7 +189,7 @@ public class GlutenDbHelper extends SQLiteOpenHelper {
             DatabaseActivity.ProductReceipt.COLUMN_NAME_PRICE + " REAL, " +
             DatabaseActivity.ProductReceipt.COLUMN_NAME_QUANTITY + " INTERGER, " +
             DatabaseActivity.ProductReceipt.COLUMN_NAME_DEDUCTION + " REAL, " +
-            DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID + "BIGINT, " +
+            DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID + " BIGINT, " +
             DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE + " REAL, " +
             "CONSTRAINT " + "fk_" + DatabaseActivity.ProductReceipt.TABLE_NAME +
             DatabaseActivity.Products.TABLE_NAME + " FOREIGN KEY (" +

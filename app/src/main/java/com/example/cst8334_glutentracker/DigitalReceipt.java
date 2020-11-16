@@ -32,7 +32,7 @@ public class DigitalReceipt extends AppCompatActivity {
     private ArrayList<Product> products;
     private ListView productList;
     private SQLiteDatabase database;
-    private GlutenDbHelper dbOpener = new GlutenDbHelper(this);
+    private GlutenDb dbOpener = new GlutenDb(this);
     TextView rrid;
     TextView rdate;
     TextView ded;
