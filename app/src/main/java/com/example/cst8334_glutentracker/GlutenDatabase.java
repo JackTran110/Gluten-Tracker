@@ -228,21 +228,22 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     public Product selectProductByID(long id){
         db = getWritableDatabase();
         Cursor cs;
+        Product product;
         try{
             cs = db.query(false, DatabaseActivity.Products.TABLE_NAME, null,
                     DatabaseActivity.Products.COLUMN_NAME_ID + " = ? ", new String[]{Long.toString(id)},
                     null, null, null, null, null);
-        }catch(SQLiteException e){
-            Log.e(ERROR_TAG, "Unable to select product", e);
-            return null;
-        }
         cs.moveToFirst();
 
-        Product product = new Product(cs.getLong(0),
+        product = new Product(cs.getLong(0),
                 cs.getString(1),
                 cs.getString(2),
                 cs.getDouble(3),
                 cs.getInt(4) == 0);
+    }catch(SQLiteException e){
+        Log.e(ERROR_TAG, "Unable to select product", e);
+        return null;
+    }
         cs.close();
         return product;
     }
@@ -263,22 +264,22 @@ public class GlutenDatabase extends SQLiteOpenHelper {
             cs = db.query(false, DatabaseActivity.Products.TABLE_NAME, null,
                     null, null, null, null, null,
                     null, null);
+            cs.moveToFirst();
+
+            do {
+                if((cs.getInt(4) == 0) == isGlutenFree) {
+                    Product product = new Product(cs.getLong(0),
+                            cs.getString(1),
+                            cs.getString(2),
+                            cs.getDouble(3),
+                            cs.getInt(4) == 0);
+                    results.add(product);
+                }
+            }while (cs.moveToNext());
         }catch(SQLiteException e){
             Log.e(ERROR_TAG, "Unable to select products", e);
             return null;
         }
-        cs.moveToFirst();
-
-        do {
-            if((cs.getInt(4) == 0) == isGlutenFree) {
-                Product product = new Product(cs.getLong(0),
-                        cs.getString(1),
-                        cs.getString(2),
-                        cs.getDouble(3),
-                        cs.getInt(4) == 0);
-                results.add(product);
-            }
-        }while (cs.moveToNext());
         cs.close();
         return results;
     }
@@ -312,21 +313,22 @@ public class GlutenDatabase extends SQLiteOpenHelper {
      */
     public Receipt selectReceiptByID(long id){
         Cursor cs;
+        Receipt receipt;
         try {
             cs = db.query(false, DatabaseActivity.Receipts.TABLE_NAME, null,
                     DatabaseActivity.Receipts.COLUMN_NAME_ID + " = ? ", new String[]{Long.toString(id)},
                     null, null, null, null, null);
+            cs.moveToNext();
+            receipt = new Receipt(cs.getLong(0),
+                    selectProductReceipt(id),
+                    cs.getString(1),
+                    cs.getDouble(3),
+                    cs.getDouble(2),
+                    cs.getString(4));
         }catch (SQLiteException e){
             Log.e(ERROR_TAG, "Unable to select receipt", e);
             return null;
         }
-        cs.moveToNext();
-        Receipt receipt = new Receipt(cs.getLong(0),
-                selectProductReceipt(id),
-                cs.getString(1),
-                cs.getDouble(3),
-                cs.getDouble(2),
-                cs.getString(4));
         cs.close();
         return receipt;
     }
@@ -345,30 +347,30 @@ public class GlutenDatabase extends SQLiteOpenHelper {
             cs = db.query(false, DatabaseActivity.ProductReceipt.TABLE_NAME, null,
                     DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID + " = ? ", new String[]{Long.toString(receiptID)},
                     null, null, null, null, null);
+            cs.moveToFirst();
+
+            do{
+                Product newProduct = selectProductByID(cs.getLong(0));
+                if(newProduct == null){
+                    Log.e(ERROR_TAG, "Unable to find an item");
+                    return null;
+                }
+                newProduct.setPrice(cs.getDouble(2));
+                newProduct.setQuantity(cs.getInt(3));
+
+                Product linkedProduct = selectProductByID(cs.getLong(5));
+                if(linkedProduct != null){
+                    linkedProduct.setPrice(cs.getDouble(6));
+                    linkedProduct.setQuantity(cs.getInt(3));
+                    newProduct.setDeduction(cs.getDouble(4));
+                    newProduct.setLinkedProduct(linkedProduct);
+                }
+                products.add(newProduct);
+            }while(cs.moveToNext());
         }catch (SQLiteException e){
             Log.e(ERROR_TAG, "Unable to select from productReceipt", e);
             return null;
         }
-        cs.moveToFirst();
-
-        do{
-            Product newProduct = selectProductByID(cs.getLong(0));
-            if(newProduct == null){
-                Log.e(ERROR_TAG, "Unable to find an item");
-                return null;
-            }
-            newProduct.setPrice(cs.getDouble(2));
-            newProduct.setQuantity(cs.getInt(3));
-
-            Product linkedProduct = selectProductByID(cs.getLong(5));
-            if(linkedProduct != null){
-                linkedProduct.setPrice(cs.getDouble(6));
-                linkedProduct.setQuantity(cs.getInt(3));
-                newProduct.setDeduction(cs.getDouble(4));
-                newProduct.setLinkedProduct(linkedProduct);
-            }
-            products.add(newProduct);
-        }while(cs.moveToNext());
         cs.close();
         return products;
     }

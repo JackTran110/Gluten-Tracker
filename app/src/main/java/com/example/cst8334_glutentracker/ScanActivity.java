@@ -93,7 +93,6 @@ public class ScanActivity extends AppCompatActivity {
 
         if (acceptScannerButton != null) {
             acceptScannerButton.setOnClickListener(acceptClick -> {
-                long test2 = getUPCEditText();
                 if (upcBarcode.toString().trim().length() > 0) {
                     this.runQuery(getUPCEditText());
                 }
@@ -116,9 +115,8 @@ public class ScanActivity extends AppCompatActivity {
     // Run the API query to Edamam
     private void runQuery(long upc) {
         boolean boolCartItem = false;
-        dbOpener = new GlutenDbHelper(this);
         db = dbOpener.getReadableDatabase();
-        Product barcodeCheck = dbOpener.selectProductByID(db, upc);
+        Product barcodeCheck = dbOpener.selectProductByID(upc);
 
         // if iterator found in array, Toast.maketext (Scanactivity.this, "message", Toast.LENGTH_LONG).show();
         if (CartActivity.getProductsArrayList().size() != 0){
