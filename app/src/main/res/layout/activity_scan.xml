@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".ScanActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/scannerToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <com.budiyev.android.codescanner.CodeScannerView
         android:layout_width="match_parent"
         android:layout_height="400dp"

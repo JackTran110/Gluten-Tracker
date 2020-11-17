@@ -2,6 +2,7 @@ package com.example.cst8334_glutentracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
@@ -67,12 +68,14 @@ public class ReportActivity extends AppCompatActivity {
     List<ItemsModel> listItems = new ArrayList<>();
 
     CustomeAdapter customeAdapter;
+    Toolbar reportTbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
+        reportTbar = (Toolbar)findViewById(R.id.reportToolbar);
         //glt.insertIntoReceiptsTable()
 
         lstView = (ListView) findViewById(R.id.lstReceipt);
@@ -145,12 +148,23 @@ public class ReportActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getGroupId();
-        if(id == R.id.search_view){
-            return true;
+        switch (item.getItemId()) {
+            case R.id.scannerButton:
+                Intent goToScanner = new Intent(ReportActivity.this, ScanActivity.class);
+                startActivity(goToScanner);
+                break;
+            case R.id.cartButton:
+                Intent goToCart = new Intent(ReportActivity.this, CartActivity.class);
+                startActivity(goToCart);
+                break;
+            case R.id.receiptButton:
+                Intent goToReceipt = new Intent(ReportActivity.this, ReceiptActivity.class);
+                startActivity(goToReceipt);
+                break;
+            case R.id.search_view:
+                break;
         }
-
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     public class CustomeAdapter extends BaseAdapter implements Filterable {

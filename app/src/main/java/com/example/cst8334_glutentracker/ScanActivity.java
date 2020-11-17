@@ -1,15 +1,20 @@
 package com.example.cst8334_glutentracker;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -31,6 +36,7 @@ public class ScanActivity extends AppCompatActivity {
     SQLiteDatabase db;
     CodeScanner codeScanner;
     CodeScannerView scannerView;
+    Toolbar scannerTbar;
 
     // Adding six second delay between scans, https://github.com/journeyapps/zxing-android-embedded/issues/59
     static final int DELAY = 6000;
@@ -42,6 +48,8 @@ public class ScanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
+
+        scannerTbar = (Toolbar)findViewById(R.id.scannerToolbar);
 
         upcBarcode = (EditText) findViewById(R.id.barcodeEditText);
         acceptScannerButton = (Button) findViewById(R.id.acceptScannerButton);
@@ -118,5 +126,35 @@ public class ScanActivity extends AppCompatActivity {
     protected void onPause() {
         codeScanner.releaseResources();
         super.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.scannerButton:
+                Intent goToScanner = new Intent(ScanActivity.this, ScanActivity.class);
+                startActivity(goToScanner);
+                break;
+            case R.id.cartButton:
+                Intent goToCart = new Intent(ScanActivity.this, CartActivity.class);
+                startActivity(goToCart);
+                break;
+            case R.id.receiptButton:
+                Intent goToReceipt = new Intent(ScanActivity.this, ReceiptActivity.class);
+                startActivity(goToReceipt);
+                break;
+            case R.id.reportButton:
+                Intent goToReport = new Intent(ScanActivity.this, ReportActivity.class);
+                startActivity(goToReport);
+                break;
+        }
+        return true;
     }
 }
