@@ -93,7 +93,7 @@ public class ScanActivity extends AppCompatActivity {
 
         if (acceptScannerButton != null) {
             acceptScannerButton.setOnClickListener(acceptClick -> {
-                if (upcBarcode.toString().trim().length() > 0) {
+                if (upcBarcode.getText().toString().length() > 0) {
                     this.runQuery(getUPCEditText());
                 }
             });
