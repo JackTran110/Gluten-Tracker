@@ -3,6 +3,7 @@ package com.example.cst8334_glutentracker;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +14,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -39,12 +43,15 @@ public class CartActivity extends AppCompatActivity {
     private TextView total;
     private  double totalPaid = 0;
     private double totalDeductible = 0;
+    Toolbar cartTbar;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
+
+        cartTbar = (Toolbar)findViewById(R.id.cartToolbar);
 
         SharedPreferences pre = getSharedPreferences("cart_activity", Context.MODE_PRIVATE);
         productCount = pre.getInt("Product count", 0);
@@ -161,6 +168,36 @@ public class CartActivity extends AppCompatActivity {
         super.onStart();
         Log.w("test", "Testing");
     } */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.scannerButton:
+                Intent goToScanner = new Intent(CartActivity.this, ScanActivity.class);
+                startActivity(goToScanner);
+            break;
+            case R.id.cartButton:
+                Intent goToCart = new Intent(CartActivity.this, CartActivity.class);
+                startActivity(goToCart);
+            break;
+            case R.id.receiptButton:
+                Intent goToReceipt = new Intent(CartActivity.this, ReceiptActivity.class);
+                startActivity(goToReceipt);
+            break;
+            case R.id.reportButton:
+                Intent goToReport = new Intent(CartActivity.this, ReportActivity.class);
+                startActivity(goToReport);
+            break;
+        }
+        return true;
+    }
 
     class Adapter extends BaseAdapter{
 
