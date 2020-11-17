@@ -1,16 +1,23 @@
 package com.example.cst8334_glutentracker;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +29,7 @@ import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ScanMode;
+import com.example.entity.Product;
 import com.google.zxing.Result;
 
 import static java.lang.Long.parseLong;
@@ -57,8 +65,8 @@ public class ScanActivity extends AppCompatActivity {
         dbOpener = new GlutenDbHelper(this);
         db = dbOpener.getWritableDatabase();
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+        if (ContextCompat.checkSelfPermission(ScanActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ScanActivity.this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
         }
         scannerView = (CodeScannerView) findViewById(R.id.barcodeScanner);
         codeScanner = new CodeScanner(this, scannerView);
@@ -85,8 +93,7 @@ public class ScanActivity extends AppCompatActivity {
 
         if (acceptScannerButton != null) {
             acceptScannerButton.setOnClickListener(acceptClick -> {
-                long test = Long.valueOf(upcBarcode.getText().toString());
-//                Integer test2 = Integer.parseInt(test);
+                long test2 = getUPCEditText();
                 if (upcBarcode.toString().trim().length() > 0) {
                     this.runQuery(getUPCEditText());
                 }
@@ -108,7 +115,28 @@ public class ScanActivity extends AppCompatActivity {
 
     // Run the API query to Edamam
     private void runQuery(long upc) {
-        new EdamamQuery(ScanActivity.this, upc).execute();
+        boolean boolCartItem = false;
+        dbOpener = new GlutenDbHelper(this);
+        db = dbOpener.getReadableDatabase();
+        Product barcodeCheck = dbOpener.selectProductByID(db, upc);
+
+        // if iterator found in array, Toast.maketext (Scanactivity.this, "message", Toast.LENGTH_LONG).show();
+        if (CartActivity.getProductsArrayList().size() != 0){
+            for (Product prod : CartActivity.getProductsArrayList()) {
+                if (prod.getId() == upc) {
+                    boolCartItem = true;
+                    Toast.makeText(ScanActivity.this, "Item already exists in the cart", Toast.LENGTH_LONG).show();
+                }
+            }
+            // if select id from products; == 1, add item to cart
+        }
+
+        if (barcodeCheck != null && boolCartItem == false) {
+            CartActivity.getProductsArrayList().add(barcodeCheck);
+            Toast.makeText(this, barcodeCheck.getProductName() + " added to the cart from database", Toast.LENGTH_LONG).show();
+        } else if (barcodeCheck == null && boolCartItem == false) {
+            new EdamamQuery(ScanActivity.this, upc).execute();
+        }
     }
 
     // Get Edit text field

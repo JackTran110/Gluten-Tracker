@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GlutenDbHelper extends SQLiteOpenHelper {
-
     public static final String DATABASE_NAME = "GlutenTracker.db";
     public static final int DATABASE_VERSION = 2;
 
@@ -85,14 +84,19 @@ public class GlutenDbHelper extends SQLiteOpenHelper {
     }
 
     public Product selectProductByID(SQLiteDatabase db, long id){
-        Cursor cs = db.rawQuery("SELECT * FROM " + DatabaseActivity.Products.TABLE_NAME + " WHERE ? = ?",
-                new String[]{DatabaseActivity.Products.COLUMN_NAME_ID, id + ""}, null);
-        cs.moveToNext();
-        Product product = new Product(cs.getLong(0),
-                cs.getString(1),
-                cs.getString(2),
-                cs.getDouble(3),
-                cs.getInt(4) == 0);
+        Cursor cs = db.query(false, DatabaseActivity.Products.TABLE_NAME, null, DatabaseActivity.Products.COLUMN_NAME_ID + " = ? ", new String[]{id + ""},
+                null, null, null, null, null);
+        cs.moveToFirst();
+        Product product;
+        try {
+            product = new Product(cs.getLong(0),
+                    cs.getString(1),
+                    cs.getString(2),
+                    cs.getDouble(3),
+                    cs.getInt(4) == 0);
+        } catch (Exception e) {
+            product = null;
+        }
         return product;
     }
 
