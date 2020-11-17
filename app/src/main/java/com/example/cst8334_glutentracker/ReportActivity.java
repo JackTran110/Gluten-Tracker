@@ -1,6 +1,5 @@
 package com.example.cst8334_glutentracker;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -11,21 +10,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.entity.ItemsModel;
 
@@ -37,7 +29,7 @@ public class ReportActivity extends AppCompatActivity {
     ListView lstView;
     Button btnRpt;
 
-    GlutenDbHelper glt = new GlutenDbHelper(this);
+    GlutenDatabase glt = new GlutenDatabase(this);
 
 
 

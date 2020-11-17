@@ -26,7 +26,7 @@ public class ScanActivity extends AppCompatActivity {
     Button acceptScannerButton;
     Button cancelScannerButton;
     EditText upcBarcode;
-    GlutenDb dbOpener;
+    GlutenDatabase dbOpener;
     SQLiteDatabase db;
     CodeScanner codeScanner;
     CodeScannerView scannerView;
@@ -45,7 +45,7 @@ public class ScanActivity extends AppCompatActivity {
         upcBarcode = (EditText) findViewById(R.id.barcodeEditText);
         acceptScannerButton = (Button) findViewById(R.id.acceptScannerButton);
         cancelScannerButton = (Button) findViewById(R.id.cancelScannerButton);
-        dbOpener = new GlutenDb(this);
+        dbOpener = new GlutenDatabase(this);
         db = dbOpener.getWritableDatabase();
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {

@@ -32,7 +32,7 @@ public class DigitalReceipt extends AppCompatActivity {
     private ArrayList<Product> products;
     private ListView productList;
     private SQLiteDatabase database;
-    private GlutenDb dbOpener = new GlutenDb(this);
+    private GlutenDatabase dbOpener = new GlutenDatabase(this);
     TextView rrid;
     TextView rdate;
     TextView ded;
@@ -173,7 +173,7 @@ public class DigitalReceipt extends AppCompatActivity {
                                 product.setLinkedProduct(editedProduct.getLinkedProduct());
                             }
                             SQLiteDatabase db = dbOpener.getWritableDatabase();
-                            dbOpener.updateProductById(db,product.getId(),product.getDisplayedPrice());
+                            dbOpener.updateProductById(product);
                             adapter.notifyDataSetChanged();
                             break;
                     }

@@ -24,8 +24,6 @@ import android.widget.Toast;
 
 import com.example.entity.Product;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -34,7 +32,7 @@ public class CartActivity extends AppCompatActivity {
     private Adapter adapter = new Adapter();
     private static ArrayList<Product> productsArrayList = new ArrayList<Product>();
     private int productCount = 0;
-    private GlutenDb db = new GlutenDb(this);
+    private GlutenDatabase db = new GlutenDatabase(this);
     public static ArrayList<String> editTextList = new ArrayList<String>(); //test
     private Context context;
     private TextView totalDeductibleDisplay;
@@ -99,10 +97,7 @@ public class CartActivity extends AppCompatActivity {
                     case DialogInterface.BUTTON_NEGATIVE:
                         //Double totalPrice = 0.0;
                        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                        for(Product product: productsArrayList){
-                            db.insertIntoProductsTable(product);
-                            //totalPrice += product.getPrice();
-                        }
+                        db.insertIntoProductsTable(productsArrayList);
                         //helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, totalPrice, LocalDateTime.now().format(formatter));
                         db.insertIntoReceiptsTable(productsArrayList, "file", totalDeductible, totalPaid, new Date().toString());
                         getProductsArrayList().clear();

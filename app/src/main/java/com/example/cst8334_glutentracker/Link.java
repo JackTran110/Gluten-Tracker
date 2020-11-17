@@ -27,7 +27,7 @@ public class Link extends AppCompatActivity {
     int passedIndex;
     Context context;
     private SQLiteDatabase database;
-    private GlutenDb dbOpener = new GlutenDb(this);
+    private GlutenDatabase dbOpener = new GlutenDatabase(this);
 
 
     @Override
