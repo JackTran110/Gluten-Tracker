@@ -32,7 +32,7 @@ public class DigitalReceipt extends AppCompatActivity {
     private ArrayList<Product> products;
     private ListView productList;
     private SQLiteDatabase database;
-    private GlutenDbHelper dbOpener = new GlutenDbHelper(this);
+    private GlutenDatabase dbOpener = new GlutenDatabase(this);
     TextView rrid;
     TextView rdate;
     TextView ded;
@@ -153,13 +153,180 @@ public class DigitalReceipt extends AppCompatActivity {
             ded.setText(Double.toString(product.getDisplayedPrice()));
 
             edit.setOnClickListener((v) -> {
+                //Product editedProduct = product;
+                Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(),
+                        product.getPrice(), product.isGlutenFree());
+                editedProduct.setQuantity(product.getQuantity());
+                editedProduct.setDisplayedPrice(product.getDisplayedPrice());
+                if(product.getLinkedProduct() != null) {
+                    editedProduct.setLinkedProduct(product.getLinkedProduct());
+                    editedProduct.getLinkedProduct().setQuantity(product.getLinkedProduct().getQuantity());
+                    editedProduct.getLinkedProduct().setDisplayedPrice(editedProduct.getLinkedProduct().getPrice() * editedProduct.getLinkedProduct().getQuantity());
+                }
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            //Yes button clicked
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //No button clicked
+                            product.setQuantity(editedProduct.getQuantity());
+                            product.setPrice(editedProduct.getPrice());
+                            product.setDisplayedPrice(editedProduct.getDisplayedPrice());
+                            if(product.getLinkedProduct() != null && editedProduct.getLinkedProduct() != null){
+                                product.setLinkedProduct(editedProduct.getLinkedProduct());
+                            }
+                            SQLiteDatabase db = dbOpener.getWritableDatabase();
+                            dbOpener.updateProductById(product);
+                            adapter.notifyDataSetChanged();
+                            break;
+                    }
+                };
+                alertDialog.setTitle(editedProduct.getProductName());
+//                alertDialog.setMessage(editedProduct.getProductName());
+                alertDialog.setNegativeButton("Save", dialogClickListener).
+                        setPositiveButton("Cancel", dialogClickListener);
+                //EditText test = new EditText(context);
+                //alertDialog.setView(test);
+                //View row = getLayoutInflater().inflate(R.layout.activity_product_list, parent, false); // worked
                 View row = getLayoutInflater().inflate(R.layout.activity_edit_receipt, parent, false);
-//                SQLiteDatabase db = dbOpener.getWritableDatabase();
-//                dbOpener.updateProductById(db,product.getId(),product.getDisplayedPrice());
-                CartListViewHolder.editProduct(DigitalReceipt.this,product,adapter,row,dbOpener);
+                TextView deductibleEdit = row.findViewById(R.id.deductibleTextEdit);
+                TextView deductibleViewEdit = row.findViewById(R.id.deductibleViewEdit);
+                if(editedProduct.getLinkedProduct() == null){
+                    deductibleViewEdit.setVisibility(row.INVISIBLE);
+                    deductibleEdit.setVisibility(row.INVISIBLE);
+                }
+                else{
+                    deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+                }
+                EditText changePriceEdit = row.findViewById(R.id.changePriceAndQuantityTextEdit);
+                Button changePriceEditButton = row.findViewById(R.id.changePriceEdit);
+                TextView priceEdit = row.findViewById(R.id.priceEdit);
+                //priceEdit.setText(product.getDisplayedPrice() + ""); originally there
+                priceEdit.setText(editedProduct.getDisplayedPrice() + "");
+                EditText quantityEdit = row.findViewById(R.id.quantityEdit);
+                quantityEdit.setText(editedProduct.getQuantity() + "");
+                changePriceEditButton.setOnClickListener((view) -> {
+                   /* product.setQuantity(1);
+                    product.setPrice(Double.valueOf(changePriceEdit.getText().toString()));
+                    //quantity.setText(Integer.toString(product.getQuantity()));
+                    product.setDisplayedPrice(product.getPrice() * product.getQuantity());
+                    priceEdit.setText(product.getDisplayedPrice() + "");
+                    if(product.getLinkedProduct() != null){
+                        product.getLinkedProduct().setQuantity(product.getQuantity());
+                        product.getLinkedProduct().setDisplayedPrice(product.getLinkedProduct().getPrice() * product.getLinkedProduct().getQuantity());
+                        //deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + ""); all this code originally worked*/
+                    if(changePriceEdit.getText().toString().trim().length() > 0) {
+                        editedProduct.setQuantity(1);
+                        editedProduct.setPrice(Double.valueOf(changePriceEdit.getText().toString()));
+                        //quantity.setText(Integer.toString(product.getQuantity()));
+                        quantityEdit.setText(Integer.toString(1));
+                        editedProduct.setDisplayedPrice(editedProduct.getPrice() * editedProduct.getQuantity());
+                        priceEdit.setText(editedProduct.getDisplayedPrice() + "");
+                        changePriceEdit.setText("");
+                        if (editedProduct.getLinkedProduct() != null) {
+                            editedProduct.getLinkedProduct().setQuantity(editedProduct.getQuantity());
+                            editedProduct.getLinkedProduct().setDisplayedPrice(editedProduct.getLinkedProduct().getPrice() * editedProduct.getLinkedProduct().getQuantity());
+                            //deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+                            deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                //EditText quantityEdit = row.findViewById(R.id.quantityEdit);
+                quantityEdit.addTextChangedListener(new TextWatcher(){
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        //int newQuantity = Integer.parseInt(s.toString());
+                        /*int newQuantity;
+                        if(s.toString() == null || s.toString() == "" || s.toString().isEmpty()){
+                            newQuantity = 1;
+                        }
+                        else{
+                            newQuantity = Integer.parseInt(s.toString());
+                        }
+                        product.setDisplayedPrice(product.getPrice() * (newQuantity));
+                        product.setQuantity(newQuantity);
+                        priceEdit.setText(product.getDisplayedPrice() + "");
+                        if(product.getLinkedProduct() != null){
+                            product.getLinkedProduct().setQuantity(product.getQuantity());
+                            product.getLinkedProduct().setDisplayedPrice(product.getLinkedProduct().getPrice() * product.getLinkedProduct().getQuantity());
+                            //deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+                        }
+                        adapter.notifyDataSetChanged();  all this code block worked*/
+                        int newQuantity;
+                        if(s.toString() == null || s.toString() == "" || s.toString().isEmpty()){
+                            newQuantity = 1;
+                        }
+                        else{
+                            newQuantity = Integer.parseInt(s.toString());
+                        }
+                        editedProduct.setDisplayedPrice(editedProduct.getPrice() * (newQuantity));
+                        editedProduct.setQuantity(newQuantity);
+                        priceEdit.setText(editedProduct.getDisplayedPrice() + "");
+                        if(editedProduct.getLinkedProduct() != null){
+                            editedProduct.getLinkedProduct().setQuantity(editedProduct.getQuantity());
+                            editedProduct.getLinkedProduct().setDisplayedPrice(editedProduct.getLinkedProduct().getPrice() * editedProduct.getLinkedProduct().getQuantity());
+                            //deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+                            deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+                        }
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
+
+                ImageButton plusButtonEdit = row.findViewById(R.id.plusButtonEdit);
+                ImageButton minusButtonEdit = row.findViewById(R.id.minusButtonEdit);
+                plusButtonEdit.setOnClickListener((view) ->{
+
+                    if(quantityEdit.getText().toString().trim().length() == 0){
+                        quantityEdit.setText(1 + "");
+                    }
+                    int convertedToInt = Integer.parseInt(quantityEdit.getText().toString());
+                    editedProduct.setDisplayedPrice(editedProduct.getPrice() * (convertedToInt + 1));
+                    editedProduct.setQuantity(convertedToInt + 1);
+                    quantityEdit.setText(editedProduct.getQuantity() + "");
+                    if(editedProduct.getLinkedProduct() != null){
+                        editedProduct.getLinkedProduct().setQuantity(editedProduct.getQuantity());
+                        editedProduct.getLinkedProduct().setDisplayedPrice(editedProduct.getLinkedProduct().getPrice() * editedProduct.getLinkedProduct().getQuantity());
+                        deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+                    }
+                    adapter.notifyDataSetChanged();
+                });
+
+                minusButtonEdit.setOnClickListener((view) -> {
+                    if(editedProduct.getQuantity() > 1 && quantityEdit.getText().toString().trim().length() > 0) {
+                        int convertedToInt = Integer.parseInt(quantityEdit.getText().toString());
+                        editedProduct.setDisplayedPrice(editedProduct.getPrice() * (convertedToInt - 1));
+                        editedProduct.setQuantity(convertedToInt - 1);
+                        quantityEdit.setText(editedProduct.getQuantity() + "");
+                        if(editedProduct.getLinkedProduct() != null){
+                            editedProduct.getLinkedProduct().setQuantity(editedProduct.getQuantity());
+                            editedProduct.getLinkedProduct().setDisplayedPrice(editedProduct.getLinkedProduct().getPrice() * editedProduct.getLinkedProduct().getQuantity());
+                            deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                alertDialog.setView(row);
+                //alertDialog.setView(testView);
+                alertDialog.create().show();
             });
             return convertView;
         }
     }
-
 }

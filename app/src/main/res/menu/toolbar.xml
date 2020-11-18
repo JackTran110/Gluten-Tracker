@@ -20,11 +20,10 @@
         android:orderInCategory="3"
         app:showAsAction="always"/>
 
-    <item
-        android:id="@+id/search_view"
-        android:title="Search View"
-        android:icon="@android:drawable/ic_menu_search"
+    <item android:id="@+id/reportButton"
+        android:title="Reports"
+        android:icon="@drawable/w153"
         android:orderInCategory="4"
-        app:showAsAction="always"
-        app:actionViewClass="android.widget.SearchView"/>
+        app:showAsAction="always"/>
+
 </menu>

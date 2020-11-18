@@ -1,7 +1,7 @@
 package com.example.cst8334_glutentracker;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,21 +11,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.entity.ItemsModel;
 
@@ -37,7 +30,7 @@ public class ReportActivity extends AppCompatActivity {
     ListView lstView;
     Button btnRpt;
 
-    GlutenDbHelper glt = new GlutenDbHelper(this);
+    GlutenDatabase glt = new GlutenDatabase(this);
 
 
 
@@ -67,12 +60,14 @@ public class ReportActivity extends AppCompatActivity {
     List<ItemsModel> listItems = new ArrayList<>();
 
     CustomeAdapter customeAdapter;
+    Toolbar reportTbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
+        reportTbar = (Toolbar)findViewById(R.id.reportToolbar);
         //glt.insertIntoReceiptsTable()
 
         lstView = (ListView) findViewById(R.id.lstReceipt);
@@ -145,12 +140,23 @@ public class ReportActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getGroupId();
-        if(id == R.id.search_view){
-            return true;
+        switch (item.getItemId()) {
+            case R.id.scannerButton:
+                Intent goToScanner = new Intent(ReportActivity.this, ScanActivity.class);
+                startActivity(goToScanner);
+                break;
+            case R.id.cartButton:
+                Intent goToCart = new Intent(ReportActivity.this, CartActivity.class);
+                startActivity(goToCart);
+                break;
+            case R.id.receiptButton:
+                Intent goToReceipt = new Intent(ReportActivity.this, ReceiptActivity.class);
+                startActivity(goToReceipt);
+                break;
+            case R.id.search_view:
+                break;
         }
-
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     public class CustomeAdapter extends BaseAdapter implements Filterable {

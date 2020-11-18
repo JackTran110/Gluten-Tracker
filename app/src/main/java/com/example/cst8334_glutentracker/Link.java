@@ -1,22 +1,17 @@
 package com.example.cst8334_glutentracker;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,7 +27,7 @@ public class Link extends AppCompatActivity {
     int passedIndex;
     Context context;
     private SQLiteDatabase database;
-    private GlutenDbHelper dbOpener = new GlutenDbHelper(this);
+    private GlutenDatabase dbOpener = new GlutenDatabase(this);
 
 
     @Override

@@ -3,6 +3,7 @@ package com.example.cst8334_glutentracker;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -26,7 +30,8 @@ public class ReceiptActivity extends AppCompatActivity {
     ListView receiptList;
     private static ReceiptAdapter adapter;
     private SQLiteDatabase database;
-    private GlutenDbHelper dbOpener = new GlutenDbHelper(this);
+    private GlutenDatabase dbOpener = new GlutenDatabase(this);
+    Toolbar receiptTbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,8 @@ public class ReceiptActivity extends AppCompatActivity {
         setContentView(R.layout.activity_receipt);
         receiptList=(ListView)findViewById(R.id.receiptList);
         receipt= new ArrayList<>();
+
+        receiptTbar = (Toolbar)findViewById(R.id.receiptToolbar);
 
 //      insertTestValuesIntoDatabase();
         readFromDatabase();
@@ -86,6 +93,36 @@ public class ReceiptActivity extends AppCompatActivity {
 //        productRowValues.put(databaseActivity.Products.COLUMN_NAME_GLUTEN, 0);
 //        database.insert(databaseActivity.Products.TABLE_NAME, null, productRowValues);
 //    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.scannerButton:
+                Intent goToScanner = new Intent(ReceiptActivity.this, ScanActivity.class);
+                startActivity(goToScanner);
+                break;
+            case R.id.cartButton:
+                Intent goToCart = new Intent(ReceiptActivity.this, CartActivity.class);
+                startActivity(goToCart);
+                break;
+            case R.id.receiptButton:
+                Intent goToReceipt = new Intent(ReceiptActivity.this, ReceiptActivity.class);
+                startActivity(goToReceipt);
+                break;
+            case R.id.reportButton:
+                Intent goToReport = new Intent(ReceiptActivity.this, ReportActivity.class);
+                startActivity(goToReport);
+                break;
+        }
+        return true;
+    }
 
     public class ReceiptAdapter extends ArrayAdapter<Receipt> {
         private ArrayList<Receipt> rData;
