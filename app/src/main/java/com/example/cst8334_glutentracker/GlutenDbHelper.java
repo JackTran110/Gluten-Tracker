@@ -15,7 +15,7 @@ import java.util.List;
 public class GlutenDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "GlutenTracker.db";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
 
     public GlutenDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -158,11 +158,14 @@ public class GlutenDbHelper extends SQLiteOpenHelper {
             DatabaseActivity.Products.COLUMN_NAME_GLUTEN + " INTEGER)";
 
 
-    public void updateProductById(SQLiteDatabase db,long id, double price){
+    public void updateProductById(SQLiteDatabase db,long id, double price,int quantity){
+//        ContentValues cv= new ContentValues();
+//        cv.put(DatabaseActivity.Products.COLUMN_NAME_PRICE,price);
+//        db.update(DatabaseActivity.Products.TABLE_NAME,cv, DatabaseActivity.Products.COLUMN_NAME_ID+" = ? ",new String[]{Long.toString(id)});
         ContentValues cv= new ContentValues();
-        cv.put(DatabaseActivity.Products.COLUMN_NAME_PRICE,price);
-        db.update(DatabaseActivity.Products.TABLE_NAME,cv, DatabaseActivity.Products.COLUMN_NAME_ID+" = ? ",new String[]{Long.toString(id)});
-
+        cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_PRICE,price);
+        cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_QUANTITY,quantity);
+        db.update(DatabaseActivity.ProductReceipt.TABLE_NAME,cv, DatabaseActivity.ProductReceipt.COLUMN_NAME_PRODUCT_ID+" = ? ",new String[]{Long.toString(id)});
     }
 
 

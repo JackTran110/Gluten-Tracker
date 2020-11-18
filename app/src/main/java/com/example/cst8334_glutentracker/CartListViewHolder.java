@@ -2,12 +2,14 @@ package com.example.cst8334_glutentracker;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,7 +18,7 @@ import com.example.entity.Product;
 
 public class CartListViewHolder {
 
-    public static void editProduct(Context context, Product product, BaseAdapter adapter, View row){
+    public static void editProduct(Context context, Product product, BaseAdapter adapter, View row,GlutenDbHelper dbOpener){
         Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(),
                 product.getPrice(), product.isGlutenFree());
         editedProduct.setQuantity(product.getQuantity());
@@ -42,6 +44,10 @@ public class CartListViewHolder {
                     product.setDisplayedPrice(editedProduct.getDisplayedPrice());
                     if(product.getLinkedProduct() != null && editedProduct.getLinkedProduct() != null){
                         product.setLinkedProduct(editedProduct.getLinkedProduct());
+                    }
+                    if(context instanceof DigitalReceipt){
+                        SQLiteDatabase db = dbOpener.getWritableDatabase();
+                        dbOpener.updateProductById(db,product.getId(),product.getPrice(),product.getQuantity());
                     }
                     adapter.notifyDataSetChanged();
                     break;
@@ -122,8 +128,8 @@ public class CartListViewHolder {
             }
         });
 
-        Button plusButtonEdit = row.findViewById(R.id.plusButtonEdit);
-        Button minusButtonEdit = row.findViewById(R.id.minusButtonEdit);
+        ImageButton plusButtonEdit = row.findViewById(R.id.plusButtonEdit);
+        ImageButton minusButtonEdit = row.findViewById(R.id.minusButtonEdit);
         if(context instanceof Link){
             //plusButtonEdit.setVisibility(row.INVISIBLE);
            // minusButtonEdit.setVisibility(row.INVISIBLE);
