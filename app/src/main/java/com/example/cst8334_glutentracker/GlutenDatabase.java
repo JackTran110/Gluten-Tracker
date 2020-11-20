@@ -24,7 +24,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * Database's version number.
      */
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
 
     /**
      * SQLite database object.
@@ -421,6 +421,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                 DatabaseActivity.Products.COLUMN_NAME_ID+" = ? ",
                 new String[]{Long.toString(product.getId())}) != 0;
     }
+
 
     /**
      * The query to create the products table.
