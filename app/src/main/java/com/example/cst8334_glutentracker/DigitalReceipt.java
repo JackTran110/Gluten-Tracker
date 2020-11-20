@@ -88,8 +88,11 @@ public class DigitalReceipt extends AppCompatActivity {
         int nameIndex=pc.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME);
         int descIndex=pc.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION);
         int glutenIndex=pc.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_GLUTEN);
-        int dedIndex=pc.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_PRICE);
 
+//      int dedIndex=pc.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_PRICE);
+
+         int dedIndex=pc.getColumnIndex(DatabaseActivity.ProductReceipt.COLUMN_NAME_PRICE);
+         int quantityIndex=pc.getColumnIndex(DatabaseActivity.ProductReceipt.COLUMN_NAME_QUANTITY);
 
         while(pc.moveToNext()){
             boolean glutenf=false;
@@ -97,6 +100,7 @@ public class DigitalReceipt extends AppCompatActivity {
             String name=pc.getString(nameIndex);
             String desc=pc.getString(descIndex);
             int gluten=pc.getInt(glutenIndex);
+            int quantity=pc.getInt(quantityIndex);
 
             if(gluten==0)
             {glutenf=false;}
@@ -106,7 +110,7 @@ public class DigitalReceipt extends AppCompatActivity {
 
             double ded=pc.getDouble(dedIndex);
 
-            products.add(new Product(productId,name,desc,ded,glutenf));
+            products.add(new Product(productId,name,desc,ded,glutenf).setQuantity(quantity));
         }
     }
 
@@ -117,6 +121,7 @@ public class DigitalReceipt extends AppCompatActivity {
         TextView name;
         TextView desc;
         TextView gluten;
+        TextView quantity;
         TextView ded;
         Button edit;
 
@@ -136,6 +141,7 @@ public class DigitalReceipt extends AppCompatActivity {
             name = (TextView) convertView.findViewById(R.id.pname);
             desc = (TextView) convertView.findViewById(R.id.pdesc);
             gluten = (TextView) convertView.findViewById(R.id.gluten);
+            quantity=(TextView) convertView.findViewById(R.id.qty);
             ded = (TextView) convertView.findViewById(R.id.prize);
             edit=convertView.findViewById(R.id.edit);
             Context context=convertView.getContext();
@@ -143,10 +149,13 @@ public class DigitalReceipt extends AppCompatActivity {
             name.setText(product.getProductName());
             desc.setText(product.getProductDescription());
             gluten.setText(Boolean.toString(product.isGlutenFree()));
+            quantity.setText(Integer.toString(product.getQuantity()));
             ded.setText(Double.toString(product.getDisplayedPrice()));
 
             edit.setOnClickListener((v) -> {
-                //Product editedProduct = product;
+                View row = getLayoutInflater().inflate(R.layout.activity_edit_receipt, parent, false);
+                CartListViewHolder.editProduct(DigitalReceipt.this,product,adapter,row,dbOpener,passedIndex);
+              /*  //Product editedProduct = product;
                 Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(),
                         product.getPrice(), product.isGlutenFree());
                 editedProduct.setQuantity(product.getQuantity());
@@ -203,15 +212,7 @@ public class DigitalReceipt extends AppCompatActivity {
                 EditText quantityEdit = row.findViewById(R.id.quantityEdit);
                 quantityEdit.setText(editedProduct.getQuantity() + "");
                 changePriceEditButton.setOnClickListener((view) -> {
-                   /* product.setQuantity(1);
-                    product.setPrice(Double.valueOf(changePriceEdit.getText().toString()));
-                    //quantity.setText(Integer.toString(product.getQuantity()));
-                    product.setDisplayedPrice(product.getPrice() * product.getQuantity());
-                    priceEdit.setText(product.getDisplayedPrice() + "");
-                    if(product.getLinkedProduct() != null){
-                        product.getLinkedProduct().setQuantity(product.getQuantity());
-                        product.getLinkedProduct().setDisplayedPrice(product.getLinkedProduct().getPrice() * product.getLinkedProduct().getQuantity());
-                        //deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + ""); all this code originally worked*/
+
                     if(changePriceEdit.getText().toString().trim().length() > 0) {
                         editedProduct.setQuantity(1);
                         editedProduct.setPrice(Double.valueOf(changePriceEdit.getText().toString()));
@@ -245,22 +246,7 @@ public class DigitalReceipt extends AppCompatActivity {
                     @Override
                     public void afterTextChanged(Editable s) {
                         //int newQuantity = Integer.parseInt(s.toString());
-                        /*int newQuantity;
-                        if(s.toString() == null || s.toString() == "" || s.toString().isEmpty()){
-                            newQuantity = 1;
-                        }
-                        else{
-                            newQuantity = Integer.parseInt(s.toString());
-                        }
-                        product.setDisplayedPrice(product.getPrice() * (newQuantity));
-                        product.setQuantity(newQuantity);
-                        priceEdit.setText(product.getDisplayedPrice() + "");
-                        if(product.getLinkedProduct() != null){
-                            product.getLinkedProduct().setQuantity(product.getQuantity());
-                            product.getLinkedProduct().setDisplayedPrice(product.getLinkedProduct().getPrice() * product.getLinkedProduct().getQuantity());
-                            //deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
-                        }
-                        adapter.notifyDataSetChanged();  all this code block worked*/
+
                         int newQuantity;
                         if(s.toString() == null || s.toString() == "" || s.toString().isEmpty()){
                             newQuantity = 1;
@@ -317,7 +303,7 @@ public class DigitalReceipt extends AppCompatActivity {
                 });
                 alertDialog.setView(row);
                 //alertDialog.setView(testView);
-                alertDialog.create().show();
+                alertDialog.create().show(); */
             });
             return convertView;
         }

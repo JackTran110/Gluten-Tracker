@@ -24,7 +24,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * Database's version number.
      */
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     /**
      * SQLite database object.
@@ -119,7 +119,11 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         List<Product> failedInsertList = new ArrayList<>();
         for(Product product: products){
             if(insertIntoProductsTable(product) == -1) failedInsertList.add(product);
+            if(product.getLinkedProduct()!= null)//added by Joel
+                if(insertIntoProductsTable(product.getLinkedProduct()) == -1) failedInsertList.add(product);//added by Joel
+
         }
+
         return failedInsertList;
     }
 
@@ -235,12 +239,13 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                     null, null, null, null, null);
         cs.moveToFirst();
 
+        String test = cs.getString(0);
         product = new Product(cs.getLong(0),
                 cs.getString(1),
                 cs.getString(2),
                 cs.getDouble(3),
                 cs.getInt(4) == 0);
-    }catch(SQLiteException e){
+    }catch(Exception e){
         Log.e(ERROR_TAG, "Unable to select product", e);
         return null;
     }
@@ -276,7 +281,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                     results.add(product);
                 }
             }while (cs.moveToNext());
-        }catch(SQLiteException e){
+        }catch(Exception e){
             Log.e(ERROR_TAG, "Unable to select products", e);
             return null;
         }
@@ -325,7 +330,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                     cs.getDouble(3),
                     cs.getDouble(2),
                     cs.getString(4));
-        }catch (SQLiteException e){
+        }catch (Exception e){
             Log.e(ERROR_TAG, "Unable to select receipt", e);
             return null;
         }
@@ -367,7 +372,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                 }
                 products.add(newProduct);
             }while(cs.moveToNext());
-        }catch (SQLiteException e){
+        }catch (Exception e){
             Log.e(ERROR_TAG, "Unable to select from productReceipt", e);
             return null;
         }
@@ -422,6 +427,23 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                 new String[]{Long.toString(product.getId())}) != 0;
     }
 
+    public boolean updateProductReceiptById(Product product, int index){
+        db = getWritableDatabase();
+        ContentValues cv= new ContentValues();
+
+        cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_PRODUCT_ID, product.getId());
+        cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID, index);
+        cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_PRICE, product.getPrice());
+        cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_QUANTITY, product.getQuantity());
+        if(product.getLinkedProduct() != null){
+            cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_DEDUCTION, product.getDeduction());
+            cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID, product.getLinkedProduct().getId());
+            cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE, product.getLinkedProduct().getPrice());
+        }
+        return db.update(DatabaseActivity.ProductReceipt.TABLE_NAME,cv,
+                DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? ",
+                new String[]{Integer.toString(index)}) != 0;
+    }
 
     /**
      * The query to create the products table.
