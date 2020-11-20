@@ -296,7 +296,9 @@ public class CartActivity extends AppCompatActivity {
 
             Button editButton = newView.findViewById(R.id.editProduct);
             editButton.setOnClickListener((v) -> {
-                //Product editedProduct = product;
+                View row = getLayoutInflater().inflate(R.layout.activity_edit_receipt, parent, false);
+                CartListViewHolder.editProduct(CartActivity.this,product,adapter,row,null,0);
+              /*  //Product editedProduct = product;
                 Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(),
                         product.getPrice(), product.isGlutenFree());
                 editedProduct.setQuantity(product.getQuantity());
@@ -423,7 +425,7 @@ public class CartActivity extends AppCompatActivity {
                 });
                 alertDialog.setView(row);
                 //alertDialog.setView(testView);
-                alertDialog.create().show();
+                alertDialog.create().show(); */
             });
             //adapter.notifyDataSetChanged(); //used this to try figure out why I can't change value in changeprice edittext, did not work
             double totalDeductibleAsDouble = 0;

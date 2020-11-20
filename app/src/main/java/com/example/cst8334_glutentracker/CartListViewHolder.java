@@ -18,7 +18,7 @@ import com.example.entity.Product;
 
 public class CartListViewHolder {
 
-    public static void editProduct(Context context, Product product, BaseAdapter adapter, View row,GlutenDbHelper dbOpener){
+    public static void editProduct(Context context, Product product, BaseAdapter adapter, View row,GlutenDatabase dbOpener,int index){
         Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(),
                 product.getPrice(), product.isGlutenFree());
         editedProduct.setQuantity(product.getQuantity());
@@ -46,8 +46,9 @@ public class CartListViewHolder {
                         product.setLinkedProduct(editedProduct.getLinkedProduct());
                     }
                     if(context instanceof DigitalReceipt){
-                        SQLiteDatabase db = dbOpener.getWritableDatabase();
-                        dbOpener.updateProductById(db,product.getId(),product.getPrice(),product.getQuantity());
+//                        SQLiteDatabase db = dbOpener.getWritableDatabase();
+//                        dbOpener.updateProductById(db,product.getId(),product.getPrice(),product.getQuantity());
+                        dbOpener.updateProductReceiptById(product,index);
                     }
                     adapter.notifyDataSetChanged();
                     break;

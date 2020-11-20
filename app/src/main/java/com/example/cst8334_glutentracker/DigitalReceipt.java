@@ -153,7 +153,9 @@ public class DigitalReceipt extends AppCompatActivity {
             ded.setText(Double.toString(product.getDisplayedPrice()));
 
             edit.setOnClickListener((v) -> {
-                //Product editedProduct = product;
+                View row = getLayoutInflater().inflate(R.layout.activity_edit_receipt, parent, false);
+                CartListViewHolder.editProduct(DigitalReceipt.this,product,adapter,row,dbOpener,passedIndex);
+              /*  //Product editedProduct = product;
                 Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(),
                         product.getPrice(), product.isGlutenFree());
                 editedProduct.setQuantity(product.getQuantity());
@@ -210,15 +212,7 @@ public class DigitalReceipt extends AppCompatActivity {
                 EditText quantityEdit = row.findViewById(R.id.quantityEdit);
                 quantityEdit.setText(editedProduct.getQuantity() + "");
                 changePriceEditButton.setOnClickListener((view) -> {
-                   /* product.setQuantity(1);
-                    product.setPrice(Double.valueOf(changePriceEdit.getText().toString()));
-                    //quantity.setText(Integer.toString(product.getQuantity()));
-                    product.setDisplayedPrice(product.getPrice() * product.getQuantity());
-                    priceEdit.setText(product.getDisplayedPrice() + "");
-                    if(product.getLinkedProduct() != null){
-                        product.getLinkedProduct().setQuantity(product.getQuantity());
-                        product.getLinkedProduct().setDisplayedPrice(product.getLinkedProduct().getPrice() * product.getLinkedProduct().getQuantity());
-                        //deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + ""); all this code originally worked*/
+
                     if(changePriceEdit.getText().toString().trim().length() > 0) {
                         editedProduct.setQuantity(1);
                         editedProduct.setPrice(Double.valueOf(changePriceEdit.getText().toString()));
@@ -252,22 +246,7 @@ public class DigitalReceipt extends AppCompatActivity {
                     @Override
                     public void afterTextChanged(Editable s) {
                         //int newQuantity = Integer.parseInt(s.toString());
-                        /*int newQuantity;
-                        if(s.toString() == null || s.toString() == "" || s.toString().isEmpty()){
-                            newQuantity = 1;
-                        }
-                        else{
-                            newQuantity = Integer.parseInt(s.toString());
-                        }
-                        product.setDisplayedPrice(product.getPrice() * (newQuantity));
-                        product.setQuantity(newQuantity);
-                        priceEdit.setText(product.getDisplayedPrice() + "");
-                        if(product.getLinkedProduct() != null){
-                            product.getLinkedProduct().setQuantity(product.getQuantity());
-                            product.getLinkedProduct().setDisplayedPrice(product.getLinkedProduct().getPrice() * product.getLinkedProduct().getQuantity());
-                            //deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
-                        }
-                        adapter.notifyDataSetChanged();  all this code block worked*/
+
                         int newQuantity;
                         if(s.toString() == null || s.toString() == "" || s.toString().isEmpty()){
                             newQuantity = 1;
@@ -324,7 +303,7 @@ public class DigitalReceipt extends AppCompatActivity {
                 });
                 alertDialog.setView(row);
                 //alertDialog.setView(testView);
-                alertDialog.create().show();
+                alertDialog.create().show(); */
             });
             return convertView;
         }

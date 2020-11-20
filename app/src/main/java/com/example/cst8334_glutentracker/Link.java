@@ -139,7 +139,7 @@ public class Link extends AppCompatActivity {
            editButton.setOnClickListener((v) -> {
 //               View row = getLayoutInflater().inflate(R.layout.activity_edit_product, parent, false);
                View row = getLayoutInflater().inflate(R.layout.activity_edit_receipt, parent, false);
-               CartListViewHolder.editProduct(context, product, adapter, row,null);
+               CartListViewHolder.editProduct(context, product, adapter, row,null,0);
            });
 
 
