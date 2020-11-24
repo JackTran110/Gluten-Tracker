@@ -18,7 +18,7 @@ import com.example.entity.Product;
 
 public class CartListViewHolder {
 
-    public static void editProduct(Context context, Product product, BaseAdapter adapter, View row,GlutenDatabase dbOpener,int index){
+    public static void editProduct(Context context, Product product, BaseAdapter adapter, View row,GlutenDatabase dbOpener,long index){
         Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(),
                 product.getPrice(), product.isGlutenFree());
         editedProduct.setQuantity(product.getQuantity());
@@ -33,7 +33,7 @@ public class CartListViewHolder {
         }
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         // DialogInterface learned from https://stackoverflow.com/questions/20494542/using-dialoginterfaces-onclick-method
-        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) ->  {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
                     break;

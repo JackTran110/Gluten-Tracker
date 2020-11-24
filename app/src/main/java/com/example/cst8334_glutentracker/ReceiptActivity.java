@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.example.entity.Receipt;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReceiptActivity extends AppCompatActivity {
     ArrayList<Receipt> receipt;
@@ -57,8 +58,11 @@ public class ReceiptActivity extends AppCompatActivity {
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
-                        dbOpener.deleteReceiptByID(l);
+                        Long d=receipt.get(i).getId();
+                        dbOpener.deleteReceiptByID(d);
+                        receipt.remove(i);
                         adapter.notifyDataSetChanged();
+
                         break;
                 }
             };
@@ -71,9 +75,11 @@ public class ReceiptActivity extends AppCompatActivity {
         });
 
         receiptList.setOnItemClickListener((list,item,position,id)->{
-            position=position+1;
+//            position=position+1;
             Intent intent= new Intent(ReceiptActivity.this,DigitalReceipt.class);
-            intent.putExtra("index",position);
+//            intent.putExtra("index",position);
+//            intent.putExtra("index",receipt.get(position).getId());
+                DigitalReceipt.setPassedIndex(receipt.get(position).getId());
             startActivity(intent);
             });
         adapter.notifyDataSetChanged();
@@ -81,7 +87,11 @@ public class ReceiptActivity extends AppCompatActivity {
 
 
     private void readFromDatabase(){
-        database = dbOpener.getReadableDatabase();
+        List<Receipt> rec= dbOpener.selectAllReceipt();
+        if(rec!=null)
+            receipt.addAll(rec);
+
+       /* database = dbOpener.getReadableDatabase();
         Cursor pc = database.query(false, DatabaseActivity.Products.TABLE_NAME, new String[]{DatabaseActivity.Products.COLUMN_NAME_ID, DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME, DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION, DatabaseActivity.Products.COLUMN_NAME_GLUTEN, DatabaseActivity.Products.COLUMN_NAME_PRICE}, null, null, null, null, null, null, null);
        // Cursor rc = database.query(false, DatabaseActivity.Receipts.TABLE_NAME, new String[]{DatabaseActivity.Receipts.COLUMN_NAME_ID, DatabaseActivity.Receipts.COLUMN_NAME_FILE, DatabaseActivity.Receipts.COLUMN_NAME_DATE, DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_PRICE}, null, null, null, null, null, null, null);
         Cursor rc = database.query(false, DatabaseActivity.Receipts.TABLE_NAME, new String[]{DatabaseActivity.Receipts.COLUMN_NAME_ID, DatabaseActivity.Receipts.COLUMN_NAME_FILE, DatabaseActivity.Receipts.COLUMN_NAME_DATE, DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_DEDUCTION}, null, null, null, null, null, null, null);
@@ -100,7 +110,7 @@ public class ReceiptActivity extends AppCompatActivity {
 
         //Fix receipt.add
         receipt.add(new Receipt(rid,null,fileName,deduction, 0, date));
-        }
+        } */
     }
 
 //    private void insertTestValuesIntoDatabase(){

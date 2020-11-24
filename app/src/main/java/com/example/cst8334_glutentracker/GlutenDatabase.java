@@ -3,6 +3,7 @@ package com.example.cst8334_glutentracker;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -24,7 +25,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * Database's version number.
      */
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     /**
      * SQLite database object.
@@ -317,6 +318,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
      * can't be found or an error occurs.
      */
     public Receipt selectReceiptByID(long id){
+        db = getWritableDatabase();
         Cursor cs;
         Receipt receipt;
         try {
@@ -338,6 +340,37 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         return receipt;
     }
 
+    public List<Receipt> selectAllReceipt(){
+        db = getWritableDatabase();
+        Cursor cs;
+        List<Receipt > receipts = new ArrayList<>();
+        try {
+           // code taken from https://stackoverflow.com/questions/18097748/how-to-get-row-count-in-sqlite-using-android/28348121
+            long count = DatabaseUtils.queryNumEntries(db,DatabaseActivity.Receipts.TABLE_NAME);
+
+            cs = db.query(false, DatabaseActivity.Receipts.TABLE_NAME, null,
+                    null,null, null, null, null,
+                    null, null);
+//            for(long i = 1; i == count; i++){
+//                receipts.add(selectReceiptByID(i));
+//            }
+            cs.moveToFirst();
+            do{
+                receipts.add(new Receipt(cs.getLong(0),
+                        selectProductReceipt(cs.getLong(0)),
+                        cs.getString(1),
+                        cs.getDouble(3),
+                        cs.getDouble(2),
+                        cs.getString(4)));
+            }while(cs.moveToNext());
+        }catch (Exception e){
+            Log.e(ERROR_TAG, "Unable to select receipts", e);
+            return null;
+        }
+        cs.close();
+        return receipts;
+    }
+
     /**
      * This method uses a receipt's ID to get that receipt's list of products from the database.
      *
@@ -346,6 +379,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
      * can't be found or an error occurs.
      */
     private List<Product> selectProductReceipt(long receiptID){
+        db = getWritableDatabase();
         Cursor cs;
         List<Product> products = new ArrayList<>();
         try {
@@ -387,12 +421,13 @@ public class GlutenDatabase extends SQLiteOpenHelper {
      * @return true if the receipt is deleted successfully, otherwise return false.
      */
     public boolean deleteReceiptByID(long id){
+        db = getWritableDatabase();
         db.delete(DatabaseActivity.ProductReceipt.TABLE_NAME,
-                DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID + " = ?",
-                new String[]{id + ""});
+                DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID + " = ? ",
+                new String[]{Long.toString(id)});
         return db.delete(DatabaseActivity.Receipts.TABLE_NAME,
-                DatabaseActivity.Receipts.COLUMN_NAME_ID + " + ?",
-                new String[]{id + ""}) != 0;
+                DatabaseActivity.Receipts.COLUMN_NAME_ID + " = ?",
+                new String[]{Long.toString(id)}) != 0;
     }
 
     /**
@@ -402,9 +437,10 @@ public class GlutenDatabase extends SQLiteOpenHelper {
      * @return true if the product is deleted successfully, otherwise return false.
      */
     public boolean deleteProductByID(SQLiteDatabase db, long id){
+        db = getWritableDatabase();
         return db.delete(DatabaseActivity.Products.TABLE_NAME,
-                DatabaseActivity.Products.COLUMN_NAME_ID + "= ?",
-                new String[]{id + ""}) != 0;
+                DatabaseActivity.Products.COLUMN_NAME_ID + " = ? ",
+                new String[]{Long.toString(id)}) != 0;
     }
 
     /**
@@ -427,7 +463,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                 new String[]{Long.toString(product.getId())}) != 0;
     }
 
-    public boolean updateProductReceiptById(Product product, int index){
+    public boolean updateProductReceiptById(Product product, long index){
         db = getWritableDatabase();
         ContentValues cv= new ContentValues();
 
@@ -442,7 +478,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         }
         return db.update(DatabaseActivity.ProductReceipt.TABLE_NAME,cv,
                 DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? ",
-                new String[]{Integer.toString(index)}) != 0;
+                new String[]{Long.toString(index)}) != 0;
     }
 
     /**

@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.entity.Product;
+import com.example.entity.Receipt;
 
 import java.util.ArrayList;
 
@@ -38,7 +39,17 @@ public class DigitalReceipt extends AppCompatActivity {
     TextView rdate;
     TextView ded;
     Intent fromActivity;
-    int passedIndex;
+    public static long passedIndex;
+    Receipt receipt;
+
+    public static long getPassedIndex() {
+        return passedIndex;
+    }
+
+    public static void setPassedIndex(long index) {
+        passedIndex = index;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +57,15 @@ public class DigitalReceipt extends AppCompatActivity {
         setContentView(R.layout.activity_digital_receipt);
 
         fromActivity=getIntent();
-        passedIndex=fromActivity.getIntExtra("index",0);
+//       passedIndex=fromActivity.getIntExtra("index",);
+
         productList=findViewById(R.id.products);
         products=new ArrayList<>();
         rrid=findViewById(R.id.ridf);
         rdate=findViewById(R.id.datef);
         ded=findViewById(R.id.dedf);
+
+
 
 //        productList.setOnItemLongClickListener((adapterView, view, i, l) -> {
 //            AlertDialog.Builder alertDialog = new AlertDialog.Builder(adapterView.getContext());
@@ -75,14 +89,23 @@ public class DigitalReceipt extends AppCompatActivity {
 
 
         loadFromDatabase();
+        rrid.setText(receipt.getId()+"");
+        rdate.setText(receipt.getDate());
+        ded.setText(Double.toString(receipt.getTaxDeductionTotal()));
         adapter=new ProductAdapter(products,this);
         productList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
     }
 
     private void loadFromDatabase()
-     {
-        database = dbOpener.getReadableDatabase();
+    {
+
+        receipt=dbOpener.selectReceiptByID(passedIndex);
+        products.addAll(receipt.getProducts());
+
+
+        /*        database = dbOpener.getReadableDatabase();
         Cursor rc = database.query(false, DatabaseActivity.Receipts.TABLE_NAME, new String[]{DatabaseActivity.Receipts.COLUMN_NAME_ID, DatabaseActivity.Receipts.COLUMN_NAME_FILE, DatabaseActivity.Receipts.COLUMN_NAME_DATE, DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_DEDUCTION}, "receiptID=?",new String[]{Integer.toString(passedIndex)}, null, null, null, null, null);
 
         int idIndex=rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_ID);
@@ -132,7 +155,11 @@ public class DigitalReceipt extends AppCompatActivity {
 
             products.add(new Product(productId,name,desc,ded,glutenf).setQuantity(quantity));
         }
+
+         */
     }
+
+
 
     public class ProductAdapter extends ArrayAdapter<Product> {
         private ArrayList<Product> rData;
