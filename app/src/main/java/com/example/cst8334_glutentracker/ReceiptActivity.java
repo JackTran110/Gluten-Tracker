@@ -2,10 +2,12 @@ package com.example.cst8334_glutentracker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -46,6 +48,28 @@ public class ReceiptActivity extends AppCompatActivity {
         readFromDatabase();
         adapter=new ReceiptAdapter(receipt,this);
         receiptList.setAdapter(adapter);
+        receiptList.setOnItemLongClickListener((adapterView, view, i, l) -> {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(adapterView.getContext());
+            DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                switch (which){
+
+                    case DialogInterface.BUTTON_POSITIVE:
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        dbOpener.deleteReceiptByID(l);
+                        adapter.notifyDataSetChanged();
+                        break;
+                }
+            };
+            alertDialog.setTitle("Delete Receipt");
+            alertDialog.setMessage("Do you want to delete this receipt");
+            alertDialog.setNegativeButton("Delete", dialogClickListener);
+            alertDialog.setPositiveButton("No", dialogClickListener);
+            alertDialog.show();
+            return true;
+        });
+
         receiptList.setOnItemClickListener((list,item,position,id)->{
             position=position+1;
             Intent intent= new Intent(ReceiptActivity.this,DigitalReceipt.class);
@@ -54,6 +78,7 @@ public class ReceiptActivity extends AppCompatActivity {
             });
         adapter.notifyDataSetChanged();
     }
+
 
     private void readFromDatabase(){
         database = dbOpener.getReadableDatabase();

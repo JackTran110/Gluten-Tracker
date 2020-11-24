@@ -16,6 +16,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,6 +53,25 @@ public class DigitalReceipt extends AppCompatActivity {
         rdate=findViewById(R.id.datef);
         ded=findViewById(R.id.dedf);
 
+//        productList.setOnItemLongClickListener((adapterView, view, i, l) -> {
+//            AlertDialog.Builder alertDialog = new AlertDialog.Builder(adapterView.getContext());
+//            DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+//                switch (which){
+//                    case DialogInterface.BUTTON_POSITIVE:
+//                        break;
+//
+//                    case DialogInterface.BUTTON_NEGATIVE:
+//                        adapter.notifyDataSetChanged();
+//                        break;
+//                }
+//            };
+//            alertDialog.setTitle("Delete Product");
+//            alertDialog.setMessage("Do you want to delete this product");
+//            alertDialog.setNegativeButton("Delete", dialogClickListener);
+//            alertDialog.setPositiveButton("No", dialogClickListener);
+//            alertDialog.show();
+//            return true;
+//        });
 
 
         loadFromDatabase();
@@ -151,6 +171,8 @@ public class DigitalReceipt extends AppCompatActivity {
             gluten.setText(Boolean.toString(product.isGlutenFree()));
             quantity.setText(Integer.toString(product.getQuantity()));
             ded.setText(Double.toString(product.getDisplayedPrice()));
+
+
 
             edit.setOnClickListener((v) -> {
                 View row = getLayoutInflater().inflate(R.layout.activity_edit_receipt, parent, false);
