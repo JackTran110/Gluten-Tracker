@@ -83,12 +83,12 @@
         android:layout_below="@+id/linkButtonEdit"
         android:text="Change Price" /> was originally working -->
 
-    <Button
+<!--    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/changePriceEdit"
         android:layout_below="@+id/deductibleViewEdit"
-        android:text="Change Price" />
+        android:text="Change Price" /> -->
 
     <TextView
         android:layout_width="wrap_content"
