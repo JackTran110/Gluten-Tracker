@@ -72,7 +72,7 @@ public class CartListViewHolder {
             deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
         }
         EditText changePriceEdit = row.findViewById(R.id.changePriceAndQuantityTextEdit);
-        Button changePriceEditButton = row.findViewById(R.id.changePriceEdit);
+//        Button changePriceEditButton = row.findViewById(R.id.changePriceEdit);
         TextView priceEdit = row.findViewById(R.id.priceEdit);
         //priceEdit.setText(product.getDisplayedPrice() + ""); originally there
         priceEdit.setText(editedProduct.getDisplayedPrice() + "");
@@ -85,7 +85,58 @@ public class CartListViewHolder {
             quantityEdit.setText(editedProduct.getQuantity() + "");
         }
         quantityEdit.setText(editedProduct.getQuantity() + "");
-        changePriceEditButton.setOnClickListener((view) -> {
+        changePriceEdit.addTextChangedListener(new TextWatcher(){
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+              /*  int newQuantity;
+                if(s.toString() == null || s.toString() == "" || s.toString().isEmpty()){
+                    newQuantity = 1;
+                }
+                else{
+                    newQuantity = Integer.parseInt(s.toString());
+                }
+                editedProduct.changeQuantityAndDisplayedPrice(newQuantity);
+                priceEdit.setText(editedProduct.getDisplayedPrice() + "");
+                if(editedProduct.getLinkedProduct() != null){
+                    deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+                }
+                adapter.notifyDataSetChanged(); */
+                double newPrice;
+              /*  if(s.toString() != null || s.toString() != "" || !s.toString().isEmpty()) {
+                    newPrice = Double.valueOf(s.toString());
+                    if(s.toString() == null || s.toString().equals("") || s.toString().isEmpty()){
+                        newPrice = product.getDisplayedPrice();
+                    }
+                } */
+                if(s.toString() == null || s.toString().equals("") || s.toString().isEmpty()){
+                    newPrice = product.getDisplayedPrice();
+                }
+                else{
+                    newPrice = Double.valueOf(s.toString());
+                }
+                    editedProduct.setDisplayedPrice(newPrice);
+                    editedProduct.setPrice(newPrice / editedProduct.getQuantity());
+                    priceEdit.setText(editedProduct.getDisplayedPrice() + "");
+                    if(editedProduct.getLinkedProduct() != null){
+                        deductibleEdit.setText(editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice() + "");
+                    }
+                    adapter.notifyDataSetChanged();
+
+
+            }
+        });
+  /*      changePriceEditButton.setOnClickListener((view) -> {
             if(changePriceEdit.getText().toString().trim().length() > 0) {
                 double newPrice = Double.valueOf(changePriceEdit.getText().toString());
                 editedProduct.changeQuantityAndOriginalPrice(newPrice);
@@ -97,7 +148,7 @@ public class CartListViewHolder {
                 }
                 adapter.notifyDataSetChanged();
             }
-        });
+        }); */
         quantityEdit.addTextChangedListener(new TextWatcher(){
 
             @Override

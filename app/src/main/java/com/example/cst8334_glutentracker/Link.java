@@ -18,9 +18,10 @@ import android.widget.TextView;
 import com.example.entity.Product;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Link extends AppCompatActivity {
-    ArrayList<Product> listOfProducts = new ArrayList<Product>();
+    private static ArrayList<Product> listOfProducts = new ArrayList<Product>();
     //Bundle dataFromActivity;
     FragmentAdapter adapter = new FragmentAdapter();
     Intent fromActivity;
@@ -38,12 +39,18 @@ public class Link extends AppCompatActivity {
         fromActivity = getIntent();
         passedIndex = fromActivity.getIntExtra("Index", 3);
         ListView linkTest = findViewById(R.id.linkTest);
-        listOfProducts.add(new Product(3, "Chip", "A bag of chips", 1.00, false));
+        listOfProducts.add(new Product(3, "Chip", "A bag of chips", 1.00, false)); // dummy value, get rid of this when you have non-gluten free in db
+       // listOfProducts = (ArrayList<Product>) dbOpener.selectProductsByNonGlutenFree();
+        List<Product> nonGlutenFreeProducts = dbOpener.selectProductsByNonGlutenFree();
+        if(nonGlutenFreeProducts != null) {
+            for (Product p : nonGlutenFreeProducts)
+                getNonGlutenArrayList().add(p);
+        }
         linkTest.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
-    private void loadTestValuesFromDatabase(){
+  /*  private void loadTestValuesFromDatabase(){
         database = dbOpener.getReadableDatabase();
         String[] columns = {DatabaseActivity.Products.COLUMN_NAME_ID, DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME, DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION,
             DatabaseActivity.Products.COLUMN_NAME_GLUTEN, DatabaseActivity.Products.COLUMN_NAME_PRICE};
@@ -65,7 +72,9 @@ public class Link extends AppCompatActivity {
         }
 
         resultsQuery.close();
-    }
+    } */
+
+  public static ArrayList<Product> getNonGlutenArrayList(){return listOfProducts;}
 
     class FragmentAdapter extends BaseAdapter {
 

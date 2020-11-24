@@ -24,7 +24,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * Database's version number.
      */
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
 
     /**
      * SQLite database object.
@@ -475,7 +475,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
             DatabaseActivity.ProductReceipt.COLUMN_NAME_PRODUCT_ID + " BIGINT, " +
             DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID + " INTEGER, " +
             DatabaseActivity.ProductReceipt.COLUMN_NAME_PRICE + " REAL, " +
-            DatabaseActivity.ProductReceipt.COLUMN_NAME_QUANTITY + " INTERGER, " +
+            DatabaseActivity.ProductReceipt.COLUMN_NAME_QUANTITY + " INTEGER, " +
             DatabaseActivity.ProductReceipt.COLUMN_NAME_DEDUCTION + " REAL, " +
             DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID + " BIGINT, " +
             DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE + " REAL, " +
