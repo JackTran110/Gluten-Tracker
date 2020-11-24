@@ -83,7 +83,7 @@ public class ProductLinkFragment extends Fragment {
         //Bundle dataFromActivity = getArguments();
         dataFromActivity = getArguments();
         ListView itemsList = result.findViewById(R.id.fragmentListView);
-        listOfProducts.add(new Product(3, "Chip", "A bag of chips", 0, 1.00, false));
+        listOfProducts.add(new Product(3, "Chip", "A bag of chips", 1.00, false));
         itemsList.setAdapter(fragmentAdapter);
         fragmentAdapter.notifyDataSetChanged();
         return result;

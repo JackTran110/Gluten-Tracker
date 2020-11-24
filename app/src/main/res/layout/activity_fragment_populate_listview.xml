@@ -52,7 +52,7 @@
         android:text="Link"
         android:layout_alignParentRight="true"/>
 
-    <Button
+ <!--   <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/changeFoundPrice"
@@ -65,6 +65,13 @@
         android:inputType="numberDecimal"
         android:id="@+id/changeFoundPriceAndQuantityText"
         android:layout_toRightOf="@+id/changeFoundPrice"
-        android:layout_below="@+id/linkCommit"/>
+        android:layout_below="@+id/linkCommit"/> -->
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editGlutenButton"
+        android:text="Edit"
+        android:layout_below="@+id/linkCommit" />
 
 </RelativeLayout>

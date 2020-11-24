@@ -1,6 +1,8 @@
 package com.example.cst8334_glutentracker;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -9,6 +11,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +24,7 @@ import com.example.entity.Product;
 
 public class EdamamQuery extends AsyncTask<String, Long, String> {
 
+    private Context context;
     long upc;
     String appId = "90fb7f7d";
     String appKey = "ec9b27a10f3bb159f17fd932ac559526";
@@ -32,6 +37,10 @@ public class EdamamQuery extends AsyncTask<String, Long, String> {
         this.upc = upc;
     }
 
+    public EdamamQuery(Context context, long upc){
+        this.context = context;
+        this.upc = upc;
+    }
     @Override
     public String doInBackground(String... strings){
             String ret = null;
@@ -55,12 +64,12 @@ public class EdamamQuery extends AsyncTask<String, Long, String> {
                 //String jUPC = jObject.getString("upc");
                 jProductLabel = jObject.getJSONArray("hints").getJSONObject(0).getJSONObject("food").getString("label");
 
-                CartActivity.getProductsArrayList().add(new Product( upc,jProductLabel,"", upc,5.00,false));
-
+                CartActivity.getProductsArrayList().add(new Product(upc, jProductLabel,"",1.00,false));
+                ret = jProductLabel;
             } catch (MalformedURLException mfe) {
             ret = "Malformed URL exception";
         } catch (IOException ioe) {
-            ret = "IO Exception. Is the Wifi connected?";
+            ret = "Internet not available or product not found";
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -70,7 +79,16 @@ public class EdamamQuery extends AsyncTask<String, Long, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-
-
+        switch (s) {
+            case "Malformed URL exception":
+                Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+                break;
+            case "Internet not available or product not found":
+                Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(context, "successfully added " + s + " to the cart", Toast.LENGTH_LONG).show();
+                break;
+        }
     }
 }

@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ScanActivity">
 
-    <SurfaceView
-        android:id="@+id/scanSurfaceView"
-        android:background="@drawable/add"
-        android:layout_width="500dp"
-        android:layout_height="300dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/scannerToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.budiyev.android.codescanner.CodeScannerView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:id="@+id/barcodeScanner"
+        app:autoFocusButtonColor="@android:color/white"
+        app:autoFocusButtonVisible="true"
+        app:flashButtonColor="@android:color/white"
+        app:flashButtonVisible="true"
+        app:maskColor="@color/colorPrimary"
         />
+
     <EditText
         android:id="@+id/barcodeEditText"
         android:hint="Enter Product Code"
@@ -22,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@+id/scanSurfaceView"
+        android:layout_below="@+id/barcodeScanner"
         android:inputType="number"
         />
 
@@ -31,8 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Accept"
-        app:layout_constraintTop_toBottomOf="@+id/barcodeEditText"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_below="@+id/barcodeEditText"
         />
 
     <Button
@@ -40,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cancel"
-        app:layout_constraintTop_toBottomOf="@+id/barcodeEditText"
-        app:layout_constraintLeft_toRightOf="@+id/acceptScannerButton"
+        android:layout_below="@+id/barcodeEditText"
+        android:layout_toRightOf="@+id/acceptScannerButton"
         />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

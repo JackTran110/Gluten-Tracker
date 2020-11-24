@@ -2,6 +2,7 @@ package com.example.cst8334_glutentracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,22 +12,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.entity.Product;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Link extends AppCompatActivity {
-    ArrayList<Product> listOfProducts = new ArrayList<Product>();
+    private static ArrayList<Product> listOfProducts = new ArrayList<Product>();
     //Bundle dataFromActivity;
     FragmentAdapter adapter = new FragmentAdapter();
     Intent fromActivity;
     int passedIndex;
+    Context context;
     private SQLiteDatabase database;
-    private glutenDbHelper dbOpener = new glutenDbHelper(this);
+    private GlutenDatabase dbOpener = new GlutenDatabase(this);
 
 
     @Override
@@ -37,34 +39,42 @@ public class Link extends AppCompatActivity {
         fromActivity = getIntent();
         passedIndex = fromActivity.getIntExtra("Index", 3);
         ListView linkTest = findViewById(R.id.linkTest);
-        listOfProducts.add(new Product(3, "Chip", "A bag of chips", 0, 1.00, false));
+        listOfProducts.add(new Product(3, "Chip", "A bag of chips", 1.00, false)); // dummy value, get rid of this when you have non-gluten free in db
+       // listOfProducts = (ArrayList<Product>) dbOpener.selectProductsByNonGlutenFree();
+        List<Product> nonGlutenFreeProducts = dbOpener.selectProductsByNonGlutenFree();
+        if(nonGlutenFreeProducts != null) {
+            for (Product p : nonGlutenFreeProducts)
+                getNonGlutenArrayList().add(p);
+        }
         linkTest.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
-    private void loadTestValuesFromDatabase(){
+  /*  private void loadTestValuesFromDatabase(){
         database = dbOpener.getReadableDatabase();
-        String[] columns = {databaseActivity.Products.COLUMN_NAME_ID, databaseActivity.Products.COLUMN_NAME_PNAME, databaseActivity.Products.COLUMN_NAME_DESCRIPTION,
-            databaseActivity.Products.COLUMN_NAME_GLUTEN, databaseActivity.Products.COLUMN_NAME_PRICE};
-        Cursor resultsQuery = database.query(false, databaseActivity.Products.TABLE_NAME, columns, "isGlutenFree = ?", new String[]{"0"},
+        String[] columns = {DatabaseActivity.Products.COLUMN_NAME_ID, DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME, DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION,
+            DatabaseActivity.Products.COLUMN_NAME_GLUTEN, DatabaseActivity.Products.COLUMN_NAME_PRICE};
+        Cursor resultsQuery = database.query(false, DatabaseActivity.Products.TABLE_NAME, columns, "isGlutenFree = ?", new String[]{"0"},
                 null, null, null, null);
 
-        int idColIndex = resultsQuery.getColumnIndex(databaseActivity.Products.COLUMN_NAME_ID);
-        int nameColIndex = resultsQuery.getColumnIndex(databaseActivity.Products.COLUMN_NAME_PNAME);
-        int descriptionColIndex = resultsQuery.getColumnIndex(databaseActivity.Products.COLUMN_NAME_DESCRIPTION);
-        int glutenColIndex = resultsQuery.getColumnIndex(databaseActivity.Products.COLUMN_NAME_GLUTEN);
-        int priceColIndex = resultsQuery.getColumnIndex(databaseActivity.Products.COLUMN_NAME_PRICE);
+        int idColIndex = resultsQuery.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_ID);
+        int nameColIndex = resultsQuery.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME);
+        int descriptionColIndex = resultsQuery.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION);
+        int glutenColIndex = resultsQuery.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_GLUTEN);
+        int priceColIndex = resultsQuery.getColumnIndex(DatabaseActivity.Products.COLUMN_NAME_PRICE);
 
         while(resultsQuery.moveToNext()){
             int id = resultsQuery.getInt(idColIndex);
             String name = resultsQuery.getString(nameColIndex);
             String description = resultsQuery.getString(descriptionColIndex);
             double price = resultsQuery.getDouble(priceColIndex);
-            listOfProducts.add(new Product(id, name, description, 0, price, false));
+            listOfProducts.add(new Product(id, name, description, price, false));
         }
 
         resultsQuery.close();
-    }
+    } */
+
+  public static ArrayList<Product> getNonGlutenArrayList(){return listOfProducts;}
 
     class FragmentAdapter extends BaseAdapter {
 
@@ -91,6 +101,7 @@ public class Link extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
             //View newView = inflater.inflate(R.layout.activity_product_list, parent, false);
             View newView = inflater.inflate(R.layout.activity_fragment_populate_listview, parent, false);
+            context = newView.getContext();
             TextView nameText = newView.findViewById(R.id.productFoundName);
             TextView descriptionText = newView.findViewById(R.id.productFoundDescription);
             TextView priceText = newView.findViewById(R.id.productFoundPrice);
@@ -117,7 +128,7 @@ public class Link extends AppCompatActivity {
                 finish();
             });
 
-            EditText changeFoundPrice = newView.findViewById(R.id.changeFoundPriceAndQuantityText);
+           /* EditText changeFoundPrice = newView.findViewById(R.id.changeFoundPriceAndQuantityText);
             Button changePriceButton = newView.findViewById(R.id.changeFoundPrice);
             changePriceButton.setOnClickListener((v) ->{
                 product.setQuantity(1);
@@ -125,14 +136,20 @@ public class Link extends AppCompatActivity {
                 //quantity.setText(Integer.toString(product.getQuantity()));
                 product.setDisplayedPrice(product.getPrice() * product.getQuantity());
                 priceText.setText(product.getDisplayedPrice() + "");
-                /*if(product.getLinkedProduct() != null){
-                    product.getLinkedProduct().setQuantity(product.getQuantity());
-                    product.getLinkedProduct().setDisplayedPrice(product.getLinkedProduct().getPrice() * product.getLinkedProduct().getQuantity());
-                    deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
-                }*/
+//                if(product.getLinkedProduct() != null){
+//                    product.getLinkedProduct().setQuantity(product.getQuantity());
+//                    product.getLinkedProduct().setDisplayedPrice(product.getLinkedProduct().getPrice() * product.getLinkedProduct().getQuantity());
+//                    deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+//                }
                 adapter.notifyDataSetChanged();
 
-            });
+            }); */
+           Button editButton = newView.findViewById(R.id.editGlutenButton);
+           editButton.setOnClickListener((v) -> {
+//               View row = getLayoutInflater().inflate(R.layout.activity_edit_product, parent, false);
+               View row = getLayoutInflater().inflate(R.layout.activity_edit_receipt, parent, false);
+               CartListViewHolder.editProduct(context, product, adapter, row,null,0);
+           });
 
 
             /*TextView productName = newView.findViewById(R.id.productName);

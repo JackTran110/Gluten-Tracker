@@ -5,19 +5,18 @@ public class Product {
     private long id = 0;
     private String productName = "default";
     private String productDescription = "default";
-    private long barCode = 0;
     private double price = 0;
     private double displayedPrice = 0;
     private int quantity = 0;
     private boolean isGlutenFree = false;
     private Product linkedProduct = null;
+    private double deduction = 0;
 
 
-    public Product(long id, String productName, String productDescription, long barCode, double price, boolean isGlutenFree){
+    public Product(long id, String productName, String productDescription, double price, boolean isGlutenFree){
         setId(id);
         setProductName(productName);
         setProductDescription(productDescription);
-        setBarCode(barCode);
         setPrice(price);
         setIsGlutenFree(isGlutenFree);
         setQuantity(1);
@@ -49,15 +48,6 @@ public class Product {
 
     public String getProductDescription(){
         return productDescription;
-    }
-
-    public Product setBarCode(long barCode){
-        this.barCode = barCode;
-        return this;
-    }
-
-    public long getBarCode(){
-        return barCode;
     }
 
     public Product setPrice(double price){
@@ -102,5 +92,40 @@ public class Product {
 
     public void setLinkedProduct(Product linkedProduct){
         this.linkedProduct = linkedProduct;
+    }
+
+    public void changeQuantityAndDisplayedPrice(int newQuantity){
+        setQuantity(newQuantity);
+        setDisplayedPrice(getPrice() * getQuantity());
+        //quantityEdit.setText(editedProduct.getQuantity() + "");
+        if(getLinkedProduct() != null){
+            getLinkedProduct().setQuantity(getQuantity());
+            getLinkedProduct().setDisplayedPrice(getLinkedProduct().getPrice() * getLinkedProduct().getQuantity());
+            //deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+        }
+    }
+
+    public void changeQuantityAndOriginalPrice(double newPrice){
+        setQuantity(1);
+        setPrice(newPrice);
+        //quantity.setText(Integer.toString(product.getQuantity()));
+        //quantityEdit.setText(Integer.toString(1));
+        setDisplayedPrice(getPrice() * getQuantity());
+        //priceEdit.setText(editedProduct.getDisplayedPrice() + "");
+        //changePriceEdit.setText("");
+        if (getLinkedProduct() != null) {
+            getLinkedProduct().setQuantity(getQuantity());
+            getLinkedProduct().setDisplayedPrice(getLinkedProduct().getPrice() * getLinkedProduct().getQuantity());
+            //deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+            //deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
+        }
+    }
+
+    public double getDeduction() {
+        return deduction;
+    }
+
+    public void setDeduction(double deduction) {
+        this.deduction = deduction;
     }
 }

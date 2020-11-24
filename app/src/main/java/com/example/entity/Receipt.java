@@ -3,17 +3,16 @@ package com.example.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Receipt {
-
+public class Receipt {  
     private long id = 0;
     private List<Product> products = new ArrayList<>();
     private String receiptFile = "default";
     private double taxDeductionTotal = 0;
+    private double totalPrice = 0;
     private String date = "now";
 
-    public Receipt(long id, List<Product> products, String receiptFile, double taxDeductionTotal, String date){
-        setId(id).setProducts(products).setReceiptFile(receiptFile).setTaxDeductionTotal(taxDeductionTotal).setDate(date);
-
+    public Receipt(long id, List<Product> products, String receiptFile, double taxDeductionTotal, double totalPrice, String date){
+        setId(id).setProducts(products).setReceiptFile(receiptFile).setTaxDeductionTotal(taxDeductionTotal).setTotalPrice(totalPrice).setDate(date);
     }
 
     public long getId() {
@@ -58,6 +57,15 @@ public class Receipt {
 
     public Receipt setDate(String date) {
         this.date = date;
+        return this;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public Receipt setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
         return this;
     }
 }
