@@ -1,29 +1,26 @@
 package com.example.cst8334_glutentracker;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SurfaceView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
@@ -40,11 +37,13 @@ public class ScanActivity extends AppCompatActivity {
     Button acceptScannerButton;
     Button cancelScannerButton;
     EditText upcBarcode;
+    CheckBox checkBox;
     GlutenDatabase dbOpener;
     SQLiteDatabase db;
     CodeScanner codeScanner;
     CodeScannerView scannerView;
     Toolbar scannerTbar;
+    AlertDialog.Builder alertDialog;
 
     // Adding six second delay between scans, https://github.com/journeyapps/zxing-android-embedded/issues/59
     static final int DELAY = 6000;
@@ -58,7 +57,7 @@ public class ScanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scan);
 
         scannerTbar = (Toolbar)findViewById(R.id.scannerToolbar);
-
+        checkBox = (CheckBox) findViewById(R.id.glutenCheckBox);
         upcBarcode = (EditText) findViewById(R.id.barcodeEditText);
         acceptScannerButton = (Button) findViewById(R.id.acceptScannerButton);
         cancelScannerButton = (Button) findViewById(R.id.cancelScannerButton);
@@ -83,7 +82,7 @@ public class ScanActivity extends AppCompatActivity {
                         if (System.currentTimeMillis() - delayTimeStamp < DELAY){
                             return;
                         } else {
-                            ScanActivity.this.runQuery(parseLong(result.getText()));
+                            ScanActivity.this.runQuery(parseLong(result.getText()), checkBox.isChecked());
                             delayTimeStamp = System.currentTimeMillis();
                         }
                     }
@@ -94,7 +93,7 @@ public class ScanActivity extends AppCompatActivity {
         if (acceptScannerButton != null) {
             acceptScannerButton.setOnClickListener(acceptClick -> {
                 if (upcBarcode.getText().toString().length() > 0) {
-                    this.runQuery(getUPCEditText());
+                    this.runQuery(getUPCEditText(), checkBox.isChecked());
                 }
             });
         }
@@ -110,13 +109,29 @@ public class ScanActivity extends AppCompatActivity {
         } else {
             codeScanner.setFlashEnabled(false);
         }
+
+//        checkBox.setOnCheckedChangeListener( (buttonView, isChecked) -> {
+//            if (checkBox.isChecked())
+//        });
     }
 
     // Run the API query to Edamam
-    private void runQuery(long upc) {
+    private void runQuery(long upc, boolean isGluten) {
         boolean boolCartItem = false;
         db = dbOpener.getReadableDatabase();
         Product barcodeCheck = dbOpener.selectProductByID(upc);
+
+        DialogInterface.OnClickListener dialogInterfaceListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    CartActivity.getProductsArrayList().add(barcodeCheck);
+                    Toast.makeText(this, barcodeCheck.getProductName() + " added to the cart from database", Toast.LENGTH_LONG).show();
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    Toast.makeText(this, barcodeCheck.getProductName() + " was not added to the cart", Toast.LENGTH_LONG).show();
+                    break;
+            }
+        };
 
         // if iterator found in array, Toast.maketext (Scanactivity.this, "message", Toast.LENGTH_LONG).show();
         if (CartActivity.getProductsArrayList().size() != 0){
@@ -126,14 +141,20 @@ public class ScanActivity extends AppCompatActivity {
                     Toast.makeText(ScanActivity.this, "Item already exists in the cart", Toast.LENGTH_LONG).show();
                 }
             }
-            // if select id from products; == 1, add item to cart
         }
 
         if (barcodeCheck != null && boolCartItem == false) {
-            CartActivity.getProductsArrayList().add(barcodeCheck);
-            Toast.makeText(this, barcodeCheck.getProductName() + " added to the cart from database", Toast.LENGTH_LONG).show();
+            if (barcodeCheck.isGlutenFree()){
+                alertDialog = new AlertDialog.Builder(this).setTitle("Add gluten item to cart?")
+                        .setMessage("Would you like to add this gluten item to the cart?")
+                        .setPositiveButton("Yes", dialogInterfaceListener).setNegativeButton("No", dialogInterfaceListener);;
+                alertDialog.create().show();
+            } else {
+                CartActivity.getProductsArrayList().add(barcodeCheck);
+                Toast.makeText(this, barcodeCheck.getProductName() + " added to the cart from database", Toast.LENGTH_LONG).show();
+            }
         } else if (barcodeCheck == null && boolCartItem == false) {
-            new EdamamQuery(ScanActivity.this, upc).execute();
+            new EdamamQuery(ScanActivity.this, upc, isGluten).execute();
         }
     }
 
