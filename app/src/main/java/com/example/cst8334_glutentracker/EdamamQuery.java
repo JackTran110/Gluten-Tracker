@@ -1,6 +1,7 @@
 package com.example.cst8334_glutentracker;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -11,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,27 +21,41 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.entity.Product;
 
 public class EdamamQuery extends AsyncTask<String, Long, String> {
 
     private Context context;
+    boolean isGluten;
     long upc;
     String appId = "90fb7f7d";
     String appKey = "ec9b27a10f3bb159f17fd932ac559526";
     String response;
     JSONObject jObject;
     String jProductLabel;
+    Product prod;
+    AlertDialog.Builder alertDialog;
 
-    public EdamamQuery(String response, long upc){
-        this.response = response;
-        this.upc = upc;
-    }
+    DialogInterface.OnClickListener dialogInterfaceListener = (dialog, which) -> {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                CartActivity.getProductsArrayList().add(prod);
+                Toast.makeText(context, "successfully added " + prod.getProductName() + " to the cart", Toast.LENGTH_LONG).show();
+                break;
 
-    public EdamamQuery(Context context, long upc){
+            case DialogInterface.BUTTON_NEGATIVE:
+                Toast.makeText(context, "successfully added " + prod.getProductName(), Toast.LENGTH_LONG).show();
+                break;
+        }
+    };
+
+
+    public EdamamQuery(Context context, long upc, boolean isGluten){
         this.context = context;
         this.upc = upc;
+        this.isGluten = isGluten;
     }
     @Override
     public String doInBackground(String... strings){
@@ -61,11 +77,13 @@ public class EdamamQuery extends AsyncTask<String, Long, String> {
 
                 String result = sb.toString();
                 jObject = new JSONObject(result);
-                //String jUPC = jObject.getString("upc");
                 jProductLabel = jObject.getJSONArray("hints").getJSONObject(0).getJSONObject("food").getString("label");
 
-                Product prod = new Product(upc, jProductLabel,"",1.00,false);
-                CartActivity.getProductsArrayList().add(prod);
+                prod = new Product(upc, jProductLabel,"",1.00, isGluten);
+
+                if (isGluten){
+                    CartActivity.getProductsArrayList().add(prod);
+                }
 
                 GlutenDatabase db = new GlutenDatabase(context);
                 db.insertIntoProductsTable(prod);
@@ -92,8 +110,21 @@ public class EdamamQuery extends AsyncTask<String, Long, String> {
                 Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
                 break;
             default:
-                Toast.makeText(context, "successfully added " + s + " to the cart", Toast.LENGTH_LONG).show();
+                if (isGluten) {
+                    Toast.makeText(context, "successfully added " + s + " to the cart", Toast.LENGTH_LONG).show();
+                } else {
+                    alertDialog = new AlertDialog.Builder(context);
+                    this.setAlertDialog(alertDialog);
+                    alertDialog.create().show();
+                }
                 break;
         }
     }
+
+    public void setAlertDialog(AlertDialog.Builder alertDialog) {
+        this.alertDialog = alertDialog.setTitle("Add gluten item to cart?")
+            .setMessage("Would you like to add this gluten item to the cart?")
+            .setPositiveButton("Yes", dialogInterfaceListener).setNegativeButton("No", dialogInterfaceListener);
+    }
+
 }
