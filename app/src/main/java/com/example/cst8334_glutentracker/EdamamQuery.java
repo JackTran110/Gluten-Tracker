@@ -64,7 +64,12 @@ public class EdamamQuery extends AsyncTask<String, Long, String> {
                 //String jUPC = jObject.getString("upc");
                 jProductLabel = jObject.getJSONArray("hints").getJSONObject(0).getJSONObject("food").getString("label");
 
-                CartActivity.getProductsArrayList().add(new Product(upc, jProductLabel,"",1.00,false));
+                Product prod = new Product(upc, jProductLabel,"",1.00,false);
+                CartActivity.getProductsArrayList().add(prod);
+
+                GlutenDatabase db = new GlutenDatabase(context);
+                db.insertIntoProductsTable(prod);
+
                 ret = jProductLabel;
             } catch (MalformedURLException mfe) {
             ret = "Malformed URL exception";
