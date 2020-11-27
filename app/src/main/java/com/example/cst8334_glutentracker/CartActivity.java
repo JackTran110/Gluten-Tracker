@@ -45,6 +45,10 @@ public class CartActivity extends AppCompatActivity {
     private double totalDeductible = 0;
     Toolbar cartTbar;
 
+    /**
+     * This method is called when the page is first loaded
+     * @param savedInstanceState
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,10 +139,17 @@ public class CartActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method returns the arraylist of products
+     * @return The arraylist of products
+     */
     public static ArrayList<Product> getProductsArrayList(){
         return productsArrayList;
     }
 
+    /**
+     * This method is called when the activity is resumed
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -154,6 +165,9 @@ public class CartActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This method pauses the activity
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -199,13 +213,25 @@ public class CartActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * This inner class is an adapter for the arraylist.
+     */
     class Adapter extends BaseAdapter{
 
+        /**
+         * Counts the number of items in the arraylist
+         * @return The number of items in the arraylist
+         */
         @Override
         public int getCount() {
             return productsArrayList.size();
         }
 
+        /**
+         *
+         * @param position
+         * @return
+         */
         @Override
         public Product getItem(int position) {
             return productsArrayList.get(position);
