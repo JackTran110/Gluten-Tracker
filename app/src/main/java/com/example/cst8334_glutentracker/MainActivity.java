@@ -1,9 +1,13 @@
 package com.example.cst8334_glutentracker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.Button;
@@ -12,6 +16,7 @@ import android.widget.Button;
 //version feng
 
 public class MainActivity extends AppCompatActivity {
+    int CAMERA_PERMISSION_CODE;
 
    /* private SQLiteDatabase database;
     private glutenDbHelper dbOpener = new glutenDbHelper(this); */
@@ -33,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button toScanner = findViewById(R.id.toScannerPage);
         toScanner.setOnClickListener((v) -> {startActivity(new Intent(MainActivity.this, ScanActivity.class));});
-    }
+   }
 
    /* // this is a method to test the database
     private void insertTestValuesIntoDatabase(){
