@@ -21,16 +21,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Link extends AppCompatActivity {
+
+    /**
+     * This is an arraylist that holds non-gluten free Products
+     */
     private ArrayList<Product> listOfProducts = new ArrayList<Product>();
     //Bundle dataFromActivity;
+    /**
+     * An instance of the FragmentAdapter inner class used to populate the ListView
+     */
     FragmentAdapter adapter = new FragmentAdapter();
+
+    /**
+     * Gets the intent from the previous class
+     */
     Intent fromActivity;
+
+    /**
+     * The index passed to this class. This is the position of the arraylist from the previous activity. This will be used to link a product to that specific product.
+     */
     int passedIndex;
     Context context;
     private SQLiteDatabase database;
+    /**
+     * An instance of the GlutenDatabase class. This will be used to load Products from the Products table that are not gluten-free.
+     */
     private GlutenDatabase dbOpener = new GlutenDatabase(this);
 
-
+    /**
+     * This method is called when the page is first loaded
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +60,7 @@ public class Link extends AppCompatActivity {
         fromActivity = getIntent();
         passedIndex = fromActivity.getIntExtra("Index", 3);
         ListView linkTest = findViewById(R.id.linkTest);
-        listOfProducts.add(new Product(3, "Chip", "A bag of chips", 1.00, false)); // dummy value, get rid of this when you have non-gluten free in db
+ //       listOfProducts.add(new Product(3, "Chip", "A bag of chips", 1.00, false)); // dummy value, get rid of this when you have non-gluten free in db
        // listOfProducts = (ArrayList<Product>) dbOpener.selectProductsByNonGlutenFree();
         List<Product> nonGlutenFreeProducts = dbOpener.selectProductsByNonGlutenFree();
         if(nonGlutenFreeProducts != null) {
@@ -78,21 +99,43 @@ public class Link extends AppCompatActivity {
 
     class FragmentAdapter extends BaseAdapter {
 
+        /**
+         * Counts the number of items in the arraylist
+         * @return The number of items in the arraylist
+         */
         @Override
         public int getCount() {
             return listOfProducts.size();
         }
 
+        /**
+         * This method gets the Product in the selected position
+         * @param position The position of the arraylist
+         * @return The found Product
+         */
         @Override
         public Product getItem(int position) {
             return listOfProducts.get(position);
         }
 
+        /**
+         * This method returns the id (upc code) of the Product in the selected position
+         * @param position The position of the arraylist
+         * @return The product's upc code
+         */
         @Override
         public long getItemId(int position) {
             return listOfProducts.get(position).getId();
         }
 
+        /**
+         * This method returns the view that populates a row. This view changes whether the Product is linked or not, and it changes depending on
+         * if the product is gluten-free or not (only gluten-free items may be linked, otherwise the link button will be disabled).
+         * @param position The position of the arraylist
+         * @param convertView Allows for recycling of views when scrolling
+         * @param parent The parent class.
+         * @return The view for the row
+         */
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Product product = (Product) getItem(position);
@@ -108,7 +151,9 @@ public class Link extends AppCompatActivity {
             //EditText priceText = newView.findViewById(R.id.productFoundPrice);
             nameText.setText(product.getProductName() + " ");
             descriptionText.setText(product.getProductDescription() + " ");
-            priceText.setText(product.getDisplayedPrice() + " ");
+         //   priceText.setText(product.getDisplayedPrice() + " ");
+            priceText.setText(String.format("%.2f", product.getDisplayedPrice()));
+
    // worked        TextView textTest = newView.findViewById(R.id.textTest);
    //  worked       TextView testPrice = newView.findViewById(R.id.testPrice);
            // int passedIndex = dataFromActivity.getInt("Index");

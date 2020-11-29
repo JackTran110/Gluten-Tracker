@@ -16,8 +16,23 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.example.entity.Product;
 
+/**
+ * This class is used to hold a method shared between multiple classes.
+ */
 public class CartListViewHolder {
 
+    /**
+     * This method creates an AlertDialog that allows the user to edit a product's quantity and price depending on the context passed. If the context is an instance of Link.java,
+     * then editing a product's quantity is disabled as we want to compare the price difference between a gluten-free product and a non-gluten free product of the same quantity
+     * being purchased. If the context is an instance of DigitalReceipt.java, changes will reflected in the ProductReceipt table.
+     * @param context The context from where this method is being called. Depending on the context passed, certain features may be enabled or disabled.
+     * @param product The product to be edited.
+     * @param adapter The adapter from where this method is being called. This is used to reflect changes in the calling class's activity.
+     * @param row The view to inflate the AlertDialog with.
+     * @param dbOpener An instance of the GlutenDatabase class. This is only used if this method is being called by the DigitalReceipt.java class, as it will update the ProductReceipt
+     *                 table in the database.
+     * @param index The ReceiptId. This will be used to find the row(s) to update the ProductReceipt table.
+     */
     public static void editProduct(Context context, Product product, BaseAdapter adapter, View row,GlutenDatabase dbOpener,long index){
         Product editedProduct = new Product(product.getId(), product.getProductName(), product.getProductDescription(),
                 product.getPrice(), product.isGlutenFree());

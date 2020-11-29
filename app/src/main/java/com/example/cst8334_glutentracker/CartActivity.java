@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -228,20 +229,33 @@ public class CartActivity extends AppCompatActivity {
         }
 
         /**
-         *
-         * @param position
-         * @return
+         * This method gets the Product in the selected position
+         * @param position The position of the arraylist
+         * @return The found Product
          */
         @Override
         public Product getItem(int position) {
             return productsArrayList.get(position);
         }
 
+        /**
+         * This method returns the id (upc code) of the Product in the selected position
+         * @param position The position of the arraylist
+         * @return The product's upc code
+         */
         @Override
         public long getItemId(int position) {
             return productsArrayList.get(position).getId();
         }
 
+        /**
+         * This method returns the view that populates a row. This view changes whether the Product is linked or not, and it changes depending on
+         * if the product is gluten-free or not (only gluten-free items may be linked, otherwise the link button will be disabled).
+         * @param position The position of the arraylist
+         * @param convertView Allows for recycling of views when scrolling
+         * @param parent The parent class.
+         * @return The view for the row
+         */
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Product product = (Product) getItem(position);
@@ -275,7 +289,8 @@ public class CartActivity extends AppCompatActivity {
             TextView quantity = newView.findViewById(R.id.quantity);
             quantity.setText(Integer.toString(product.getQuantity()));
 
-            Button plusButton = newView.findViewById(R.id.plusButton);
+            //Button plusButton = newView.findViewById(R.id.plusButton);
+            ImageButton plusButton = newView.findViewById(R.id.plusButton);
             plusButton.setOnClickListener((v) ->{
                 int convertedToInt = (Integer.parseInt(quantity.getText().toString())) +1;
                 product.changeQuantityAndDisplayedPrice(convertedToInt);
@@ -285,7 +300,8 @@ public class CartActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             });
 
-            Button minusButton = newView.findViewById(R.id.minusButton);
+            //Button minusButton = newView.findViewById(R.id.minusButton);
+            ImageButton minusButton = newView.findViewById(R.id.minusButton);
             minusButton.setOnClickListener((v) ->{
                 if(product.getQuantity() > 1) {
                     int convertedToInt = (Integer.parseInt(quantity.getText().toString())) - 1;
@@ -305,6 +321,10 @@ public class CartActivity extends AppCompatActivity {
             });
 
             Button linkButton = newView.findViewById(R.id.linkButton);
+            boolean test = product.isGlutenFree();
+            if(!product.isGlutenFree()){
+                linkButton.setEnabled(false);
+            }
             linkButton.setOnClickListener((v) -> {
                 // Finish the rest of this
                 Bundle dataToPass = new Bundle();
