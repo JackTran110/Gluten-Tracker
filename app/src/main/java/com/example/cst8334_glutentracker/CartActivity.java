@@ -82,6 +82,25 @@ public class CartActivity extends AppCompatActivity {
         totalDeductibleDisplay = findViewById(R.id.totalDeductible);
         total = findViewById(R.id.amount);
         purchases.setAdapter(adapter);
+
+ /*       if(!getProductsArrayList().isEmpty()) {
+            double totalDeductibleAsDouble = 0;
+            double totalAsDouble = 0;
+            for (Product products : getProductsArrayList()) {
+                if (products.getLinkedProduct() != null) {
+                    totalDeductibleAsDouble += products.getDisplayedPrice() - products.getLinkedProduct().getDisplayedPrice();
+                }
+                totalAsDouble += products.getDisplayedPrice();
+                // total.setText(totalAsDouble + "");
+                total.setText(String.format("%.2f", totalAsDouble));
+                totalPaid = totalAsDouble;
+                //totalDeductibleDisplay.setText(totalDeductibleAsDouble + "");
+                totalDeductibleDisplay.setText(String.format("%.2f", totalDeductibleAsDouble));
+                totalDeductible = totalDeductibleAsDouble;
+            }
+            adapter.notifyDataSetChanged();
+        } */
+
         adapter.notifyDataSetChanged();
 
 //        addProductButton.setOnClickListener((View v)->{
@@ -276,14 +295,16 @@ public class CartActivity extends AppCompatActivity {
             //final View testView = newView;
             TextView deductibleText = newView.findViewById(R.id.deductibleText);
             if(product.getLinkedProduct() != null) {
-                deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + ""); //changed to displayed price
+              //  deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + ""); //changed to displayed price
+                deductibleText.setText(product.getDeductionAsString());
             }
 
             TextView productName = newView.findViewById(R.id.productName);
             productName.setText(product.getProductName());
 
             TextView price = newView.findViewById(R.id.price);
-            price.setText(product.getDisplayedPrice() + "");
+     //       price.setText(product.getDisplayedPrice() + "");
+            price.setText(product.getDisplayedPriceAsString());
             //EditText quantity = newView.findViewById(R.id.quantity); what it was before
             //quantity.setText("1"); not needed
             TextView quantity = newView.findViewById(R.id.quantity);
@@ -295,7 +316,8 @@ public class CartActivity extends AppCompatActivity {
                 int convertedToInt = (Integer.parseInt(quantity.getText().toString())) +1;
                 product.changeQuantityAndDisplayedPrice(convertedToInt);
                 if(product.getLinkedProduct() != null){
-                    deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+                   // deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+                    deductibleText.setText(product.getDeductionAsString());
                 }
                 adapter.notifyDataSetChanged();
             });
@@ -307,7 +329,8 @@ public class CartActivity extends AppCompatActivity {
                     int convertedToInt = (Integer.parseInt(quantity.getText().toString())) - 1;
                     product.changeQuantityAndDisplayedPrice(convertedToInt);
                     if(product.getLinkedProduct() != null){
-                        deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+                      //  deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+                        deductibleText.setText(product.getDeductionAsString());
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -315,7 +338,10 @@ public class CartActivity extends AppCompatActivity {
 
            Button removeButton = newView.findViewById(R.id.removeFromCart);
             removeButton.setOnClickListener((v) -> {
-                productsArrayList.remove(position);
+                totalPaid = totalPaid - getProductsArrayList().get(position).getDisplayedPrice();
+                totalDeductible = totalDeductible - getProductsArrayList().get(position).getDeduction();
+                //productsArrayList.remove(position);
+                getProductsArrayList().remove(position);
                 //Toast.makeText(this, "Should be working", Toast.LENGTH_SHORT).show();
                 adapter.notifyDataSetChanged();
             });
@@ -481,9 +507,11 @@ public class CartActivity extends AppCompatActivity {
                     totalDeductibleAsDouble += products.getDisplayedPrice() - products.getLinkedProduct().getDisplayedPrice();
                 }
                 totalAsDouble += products.getDisplayedPrice();
-                total.setText(totalAsDouble + "");
+               // total.setText(totalAsDouble + "");
+                total.setText(String.format("%.2f", totalAsDouble));
                 totalPaid = totalAsDouble;
-                totalDeductibleDisplay.setText(totalDeductibleAsDouble + "");
+                //totalDeductibleDisplay.setText(totalDeductibleAsDouble + "");
+                totalDeductibleDisplay.setText(String.format("%.2f", totalDeductibleAsDouble));
                 totalDeductible = totalDeductibleAsDouble;
             }
             return newView;

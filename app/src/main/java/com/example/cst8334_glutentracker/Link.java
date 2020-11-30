@@ -152,7 +152,7 @@ public class Link extends AppCompatActivity {
             nameText.setText(product.getProductName() + " ");
             descriptionText.setText(product.getProductDescription() + " ");
          //   priceText.setText(product.getDisplayedPrice() + " ");
-            priceText.setText(String.format("%.2f", product.getDisplayedPrice()));
+            priceText.setText(product.getDisplayedPriceAsString());
 
    // worked        TextView textTest = newView.findViewById(R.id.textTest);
    //  worked       TextView testPrice = newView.findViewById(R.id.testPrice);
