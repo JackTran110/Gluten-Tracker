@@ -4,26 +4,34 @@
 
     <item android:id="@+id/scannerButton"
         android:title="Barcode Scanner"
-        android:icon="@drawable/w123"
+        android:icon="@drawable/barcode_icon_white"
         android:orderInCategory="1"
         app:showAsAction="always"/>
 
     <item android:id="@+id/cartButton"
         android:title="Shopping Cart"
-        android:icon="@drawable/w133"
+        android:icon="@drawable/cart_icon_white"
         android:orderInCategory="2"
         app:showAsAction="always"/>
 
     <item android:id="@+id/receiptButton"
         android:title="Receipts"
-        android:icon="@drawable/w143"
+        android:icon="@drawable/receipt_icon_white"
         android:orderInCategory="3"
         app:showAsAction="always"/>
 
     <item android:id="@+id/reportButton"
         android:title="Reports"
-        android:icon="@drawable/w153"
+        android:icon="@drawable/report_icon_white"
         android:orderInCategory="4"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/search_view"
+        android:title="Search View"
+        android:icon="@drawable/search_icon"
+        android:orderInCategory="5"
+        app:showAsAction="always"
+        app:actionViewClass="android.widget.SearchView"/>
 
 </menu>

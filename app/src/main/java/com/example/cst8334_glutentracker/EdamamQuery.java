@@ -17,7 +17,9 @@ import org.json.JSONObject;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.example.entity.Product;
+import com.example.cst8334_glutentracker.activity.CartActivity;
+import com.example.cst8334_glutentracker.database.GlutenDatabase;
+import com.example.cst8334_glutentracker.entity.Product;
 
 /**
  * Class that will be performing API queries to the Edamam database.

@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -46,7 +47,10 @@ import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ScanMode;
-import com.example.entity.Product;
+import com.example.cst8334_glutentracker.EdamamQuery;
+import com.example.cst8334_glutentracker.R;
+import com.example.cst8334_glutentracker.database.GlutenDatabase;
+import com.example.cst8334_glutentracker.entity.Product;
 import com.google.zxing.Result;
 
 import static java.lang.Long.parseLong;
@@ -260,6 +264,8 @@ public class ScanActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar, menu);
+        menu.findItem(R.id.scannerButton).setVisible(false);
+        menu.findItem(R.id.search_view).setVisible(false);
         return true;
     }
 

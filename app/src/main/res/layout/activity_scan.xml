@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ScanActivity">
+    tools:context=".activity.ScanActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/scannerToolbar"
@@ -29,34 +29,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
+        android:fontFamily="serif"
+        android:textSize="20sp"
         android:layout_below="@+id/barcodeScanner"
         android:inputType="number"
         />
 
     <Button
         android:id="@+id/acceptScannerButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Accept"
-        android:layout_below="@+id/barcodeEditText"
+        android:textColor="@color/colorWhite"
+        android:fontFamily="serif"
+        android:layout_above="@id/cancelScannerButton"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/btn_background"
         />
 
     <Button
         android:id="@+id/cancelScannerButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cancel"
-        android:layout_below="@+id/barcodeEditText"
-        android:layout_toRightOf="@+id/acceptScannerButton"
+        android:textColor="@color/colorWhite"
+        android:fontFamily="serif"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/btn_background"
         />
 
     <CheckBox
         android:id="@+id/glutenCheckBox"
         android:layout_width="wrap_content"
-        android:layout_height="46dp"
-        android:layout_below="@id/barcodeEditText"
-        android:layout_marginLeft="0dp"
-        android:layout_toRightOf="@id/cancelScannerButton"
-        android:text="Gluten-Free Product" />
+        android:layout_height="wrap_content"
+        android:layout_above="@id/acceptScannerButton"
+        android:text="Gluten-Free Product"
+        android:fontFamily="serif"
+        android:textSize="20sp"
+        android:layout_margin="10dp"
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>

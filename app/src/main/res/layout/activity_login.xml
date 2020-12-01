@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/logo">
+
+    <TextView
+        android:id="@+id/login_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log In"
+        android:textSize="50sp"
+        android:textColor="@color/colorBlack"
+        android:textStyle="bold"
+        android:fontFamily="serif"
+        android:layout_marginTop="150dp"
+        android:layout_centerHorizontal="true"/>
+
+    <EditText
+        android:id="@+id/login_name"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="50dp"
+        android:layout_below="@+id/login_text"
+        android:hint="Please enter your login name!"
+        android:fontFamily="serif"
+        android:background="@color/colorWhite"
+        android:alpha="0.8"/>
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:layout_below="@+id/login_name"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:inputType="textPassword"
+        android:hint="Please enter password!"
+        android:fontFamily="serif"
+        android:background="@color/colorWhite"
+        android:alpha="0.8"/>
+
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="LOG IN"
+        android:textSize="25sp"
+        android:fontFamily="serif"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/btn_background"/>
+
+    <TextView
+        android:id="@+id/version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:text="Version 0.3"
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        android:textStyle="bold"
+        android:fontFamily="serif"/>
+
+</RelativeLayout>

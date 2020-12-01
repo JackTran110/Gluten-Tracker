@@ -109,18 +109,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <TextView
+ <!-- original block   <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dollarSign"
-        android:text="$"
+        android:text=": $"
         android:layout_toRightOf="@+id/productName"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/price"
-        android:layout_toRightOf="@id/dollarSign"/>
+        android:layout_toRightOf="@id/dollarSign"/> -->
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/dollarSign"
+      android:text="$"
+      android:layout_below="@+id/productName" />
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/price"
+      android:layout_below="@+id/productName"
+      android:layout_toRightOf="@id/dollarSign"/>
     <!--<EditText
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
@@ -128,14 +141,61 @@
        android:inputType="numberDecimal"
        android:layout_toRightOf="@id/productName"/> -->
 
-    <TextView
+  <!-- original  <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/quantity"
         android:layout_toRightOf="@id/plusButton"
-        android:layout_below="@+id/price"/>
+        android:layout_below="@+id/price"/> -->
 
-    <Button
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/quantity"
+      android:layout_centerHorizontal="true"
+      android:layout_toRightOf="@id/plusButton"
+      android:layout_below="@+id/productName"/>
+
+ <!-- original block <ImageButton
+        android:id="@+id/plusButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/price"
+        android:layout_marginTop="-2dp"
+        android:src="@drawable/plus"
+        android:text="Plus" />
+
+    <ImageButton
+        android:id="@+id/minusButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/price"
+        android:layout_marginTop="-2dp"
+        android:layout_toRightOf="@+id/quantity"
+        android:src="@drawable/minus"
+        android:text="Minus" /> -->
+  <ImageButton
+      android:id="@+id/plusButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/productName"
+      android:layout_centerHorizontal="true"
+      android:layout_marginTop="-2dp"
+      android:src="@drawable/plus"
+      android:text="Plus" />
+
+  <ImageButton
+      android:id="@+id/minusButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/productName"
+      android:layout_centerHorizontal="true"
+      android:layout_marginTop="-2dp"
+      android:layout_toRightOf="@+id/quantity"
+      android:src="@drawable/minus"
+      android:text="Minus" />
+
+ <!--   <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/plusButton"
@@ -148,7 +208,7 @@
         android:id="@+id/minusButton"
         android:text="Minus"
         android:layout_toRightOf="@+id/quantity"
-        android:layout_below="@+id/price"/>
+        android:layout_below="@+id/price"/> -->
 
     <Button
         android:layout_width="wrap_content"

@@ -1,4 +1,8 @@
-package com.example.entity;
+package com.example.cst8334_glutentracker.entity;
+
+import com.example.cst8334_glutentracker.entity.Product;
+
+import java.util.List;
 
 public class ItemsModel {
 
@@ -7,11 +11,11 @@ public class ItemsModel {
     private int rYear;
     private int rMonth;
     private int rDay;
-    private String rItem;
+    private  List<Product> rItem;
     private String rSub;
     private String rTax;
 
-    public ItemsModel(String rId, String rDate, String rItem, String rSub, String rTax) {
+    public ItemsModel(String rId, String rDate, List<Product> rItem, String rSub, String rTax) {
         this.rId = rId;
         this.rDate = rDate;
         this.rItem = rItem;
@@ -19,13 +23,12 @@ public class ItemsModel {
         this.rTax = rTax;
     }
 
-    public ItemsModel(String rId, String rDate, int rYear, int rMonth,int rDay, String rItem, String rSub, String rTax) {
+    public ItemsModel(String rId, String rDate, String rSub, String rTax) {
         this.rId = rId;
         this.rDate = rDate;
-        this.rYear = rYear;
-        this.rMonth = rMonth;
+
         this.rDate = rDate;
-        this.rItem = rItem;
+
         this.rSub = rSub;
         this.rTax = rTax;
     }
@@ -38,7 +41,7 @@ public class ItemsModel {
         return rDate;
     }
 
-    public String getrItem() {
+    public List<Product> getrItem() {
         return rItem;
     }
 
@@ -58,7 +61,7 @@ public class ItemsModel {
         this.rDate = rDate;
     }
 
-    public void setrItem(String rItem) {
+    public void setrItem(List<Product> rItem) {
         this.rItem = rItem;
     }
 
@@ -95,5 +98,3 @@ public class ItemsModel {
         this.rDay = rDay;
     }
 }
-
-
