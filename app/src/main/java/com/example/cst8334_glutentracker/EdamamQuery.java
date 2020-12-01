@@ -12,23 +12,22 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.entity.Product;
 
+/**
+ * Class that will be performing API queries to the Edamam database.
+ *
+ * @link https://developer.edamam.com/food-database-api
+ */
 public class EdamamQuery extends AsyncTask<String, Long, String> {
 
     private Context context;
-    boolean isGluten;
+    boolean isGlutenFree;
     long upc;
     String appId = "90fb7f7d";
     String appKey = "ec9b27a10f3bb159f17fd932ac559526";
@@ -38,6 +37,10 @@ public class EdamamQuery extends AsyncTask<String, Long, String> {
     Product prod;
     AlertDialog.Builder alertDialog;
 
+    /**
+     * Dialog listener will either add an item to the database and cart if the user clicks "Yes" or simply
+     * add the item to the database if the user click "No" (only relevant for gluten items)
+     */
     DialogInterface.OnClickListener dialogInterfaceListener = (dialog, which) -> {
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
@@ -52,17 +55,35 @@ public class EdamamQuery extends AsyncTask<String, Long, String> {
     };
 
 
+    /**
+     * Overloaded constructor that receives values from the ScanActivity class, will be used later
+     * to perform API queries to Edamam.
+     *
+     * @param context This is used to pass the AlertDialog back to ScanActivity
+     * @param upc Barcode value that will be used to query Edamam
+     * @param isGluten Boolean passed from the checkbox, will be used to declare products gluten or gluten-free
+     */
     public EdamamQuery(Context context, long upc, boolean isGluten){
         this.context = context;
         this.upc = upc;
-        this.isGluten = isGluten;
+        this.isGlutenFree = isGluten;
     }
+
+    /**
+     * Overridden method, attempts to perform an API query to Edamam. If it successfully finds
+     * an item, it will parse the product name from the database which will be inserted in the product object
+     * and finally will be added to the cart and database.
+     */
     @Override
     public String doInBackground(String... strings){
             String ret = null;
             String queryURL = "https://api.edamam.com/api/food-database/v2/parser?upc=" + upc + "&app_id=" + appId + "&app_key=" + appKey;
 
-            try {
+        /**
+         * Attempt a API query to Edamam, if the connection is successful and an item is retrieved from the barcode sent, it will parse it, retrieve the product name and add it to the database (and cart if it's a gluten item)
+         *
+         */
+        try {
                 URL url = new URL(queryURL);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream inputStream = urlConnection.getInputStream();
@@ -79,9 +100,15 @@ public class EdamamQuery extends AsyncTask<String, Long, String> {
                 jObject = new JSONObject(result);
                 jProductLabel = jObject.getJSONArray("hints").getJSONObject(0).getJSONObject("food").getString("label");
 
-                prod = new Product(upc, jProductLabel,"",1.00, isGluten);
+            /**
+             * Create dummy product object and assembled with parameters passed
+             */
+            prod = new Product(upc, jProductLabel,"",1.00, isGlutenFree);
 
-                if (isGluten){
+            /**
+             * If it is a gluten-free item, add the item to the cart
+             */
+                if (isGlutenFree){
                     CartActivity.getProductsArrayList().add(prod);
                 }
 
@@ -99,19 +126,24 @@ public class EdamamQuery extends AsyncTask<String, Long, String> {
         return ret;
     }
 
+    /**
+     *
+     *
+     * @param result Name of the product that is added to the database/cart
+     */
     @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-        switch (s) {
+    protected void onPostExecute(String result) {
+        super.onPostExecute(result);
+        switch (result) {
             case "Malformed URL exception":
-                Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
                 break;
             case "Internet not available or product not found":
-                Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
                 break;
             default:
-                if (isGluten) {
-                    Toast.makeText(context, "successfully added " + s + " to the cart", Toast.LENGTH_LONG).show();
+                if (isGlutenFree) {
+                    Toast.makeText(context, "successfully added " + result + " to the cart", Toast.LENGTH_LONG).show();
                 } else {
                     alertDialog = new AlertDialog.Builder(context);
                     this.setAlertDialog(alertDialog);
@@ -121,6 +153,11 @@ public class EdamamQuery extends AsyncTask<String, Long, String> {
         }
     }
 
+    /**
+     * Setter for the AlertDialog builder, will be setting the parameters for the Alert box.
+     *
+     * @param alertDialog AlertDialog object that will be set with the title, message, etc.
+     */
     public void setAlertDialog(AlertDialog.Builder alertDialog) {
         this.alertDialog = alertDialog.setTitle("Add gluten item to cart?")
             .setMessage("Would you like to add this gluten item to the cart?")

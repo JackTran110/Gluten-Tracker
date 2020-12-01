@@ -217,7 +217,7 @@ public class ScanActivity extends AppCompatActivity {
          *
          */
         if (barcodeCheck != null && boolCartItem == false) {
-            if (barcodeCheck.isGlutenFree()){
+            if (!barcodeCheck.isGlutenFree()){
                 alertDialog = new AlertDialog.Builder(this).setTitle("Add gluten item to cart?")
                         .setMessage("Would you like to add this gluten item to the cart?")
                         .setPositiveButton("Yes", dialogInterfaceListener).setNegativeButton("No", dialogInterfaceListener);;

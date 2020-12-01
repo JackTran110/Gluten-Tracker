@@ -25,7 +25,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * Database's version number.
      */
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
 
     /**
      * SQLite database object.
