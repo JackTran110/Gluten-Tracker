@@ -1,4 +1,4 @@
-package com.example.cst8334_glutentracker;
+package com.example.cst8334_glutentracker.activity;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -11,8 +11,6 @@ import android.content.SharedPreferences;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,12 +19,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.entity.Product;
+import com.example.cst8334_glutentracker.CartListViewHolder;
+import com.example.cst8334_glutentracker.R;
+import com.example.cst8334_glutentracker.database.GlutenDatabase;
+import com.example.cst8334_glutentracker.entity.Product;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -173,6 +173,8 @@ public class CartActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar, menu);
+        menu.findItem(R.id.cartButton).setVisible(false);
+        menu.findItem(R.id.search_view).setVisible(false);
         return true;
     }
 
@@ -437,7 +439,7 @@ public class CartActivity extends AppCompatActivity {
                 totalAsDouble += products.getDisplayedPrice();
                 total.setText(totalAsDouble + "");
                 totalPaid = totalAsDouble;
-                totalDeductibleDisplay.setText(totalDeductibleAsDouble + "");
+                totalDeductibleDisplay.setText(getString(R.string.total_deductible) + totalDeductibleAsDouble);
                 totalDeductible = totalDeductibleAsDouble;
             }
             return newView;

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CartActivity">
+    tools:context=".activity.CartActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/cartToolbar"
@@ -13,63 +13,55 @@
 
     <ListView
         android:id="@+id/purchases"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/checkout"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/totalDeductibleTextView"/>
 
     <Button
         android:id="@+id/addNewProductButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add New Product"
-        android:layout_alignParentBottom="true"/>
+        android:textColor="@color/colorWhite"
+        android:fontFamily="serif"
+        android:layout_above="@id/checkout_button"
+        android:background="@drawable/btn_background"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
     <Button
         android:id="@+id/checkout_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Check out"
-        android:layout_toRightOf="@id/addNewProductButton"
-        android:layout_alignTop="@id/addNewProductButton"/>
-
-    <TextView
-        android:id="@+id/checkout"
+        android:textColor="@color/colorWhite"
+        android:fontFamily="serif"
         android:layout_alignParentBottom="true"
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:textAllCaps="true"
-        android:textAlignment="center"
-        android:text="Checkout"
-        android:textSize="20dp"
-        android:textStyle="bold"/>
+        android:background="@drawable/btn_background"
+        android:layout_margin="10dp"/>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/totalDeductibleTextView"
-        android:layout_toRightOf="@+id/checkout"
-        android:layout_above="@+id/checkout_button"
-        android:text="Total Deductible: $" />
-
-
-    <TextView
         android:id="@+id/totalDeductible"
-        android:layout_width="101dp"
-        android:layout_height="wrap_content"
         android:layout_above="@+id/total"
-        android:layout_marginLeft="2dp"
-        android:layout_marginBottom="19dp"
-        android:layout_toRightOf="@+id/totalDeductibleTextView" />
+        android:text="@string/total_deductible"
+        android:textSize="20sp"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"
+        android:layout_marginLeft="10dp"/>
 
     <TextView
         android:id="@+id/total"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/amount"
+        android:layout_above="@id/addNewProductButton"
         android:layout_marginBottom="1dp"
         android:text="Total:"
-        android:textSize="20dp"
-        android:textStyle="bold" />
+        android:textSize="20sp"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"
+        android:layout_margin="10dp" />
 
     <!--<EditText
         android:id="@+id/amount"
@@ -83,7 +75,6 @@
         android:id="@+id/amount"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:layout_alignParentBottom="true"
         android:text="amount"
         android:textSize="13dp"
         android:layout_alignParentRight="true"/>

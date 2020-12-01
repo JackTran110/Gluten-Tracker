@@ -1,4 +1,4 @@
-package com.example.cst8334_glutentracker;
+package com.example.cst8334_glutentracker.activity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,12 +18,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.entity.ItemsModel;
+import com.example.cst8334_glutentracker.R;
+import com.example.cst8334_glutentracker.entity.ItemsModel;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 

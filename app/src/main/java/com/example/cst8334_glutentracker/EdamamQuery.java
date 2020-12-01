@@ -12,18 +12,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
-import com.example.entity.Product;
+import com.example.cst8334_glutentracker.activity.CartActivity;
+import com.example.cst8334_glutentracker.database.GlutenDatabase;
+import com.example.cst8334_glutentracker.entity.Product;
 
 public class EdamamQuery extends AsyncTask<String, Long, String> {
 

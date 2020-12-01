@@ -1,16 +1,15 @@
-package com.example.cst8334_glutentracker;
+package com.example.cst8334_glutentracker.database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.entity.Product;
-import com.example.entity.Receipt;
+import com.example.cst8334_glutentracker.entity.Product;
+import com.example.cst8334_glutentracker.entity.Receipt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,12 +142,12 @@ public class GlutenDatabase extends SQLiteOpenHelper {
 
         ContentValues cv = new ContentValues();
         //Added by Joel
-        cv.put(DatabaseActivity.Products.COLUMN_NAME_ID, product.getId());
-        cv.put(DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME, product.getProductName());
-        cv.put(DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION, product.getProductDescription());
-        cv.put(DatabaseActivity.Products.COLUMN_NAME_PRICE, product.getPrice());
-        cv.put(DatabaseActivity.Products.COLUMN_NAME_GLUTEN, (product.isGlutenFree() ? 1:0));
-        return db.insert(DatabaseActivity.Products.TABLE_NAME, null, cv);
+        cv.put(Products.COLUMN_NAME_ID, product.getId());
+        cv.put(Products.COLUMN_NAME_PRODUCT_NAME, product.getProductName());
+        cv.put(Products.COLUMN_NAME_DESCRIPTION, product.getProductDescription());
+        cv.put(Products.COLUMN_NAME_PRICE, product.getPrice());
+        cv.put(Products.COLUMN_NAME_GLUTEN, (product.isGlutenFree() ? 1:0));
+        return db.insert(Products.TABLE_NAME, null, cv);
     }
 
     /**
@@ -179,11 +178,11 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         db = getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(DatabaseActivity.Receipts.COLUMN_NAME_FILE, file);
-        cv.put(DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_DEDUCTION, totalDeduction);
-        cv.put(DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_PRICE, totalPrice);
-        cv.put(DatabaseActivity.Receipts.COLUMN_NAME_DATE, date);
-        long id = db.insert(DatabaseActivity.Receipts.TABLE_NAME, null, cv);
+        cv.put(Receipts.COLUMN_NAME_FILE, file);
+        cv.put(Receipts.COLUMN_NAME_TOTAL_DEDUCTION, totalDeduction);
+        cv.put(Receipts.COLUMN_NAME_TOTAL_PRICE, totalPrice);
+        cv.put(Receipts.COLUMN_NAME_DATE, date);
+        long id = db.insert(Receipts.TABLE_NAME, null, cv);
 
         if(!insertIntoProductReceiptTable(products, id)) return -1;
         return id;
@@ -209,16 +208,16 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                     Log.e(ERROR_TAG, "Unable to find linked product in the database", e);
                     return false;
                 }
-                cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID, linkedProduct.getId());
-                cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE, linkedProduct.getPrice());
-                cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_DEDUCTION, product.getDeduction());
+                cv.put(ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID, linkedProduct.getId());
+                cv.put(ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE, linkedProduct.getPrice());
+                cv.put(ProductReceipt.COLUMN_NAME_DEDUCTION, product.getDeduction());
             }
 
-            cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_PRODUCT_ID, product.getId());
-            cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID, receiptID);
-            cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_PRICE, product.getPrice());
-            cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_QUANTITY, product.getQuantity());
-            if(db.insert(DatabaseActivity.ProductReceipt.TABLE_NAME, null, cv) == -1) return false;
+            cv.put(ProductReceipt.COLUMN_NAME_PRODUCT_ID, product.getId());
+            cv.put(ProductReceipt.COLUMN_NAME_RECEIPT_ID, receiptID);
+            cv.put(ProductReceipt.COLUMN_NAME_PRICE, product.getPrice());
+            cv.put(ProductReceipt.COLUMN_NAME_QUANTITY, product.getQuantity());
+            if(db.insert(ProductReceipt.TABLE_NAME, null, cv) == -1) return false;
         }
         return true;
     }
@@ -235,8 +234,8 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         Cursor cs;
         Product product;
         try{
-            cs = db.query(false, DatabaseActivity.Products.TABLE_NAME, null,
-                    DatabaseActivity.Products.COLUMN_NAME_ID + " = ? ", new String[]{Long.toString(id)},
+            cs = db.query(false, Products.TABLE_NAME, null,
+                    Products.COLUMN_NAME_ID + " = ? ", new String[]{Long.toString(id)},
                     null, null, null, null, null);
         cs.moveToFirst();
 
@@ -267,7 +266,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         List<Product> results = new ArrayList<>();
         Cursor cs;
         try{
-            cs = db.query(false, DatabaseActivity.Products.TABLE_NAME, null,
+            cs = db.query(false, Products.TABLE_NAME, null,
                     null, null, null, null, null,
                     null, null);
             cs.moveToFirst();
@@ -322,8 +321,8 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         Cursor cs;
         Receipt receipt;
         try {
-            cs = db.query(false, DatabaseActivity.Receipts.TABLE_NAME, null,
-                    DatabaseActivity.Receipts.COLUMN_NAME_ID + " = ? ", new String[]{Long.toString(id)},
+            cs = db.query(false, Receipts.TABLE_NAME, null,
+                    Receipts.COLUMN_NAME_ID + " = ? ", new String[]{Long.toString(id)},
                     null, null, null, null, null);
             cs.moveToNext();
             receipt = new Receipt(cs.getLong(0),
@@ -345,15 +344,9 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         Cursor cs;
         List<Receipt > receipts = new ArrayList<>();
         try {
-           // code taken from https://stackoverflow.com/questions/18097748/how-to-get-row-count-in-sqlite-using-android/28348121
-            long count = DatabaseUtils.queryNumEntries(db,DatabaseActivity.Receipts.TABLE_NAME);
-
-            cs = db.query(false, DatabaseActivity.Receipts.TABLE_NAME, null,
+            cs = db.query(false, Receipts.TABLE_NAME, null,
                     null,null, null, null, null,
                     null, null);
-//            for(long i = 1; i == count; i++){
-//                receipts.add(selectReceiptByID(i));
-//            }
             cs.moveToFirst();
             do{
                 receipts.add(new Receipt(cs.getLong(0),
@@ -383,8 +376,8 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         Cursor cs;
         List<Product> products = new ArrayList<>();
         try {
-            cs = db.query(false, DatabaseActivity.ProductReceipt.TABLE_NAME, null,
-                    DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID + " = ? ", new String[]{Long.toString(receiptID)},
+            cs = db.query(false, ProductReceipt.TABLE_NAME, null,
+                    ProductReceipt.COLUMN_NAME_RECEIPT_ID + " = ? ", new String[]{Long.toString(receiptID)},
                     null, null, null, null, null);
             cs.moveToFirst();
 
@@ -422,11 +415,11 @@ public class GlutenDatabase extends SQLiteOpenHelper {
      */
     public boolean deleteReceiptByID(long id){
         db = getWritableDatabase();
-        db.delete(DatabaseActivity.ProductReceipt.TABLE_NAME,
-                DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID + " = ? ",
+        db.delete(ProductReceipt.TABLE_NAME,
+                ProductReceipt.COLUMN_NAME_RECEIPT_ID + " = ? ",
                 new String[]{Long.toString(id)});
-        return db.delete(DatabaseActivity.Receipts.TABLE_NAME,
-                DatabaseActivity.Receipts.COLUMN_NAME_ID + " = ?",
+        return db.delete(Receipts.TABLE_NAME,
+                Receipts.COLUMN_NAME_ID + " = ?",
                 new String[]{Long.toString(id)}) != 0;
     }
 
@@ -438,8 +431,8 @@ public class GlutenDatabase extends SQLiteOpenHelper {
      */
     public boolean deleteProductByID(SQLiteDatabase db, long id){
         db = getWritableDatabase();
-        return db.delete(DatabaseActivity.Products.TABLE_NAME,
-                DatabaseActivity.Products.COLUMN_NAME_ID + " = ? ",
+        return db.delete(Products.TABLE_NAME,
+                Products.COLUMN_NAME_ID + " = ? ",
                 new String[]{Long.toString(id)}) != 0;
     }
 
@@ -453,13 +446,13 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         db = getWritableDatabase();
         ContentValues cv= new ContentValues();
 
-        cv.put(DatabaseActivity.Products.COLUMN_NAME_ID, product.getId());
-        cv.put(DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME, product.getProductName());
-        cv.put(DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION, product.getProductDescription());
-        cv.put(DatabaseActivity.Products.COLUMN_NAME_PRICE, product.getPrice());
-        cv.put(DatabaseActivity.Products.COLUMN_NAME_GLUTEN, product.isGlutenFree());
-        return db.update(DatabaseActivity.Products.TABLE_NAME,cv,
-                DatabaseActivity.Products.COLUMN_NAME_ID+" = ? ",
+        cv.put(Products.COLUMN_NAME_ID, product.getId());
+        cv.put(Products.COLUMN_NAME_PRODUCT_NAME, product.getProductName());
+        cv.put(Products.COLUMN_NAME_DESCRIPTION, product.getProductDescription());
+        cv.put(Products.COLUMN_NAME_PRICE, product.getPrice());
+        cv.put(Products.COLUMN_NAME_GLUTEN, product.isGlutenFree());
+        return db.update(Products.TABLE_NAME,cv,
+                Products.COLUMN_NAME_ID+" = ? ",
                 new String[]{Long.toString(product.getId())}) != 0;
     }
 
@@ -467,17 +460,17 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         db = getWritableDatabase();
         ContentValues cv= new ContentValues();
 
-        cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_PRODUCT_ID, product.getId());
-        cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID, index);
-        cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_PRICE, product.getPrice());
-        cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_QUANTITY, product.getQuantity());
+        cv.put(ProductReceipt.COLUMN_NAME_PRODUCT_ID, product.getId());
+        cv.put(ProductReceipt.COLUMN_NAME_RECEIPT_ID, index);
+        cv.put(ProductReceipt.COLUMN_NAME_PRICE, product.getPrice());
+        cv.put(ProductReceipt.COLUMN_NAME_QUANTITY, product.getQuantity());
         if(product.getLinkedProduct() != null){
-            cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_DEDUCTION, product.getDeduction());
-            cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID, product.getLinkedProduct().getId());
-            cv.put(DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE, product.getLinkedProduct().getPrice());
+            cv.put(ProductReceipt.COLUMN_NAME_DEDUCTION, product.getDeduction());
+            cv.put(ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID, product.getLinkedProduct().getId());
+            cv.put(ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE, product.getLinkedProduct().getPrice());
         }
-        return db.update(DatabaseActivity.ProductReceipt.TABLE_NAME,cv,
-                DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? ",
+        return db.update(ProductReceipt.TABLE_NAME,cv,
+                ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? ",
                 new String[]{Long.toString(index)}) != 0;
     }
 
@@ -485,67 +478,97 @@ public class GlutenDatabase extends SQLiteOpenHelper {
      * The query to create the products table.
      */
     private static final String SQL_CREATE_PRODUCTS = "CREATE TABLE " +
-            DatabaseActivity.Products.TABLE_NAME + " (" +
-            DatabaseActivity.Products.COLUMN_NAME_ID + " BIGINT PRIMARY KEY, " +
-            DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME + " TEXT, " +
-            DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION + " TEXT, " +
-            DatabaseActivity.Products.COLUMN_NAME_PRICE + " REAL, " +
-            DatabaseActivity.Products.COLUMN_NAME_GLUTEN + " INTEGER)";
+            Products.TABLE_NAME + " (" +
+            Products.COLUMN_NAME_ID + " BIGINT PRIMARY KEY, " +
+            Products.COLUMN_NAME_PRODUCT_NAME + " TEXT, " +
+            Products.COLUMN_NAME_DESCRIPTION + " TEXT, " +
+            Products.COLUMN_NAME_PRICE + " REAL, " +
+            Products.COLUMN_NAME_GLUTEN + " INTEGER)";
 
     /**
      * The query to create the receipts table.
      */
     private static final String SQL_CREATE_RECEIPTS = "CREATE TABLE " +
-            DatabaseActivity.Receipts.TABLE_NAME + " (" +
-            DatabaseActivity.Receipts.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            DatabaseActivity.Receipts.COLUMN_NAME_FILE + " TEXT, " +
-            DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_PRICE + " REAL, " +
-            DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_DEDUCTION + " REAL, " +
-            DatabaseActivity.Receipts.COLUMN_NAME_DATE + " TEXT)";
+            Receipts.TABLE_NAME + " (" +
+            Receipts.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            Receipts.COLUMN_NAME_FILE + " TEXT, " +
+            Receipts.COLUMN_NAME_TOTAL_PRICE + " REAL, " +
+            Receipts.COLUMN_NAME_TOTAL_DEDUCTION + " REAL, " +
+            Receipts.COLUMN_NAME_DATE + " TEXT)";
 
     /**
      * The query to create the productReceipt table.
      */
     private static final String SQL_CREATE_PRODUCT_RECEIPT = "CREATE TABLE " +
-            DatabaseActivity.ProductReceipt.TABLE_NAME + " (" +
-            DatabaseActivity.ProductReceipt.COLUMN_NAME_PRODUCT_ID + " BIGINT, " +
-            DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID + " INTEGER, " +
-            DatabaseActivity.ProductReceipt.COLUMN_NAME_PRICE + " REAL, " +
-            DatabaseActivity.ProductReceipt.COLUMN_NAME_QUANTITY + " INTEGER, " +
-            DatabaseActivity.ProductReceipt.COLUMN_NAME_DEDUCTION + " REAL, " +
-            DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID + " BIGINT, " +
-            DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE + " REAL, " +
-            "CONSTRAINT " + "fk_" + DatabaseActivity.ProductReceipt.TABLE_NAME +
-            DatabaseActivity.Products.TABLE_NAME + " FOREIGN KEY (" +
-            DatabaseActivity.ProductReceipt.COLUMN_NAME_PRODUCT_ID + ") REFERENCES " +
-            DatabaseActivity.Products.TABLE_NAME + "(" +
-            DatabaseActivity.Products.COLUMN_NAME_ID + "), " +
-            "CONSTRAINT " + "fk_" + DatabaseActivity.ProductReceipt.TABLE_NAME + "linked" +
-            DatabaseActivity.Products.TABLE_NAME + " FOREIGN KEY (" +
-            DatabaseActivity.ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID + ") REFERENCES " +
-            DatabaseActivity.Products.TABLE_NAME + "(" +
-            DatabaseActivity.Products.COLUMN_NAME_ID + "), " +
-            "CONSTRAINT " + "fk_" + DatabaseActivity.ProductReceipt.TABLE_NAME +
-            DatabaseActivity.Receipts.TABLE_NAME + " FOREIGN KEY (" +
-            DatabaseActivity.ProductReceipt.COLUMN_NAME_RECEIPT_ID + ") REFERENCES " +
-            DatabaseActivity.Receipts.TABLE_NAME + "(" +
-            DatabaseActivity.Receipts.COLUMN_NAME_ID + "))";
+            ProductReceipt.TABLE_NAME + " (" +
+            ProductReceipt.COLUMN_NAME_PRODUCT_ID + " BIGINT, " +
+            ProductReceipt.COLUMN_NAME_RECEIPT_ID + " INTEGER, " +
+            ProductReceipt.COLUMN_NAME_PRICE + " REAL, " +
+            ProductReceipt.COLUMN_NAME_QUANTITY + " INTEGER, " +
+            ProductReceipt.COLUMN_NAME_DEDUCTION + " REAL, " +
+            ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID + " BIGINT, " +
+            ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE + " REAL, " +
+            "CONSTRAINT " + "fk_" + ProductReceipt.TABLE_NAME +
+            Products.TABLE_NAME + " FOREIGN KEY (" +
+            ProductReceipt.COLUMN_NAME_PRODUCT_ID + ") REFERENCES " +
+            Products.TABLE_NAME + "(" +
+            Products.COLUMN_NAME_ID + "), " +
+            "CONSTRAINT " + "fk_" + ProductReceipt.TABLE_NAME + "linked" +
+            Products.TABLE_NAME + " FOREIGN KEY (" +
+            ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID + ") REFERENCES " +
+            Products.TABLE_NAME + "(" +
+            Products.COLUMN_NAME_ID + "), " +
+            "CONSTRAINT " + "fk_" + ProductReceipt.TABLE_NAME +
+            Receipts.TABLE_NAME + " FOREIGN KEY (" +
+            ProductReceipt.COLUMN_NAME_RECEIPT_ID + ") REFERENCES " +
+            Receipts.TABLE_NAME + "(" +
+            Receipts.COLUMN_NAME_ID + "))";
 
     /**
      * The query to delete the products table.
      */
     private static final String SQL_DELETE_PRODUCTS = "DROP TABLE IF EXISTS " +
-            DatabaseActivity.Products.TABLE_NAME;
+            Products.TABLE_NAME;
 
     /**
      * The query to delete the receipts table.
      */
     private static final String SQL_DELETE_RECEIPTS = "DROP TABLE IF EXISTS " +
-            DatabaseActivity.Receipts.TABLE_NAME;
+            Receipts.TABLE_NAME;
 
     /**
      * The query to delete the productReceipt table.
      */
     private static final String SQL_DELETE_PRODUCT_RECEIPT = "DROP TABLE IF EXISTS " +
-            DatabaseActivity.ProductReceipt.TABLE_NAME;
+            ProductReceipt.TABLE_NAME;
+
+    private static class Products {
+        public static final String TABLE_NAME = "products";
+        public static final String COLUMN_NAME_ID = "productID";
+        public static final String COLUMN_NAME_PRODUCT_NAME = "productName";
+        public static final String COLUMN_NAME_DESCRIPTION = "productDescription";
+        public static final String COLUMN_NAME_PRICE = "price";
+        public static final String COLUMN_NAME_GLUTEN = "isGlutenFree";
+    }
+
+    private static class Receipts {
+        public static final String TABLE_NAME = "receipts";
+        public static final String COLUMN_NAME_ID = "receiptID";
+        public static final String COLUMN_NAME_FILE = "receiptFile";
+        public static final String COLUMN_NAME_TOTAL_DEDUCTION = "totalTaxDeduction";
+        public static final String COLUMN_NAME_TOTAL_PRICE = "totalPrice";
+        public static final String COLUMN_NAME_DATE = "date";
+    }
+
+    private static class ProductReceipt{
+        public static final String TABLE_NAME = "productReceipt";
+        public static final String COLUMN_NAME_PRODUCT_ID = "productID";
+        public static final String COLUMN_NAME_RECEIPT_ID = "receiptID";
+        public static final String COLUMN_NAME_PRICE = "price";
+        public static final String COLUMN_NAME_QUANTITY = "quantity";
+        public static final String COLUMN_NAME_DEDUCTION = "deduction";
+        public static final String COLUMN_NAME_LINKED_PRODUCT_ID = "linkedProductID";
+        public static final String COLUMN_NAME_LINKED_PRODUCT_PRICE = "linkedProductPrice";
+
+    }
 }

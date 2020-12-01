@@ -2,9 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.cst8334_glutentracker">
 
-
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -13,35 +12,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DigitalReceipt"></activity>
-        <activity android:name=".Link" />
-        <activity android:name=".EmptyActivity" />
-        <activity android:name=".ReportActivity" />
-        <activity android:name=".ReportMActivity" />
-        <activity android:name=".ScanActivity" />
-        <activity android:name=".CartActivity" />
-        <activity android:name=".ReceiptActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.LoginActivity"></activity>
+        <activity android:name=".activity.DigitalReceipt" />
+        <activity android:name=".activity.Link" />
+        <activity android:name=".activity.ReportActivity" />
+        <activity android:name=".activity.ReportMActivity" />
+        <activity android:name=".activity.ScanActivity" />
+        <activity android:name=".activity.CartActivity" />
+        <activity android:name=".activity.ReceiptActivity" />
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!--The csv file report output #42 -->
+        </activity> <!-- The csv file report output #42 -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.cst8334_glutentracker.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
-           <meta-data
-               android:name="android.support.FILE_PROVIDER_PATHS"
-               android:resource="@xml/provider_paths"/>
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
         </provider>
-
-        <!--The csv file report output #42 -->
-
     </application>
 
 </manifest>

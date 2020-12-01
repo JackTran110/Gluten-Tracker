@@ -1,4 +1,4 @@
-package com.example.cst8334_glutentracker;
+package com.example.cst8334_glutentracker.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,7 +20,9 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.example.entity.ItemsModel;
+import com.example.cst8334_glutentracker.R;
+import com.example.cst8334_glutentracker.database.GlutenDatabase;
+import com.example.cst8334_glutentracker.entity.ItemsModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +119,8 @@ public class ReportActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
+        getMenuInflater().inflate(R.menu.toolbar,menu);
+        menu.findItem(R.id.reportButton).setVisible(false);
 
         MenuItem menuItem = menu.findItem(R.id.search_view);
         SearchView searchView = (SearchView) menuItem.getActionView();

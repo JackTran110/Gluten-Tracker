@@ -1,4 +1,4 @@
-package com.example.entity;
+package com.example.cst8334_glutentracker.entity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.cst8334_glutentracker;
+package com.example.cst8334_glutentracker.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,7 +9,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,7 +22,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.entity.Receipt;
+import com.example.cst8334_glutentracker.R;
+import com.example.cst8334_glutentracker.database.GlutenDatabase;
+import com.example.cst8334_glutentracker.entity.Receipt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +134,8 @@ public class ReceiptActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar, menu);
+        menu.findItem(R.id.receiptButton).setVisible(false);
+        menu.findItem(R.id.search_view).setVisible(false);
         return true;
     }
 

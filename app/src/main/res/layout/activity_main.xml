@@ -5,72 +5,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/logo"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <TextView
         android:id="@+id/txtV"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:text="Version: 0.3"
-        android:textSize="20dp"
+        android:layout_alignParentBottom ="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
         android:textStyle="bold"
-        />
+        android:fontFamily="serif"/>
 
-    <ImageView
-        android:id="@+id/imgLogo"
+    <ListView
+        android:id="@+id/main_menu"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:layout_below="@+id/txtV"
-
-         />
-
-
-    <Button
-        android:id="@+id/toScannerPage"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_below="@+id/imgLogo"
-        android:background="#FFFFFF"
-        android:drawableTop="@drawable/w123"
-        android:text="Barcode Scanner"
-        android:textSize="12dp"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/toCart"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_below="@+id/toScannerPage"
-        android:background="#FFFFFF"
-        android:drawableTop="@drawable/w133"
-        android:text="To Cart"
-        android:textSize="12dp"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/toReceiptPage"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_below="@+id/toCart"
-        android:background="#FFFFFF"
-        android:drawableTop="@drawable/w143"
-        android:text="Receipts"
-        android:textSize="12dp"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/toReport"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_below="@+id/toReceiptPage"
-        android:background="#FFFFFF"
-        android:drawableTop="@drawable/w153"
-
-
-        android:text="Report"
-        android:textSize="10dp"
-        android:textStyle="bold" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        android:background="@color/colorWhite"
+        android:alpha="0.8"/>
 
 
 </RelativeLayout>
