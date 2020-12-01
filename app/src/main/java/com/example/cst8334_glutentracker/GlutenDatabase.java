@@ -147,7 +147,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         cv.put(DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME, product.getProductName());
         cv.put(DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION, product.getProductDescription());
         cv.put(DatabaseActivity.Products.COLUMN_NAME_PRICE, product.getPrice());
-        cv.put(DatabaseActivity.Products.COLUMN_NAME_GLUTEN, (product.isGlutenFree() ? 0:1));
+        cv.put(DatabaseActivity.Products.COLUMN_NAME_GLUTEN, (product.isGlutenFree() ? 1:0));
         return db.insert(DatabaseActivity.Products.TABLE_NAME, null, cv);
     }
 
@@ -273,12 +273,12 @@ public class GlutenDatabase extends SQLiteOpenHelper {
             cs.moveToFirst();
 
             do {
-                if((cs.getInt(4) == 0) == isGlutenFree) {
+                if((cs.getInt(4) == 1) == isGlutenFree) {
                     Product product = new Product(cs.getLong(0),
                             cs.getString(1),
                             cs.getString(2),
                             cs.getDouble(3),
-                            cs.getInt(4) == 0);
+                            cs.getInt(4) == 1);
                     results.add(product);
                 }
             }while (cs.moveToNext());

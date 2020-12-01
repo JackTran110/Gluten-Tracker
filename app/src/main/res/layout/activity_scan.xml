@@ -12,14 +12,14 @@
         android:layout_height="wrap_content"/>
 
     <com.budiyev.android.codescanner.CodeScannerView
+        android:id="@+id/barcodeScanner"
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:id="@+id/barcodeScanner"
         app:autoFocusButtonColor="@android:color/white"
         app:autoFocusButtonVisible="true"
         app:flashButtonColor="@android:color/white"
         app:flashButtonVisible="true"
-        app:maskColor="@color/colorPrimary"
+        app:frameCornersSize="0dp"
         />
 
     <EditText
@@ -49,4 +49,14 @@
         android:layout_below="@+id/barcodeEditText"
         android:layout_toRightOf="@+id/acceptScannerButton"
         />
+
+    <CheckBox
+        android:id="@+id/glutenCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_below="@id/barcodeEditText"
+        android:layout_marginLeft="0dp"
+        android:layout_toRightOf="@id/cancelScannerButton"
+        android:text="Gluten-Free Product" />
+
 </RelativeLayout>

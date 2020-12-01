@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Link extends AppCompatActivity {
-    private static ArrayList<Product> listOfProducts = new ArrayList<Product>();
+    private ArrayList<Product> listOfProducts = new ArrayList<Product>();
     //Bundle dataFromActivity;
     FragmentAdapter adapter = new FragmentAdapter();
     Intent fromActivity;
@@ -74,7 +74,7 @@ public class Link extends AppCompatActivity {
         resultsQuery.close();
     } */
 
-  public static ArrayList<Product> getNonGlutenArrayList(){return listOfProducts;}
+  public ArrayList<Product> getNonGlutenArrayList(){return listOfProducts;}
 
     class FragmentAdapter extends BaseAdapter {
 
