@@ -19,7 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cst8334_glutentracker.R;
+import com.example.cst8334_glutentracker.database.GlutenDatabase;
 import com.example.cst8334_glutentracker.entity.ItemsModel;
+import com.example.cst8334_glutentracker.entity.Product;
+import com.example.cst8334_glutentracker.entity.Receipt;
 
 import java.io.File;
 import java.io.FileNotFoundException;

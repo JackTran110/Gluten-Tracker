@@ -1,4 +1,4 @@
-package com.example.cst8334_glutentracker;
+package com.example.cst8334_glutentracker.activity;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -27,6 +27,10 @@ import android.widget.Toast;
 
 import com.example.cst8334_glutentracker.CartListViewHolder;
 import com.example.cst8334_glutentracker.R;
+import com.example.cst8334_glutentracker.activity.Link;
+import com.example.cst8334_glutentracker.activity.ReceiptActivity;
+import com.example.cst8334_glutentracker.activity.ReportActivity;
+import com.example.cst8334_glutentracker.activity.ScanActivity;
 import com.example.cst8334_glutentracker.database.GlutenDatabase;
 import com.example.cst8334_glutentracker.entity.Product;
 
@@ -514,7 +518,7 @@ public class CartActivity extends AppCompatActivity {
                 total.setText(String.format("%.2f", totalAsDouble));
                 totalPaid = totalAsDouble;
                 //totalDeductibleDisplay.setText(totalDeductibleAsDouble + "");
-                totalDeductibleDisplay.setText(String.format("%.2f", totalDeductibleAsDouble));
+                totalDeductibleDisplay.setText(getString(R.string.total_deductible) + String.format("%.2f", totalDeductibleAsDouble));
                 totalDeductible = totalDeductibleAsDouble;
             }
             return newView;

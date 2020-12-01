@@ -49,12 +49,12 @@ public class ReportActivity extends AppCompatActivity {
 
 
 
-    int images = R.drawable.image;
-    String rId[] = {"12301","14502","30003","45601","67834","002345"};
-    String rDate[] = {"2020-9-3","2020-8-12","2020-10-8","2020-6-5","2020-4-22","2020-10-1"};
-    String rItem[] = {"Purchease detail is Oatmeal","Purchease detail is Pasta","Purchease detail is Banana","Purchease detail is Oatmeal","Purchease detail is orange","Purchease detail is apple"};
-    String rSub[] = {"23.50","105.89","78.45","23.50","105.89","78.45"};
-    String rTax[] = {"0.8","5.25","1.05","0.8","5.25","1.05"};
+//    int images = R.drawable.image;
+//    String rId[] = {"12301","14502","30003","45601","67834","002345"};
+//    String rDate[] = {"2020-9-3","2020-8-12","2020-10-8","2020-6-5","2020-4-22","2020-10-1"};
+//    String rItem[] = {"Purchease detail is Oatmeal","Purchease detail is Pasta","Purchease detail is Banana","Purchease detail is Oatmeal","Purchease detail is orange","Purchease detail is apple"};
+//    String rSub[] = {"23.50","105.89","78.45","23.50","105.89","78.45"};
+//    String rTax[] = {"0.8","5.25","1.05","0.8","5.25","1.05"};
 
    // String receipts[] = {"","","","",""}
 
@@ -97,14 +97,14 @@ public class ReportActivity extends AppCompatActivity {
 
 
 
-        for(int i = 0; i < rId.length; i++){
-
-            ItemsModel itemsModel = new ItemsModel(rId[i],rDate[i],rItem[i],rSub[i],rTax[i]);
-
-            listItems.add(itemsModel);
-
-
-        }
+//        for(int i = 0; i < rId.length; i++){
+//
+//            ItemsModel itemsModel = new ItemsModel(rId[i],rDate[i],rItem[i],rSub[i],rTax[i]);
+//
+//            listItems.add(itemsModel);
+//
+//
+//        }
 
         customeAdapter = new CustomeAdapter(listItems, this);
         lstView.setAdapter(customeAdapter);
