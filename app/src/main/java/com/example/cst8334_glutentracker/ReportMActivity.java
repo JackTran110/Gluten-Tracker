@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.entity.ItemsModel;
+import com.example.entity.Product;
+import com.example.entity.Receipt;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,28 +28,38 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class ReportMActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
-     ListView lstMReport;
-     ArrayList<String> arrayList;
-     ArrayList<ItemsModel> arrayReceipt;
-     StringBuilder data;
-     Button btnReport;
-     Button btnCsvFile;
-     Button btnMonth;
-     Button btnSearch;
+    ListView lstMReport;
 
-     AlertDialog.Builder dialogBuilder;
-     AlertDialog dialog;
-     TextView txtA;
-     TextView txtFrom;
-     TextView txtTo;
+    ArrayList<ItemsModel> arrayReceipt;
+    StringBuilder data;
+    Button btnReport;
+    Button btnCsvFile;
+    Button btnMonth;
+    Button btnSearch;
 
-     int dateFromD,dateFromM,dateFromY, dateToD,dateToM,dateToY;
-     boolean isFrom = false;
+    AlertDialog.Builder dialogBuilder;
+    AlertDialog dialog;
+    TextView txtA;
+    TextView txtFrom;
+    TextView txtTo;
 
-     String pickDate;
+    int dateFromD,dateFromM,dateFromY, dateToD,dateToM,dateToY;
+    boolean isFrom = false;
+
+    String pickDate,strYear,strMonth,strM,tmpM,strDay,strDate;
+    int nDate,tmpDate,startDate,endDate;
+    double tmpTotal,tmpTax;
+
+    private GlutenDatabase dbOpener = new GlutenDatabase(this);
+    private String uId,uDate,uItem,uSub,uTax;
+    private List<Product> uItems;
+    ArrayList<String> lstMonthly = new ArrayList<>();
+    StringBuilder csvData;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,43 +77,11 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
         txtFrom =(TextView)findViewById(R.id.txtFrom_data);
         txtTo = (TextView)findViewById(R.id.txtTo_data);
 
-        arrayList = new ArrayList<>();
-       // arrayList.add("2020-Oct   Total:$450.23         dTax:$67.25");
-       // arrayList.add("2020-Nov   Total:$230.50         dTax:$56.98");
+        //arrayList = new ArrayList<>();
 
-// 2020-8
+        readMonthData();
 
-        arrayReceipt = new ArrayList<>();
-        arrayReceipt.add(new ItemsModel("90001", "2020-8-5",2020,8,5, "Purchease detail is Oatmeal", "23.50", "0.8"));
-        arrayReceipt.add(new ItemsModel("90002", "2020-8-12",2020,8,12, "Purchease detail is Apple", "120.78", "23.45"));
-        arrayReceipt.add(new ItemsModel("90003", "2020-8-15",2020,8,15, "Purchease detail is Orange", "45.60", "4.8"));
-        arrayReceipt.add(new ItemsModel("90004", "2020-8-20",2020,8,20, "Purchease detail is rice", "29.50", "2.3"));
-
-// 2020-9
-
-
-        arrayReceipt.add(new ItemsModel("90005", "2020-9-2",2020,9,2, "Purchease detail is Oatmeal", "213.50", "1.8"));
-        arrayReceipt.add(new ItemsModel("90006", "2020-9-10",2020,9,10, "Purchease detail is Apple", "20.75", "20.45"));
-        arrayReceipt.add(new ItemsModel("90007", "2020-9-11",2020,9,11, "Purchease detail is Orange", "65.30", "14.8"));
-        arrayReceipt.add(new ItemsModel("90008", "2020-9-22",2020,9,22, "Purchease detail is rice", "19.56", "21.3"));
-
-// 2020-10
-
-
-        arrayReceipt.add(new ItemsModel("90009", "2020-10-15",2020,10,15, "Purchease detail is Oatmeal", "56.50", "10.18"));
-        arrayReceipt.add(new ItemsModel("90010", "2020-10-16",2020,10,16, "Purchease detail is Apple", "120.78", "7.45"));
-        arrayReceipt.add(new ItemsModel("90011", "2020-10-19",2020,10,19, "Purchease detail is Orange", "45.60", "40.83"));
-        arrayReceipt.add(new ItemsModel("90012", "2020-10-27",2020,10,27, "Purchease detail is rice", "29.50", "20.53"));
-// 2020-11
-
-
-        arrayReceipt.add(new ItemsModel("90013", "2020-11-2",2020,11,2, "Purchease detail is Oatmeal", "203.50", "0.98"));
-        arrayReceipt.add(new ItemsModel("90014", "2020-11-10",2020,11,10, "Purchease detail is Apple", "20.78", "3.52"));
-        arrayReceipt.add(new ItemsModel("90015", "2020-11-11",2020,11,11, "Purchease detail is Orange", "49.60", "14.38"));
-        arrayReceipt.add(new ItemsModel("90016", "2020-11-17",2020,11,17, "Purchease detail is rice", "79.10", "21.36"));
-
-
-        ArrayAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,arrayList);
+        ArrayAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,lstMonthly);
         lstMReport.setAdapter(adapter);
 
         btnReport.setOnClickListener(new View.OnClickListener() {
@@ -122,29 +102,7 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
             @Override
             public void onClick(View v) {
 
-
-                arrayList.clear();
-                arrayList.add("Receipt No.           Date                Total                Tax");
-                data = new StringBuilder();
-                data.append("ID,Date,Total,Tax");
-
-                for (int i = 0; i < arrayReceipt.size(); i++){
-
-                            int tmpday = arrayReceipt.get(i).getrMonth()*100 + arrayReceipt.get(i).getrDay();
-
-
-                        if (tmpday >= (dateFromD-100) && tmpday <= dateToD) {
-
-                                String str = arrayReceipt.get(i).getrId() + "         " + arrayReceipt.get(i).getrDate() + "           " + arrayReceipt.get(i).getrSub() + "          " + arrayReceipt.get(i).getrTax();
-                                arrayList.add(str);
-                                data.append("\n" + arrayReceipt.get(i).getrId() + "," + arrayReceipt.get(i).getrDate() + "," + arrayReceipt.get(i).getrSub() + "," + arrayReceipt.get(i).getrTax());
-
-                        }
-
-                }
-
-
-
+                readCustomData();
                 adapter.notifyDataSetChanged();
                 Toast.makeText(ReportMActivity.this,"Report for Monthly",Toast.LENGTH_LONG).show();
 
@@ -157,34 +115,7 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
             @Override
             public void onClick(View v) {
 
-                arrayList.clear();
-                arrayList.add("Month                    Total                    Tax");
-                data = new StringBuilder();
-                data.append("Date,Total,Tax");
-
-                int tmpMonth = 0;
-                double total = 0, tax = 0;
-                String str = "";
-
-                for (int i = 0; i < arrayReceipt.size(); i++){
-
-
-                    if(tmpMonth == arrayReceipt.get(i).getrMonth()) {
-                        total = total + Double.valueOf(arrayReceipt.get(i).getrSub());
-                        tax = tax + Double.valueOf(arrayReceipt.get(i).getrTax());
-                    }else{
-
-                            str = Integer.toString(tmpMonth) + "                        " + Double.toString(total) + "                       " + Double.toString(tax);
-                        if (tmpMonth != 0 ) {
-                            arrayList.add(str);
-                            data.append("\n" + Integer.toString(tmpMonth) + "," + Double.toString(total) + "," + Double.toString(tax));
-
-                        }
-                            tmpMonth = arrayReceipt.get(i).getrMonth();
-
-                    }
-                }
-
+              readMonthData();
 
                 adapter.notifyDataSetChanged();
                 Toast.makeText(ReportMActivity.this,"Report for Customer Search",Toast.LENGTH_LONG).show();
@@ -214,17 +145,7 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
         });
 
 
-          lstMReport.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-              @Override
-              public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                  Toast.makeText(ReportMActivity.this,arrayList.get(position),Toast.LENGTH_LONG).show();
-                  createNewDiaglog();
-
-
-
-              }
-          });
 
     }
 
@@ -242,21 +163,26 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        pickDate = (month + 1) + "/" + dayOfMonth + "/" + year;
+
+
+
+            String  m = String.format("%02d", (month+1));
+            String d = String.format("%02d", dayOfMonth);
+
+         pickDate = String.valueOf(year) + m + d;
 
         if( isFrom == false ){
 
             txtTo.setText(pickDate);
-            dateToY = year;
-            dateToM = month + 1;
-            dateToD = ( month + 1)*100 + dayOfMonth;
+            endDate = Integer.parseInt(pickDate);
+
 
         }else{
 
             txtFrom.setText(pickDate);
-            dateFromY = year;
-            dateFromM = month  + 1;
-            dateFromD = ( month + 1)*100 + dayOfMonth;
+
+            startDate = Integer.parseInt(pickDate);
+
         }
 
 
@@ -264,28 +190,18 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
 
     }
 
-    public void createNewDiaglog(){
-        dialogBuilder = new AlertDialog.Builder(this);
-        final View rptView = getLayoutInflater().inflate(R.layout.popup, null);
 
-        txtA = (TextView) rptView.findViewById(R.id.txtA);
-
-        dialogBuilder.setView(rptView);
-        dialog = dialogBuilder.create();
-        dialog.show();
-
-    }
     //#34
     public void outputCsvFile()  {
         //generate data
+        //StringBuilder cData = new StringBuilder();
 
-
-
+       // csvData.append("abc,ddd");
 
         // saving the file into device
         try {
             FileOutputStream out = openFileOutput("Report.csv", Context.MODE_PRIVATE);
-            out.write((data.toString().getBytes()));
+            out.write((csvData.toString().getBytes()));
             out.close();
 
             //exporting
@@ -305,6 +221,192 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
         }
     }
 
+    private void readMonthData(){
+        lstMonthly.clear();
+        csvData = new StringBuilder();
 
+        List<Receipt> rec = dbOpener.selectAllReceipt();
+        tmpDate = 0;
+        lstMonthly.add("Month" + "\t\t\t\t\t\t\t\t\t" + "Total Amount" + "\t\t\t\t\t\t\t\t\t" + "Total Deduction");
+        csvData.append("\n" + "Month" + "," + "Total Amount" + "," + "Total Deduction");
+
+
+        for (int j = 0; j < rec.size(); j++) {
+
+            strYear = (rec.get(j).getDate()).substring(24, 28).trim();
+            strM = (rec.get(j).getDate()).substring(4, 7).trim();
+            strDay = (rec.get(j).getDate()).substring(8, 10).trim();
+
+
+            // nYear = Integer.getInteger(uYear);
+            // nDay = Integer.getInteger(uDay);
+
+            switch (strM) {
+                case "Jan":
+                    strMonth = "1";
+                    break;
+                case "Feb":
+                    strMonth = "2";
+                    break;
+                case "Mar":
+                    strMonth = "3";
+                    break;
+                case "Apr":
+                    strMonth = "4";
+                    break;
+                case "May":
+                    strMonth = "5";
+                    break;
+                case "Jun":
+                    strMonth = "6";
+                    break;
+                case "Jul":
+                    strMonth = "7";
+                    break;
+                case "Aug":
+                    strMonth = "8";
+                    break;
+                case "Sep":
+                    strMonth = "9";
+                    break;
+                case "Oct":
+                    strMonth = "10";
+                    break;
+                case "Nov":
+                    strMonth = "11";
+                    break;
+                case "Dec":
+                    strMonth = "12";
+                    break;
+            }
+
+            //uSub = rec.get(j).getTotalPrice();
+            //uTax = rec.get(j).getTaxDeductionTotal();
+            //nDate = Integer.getInteger(uYear + uMonth + uDay);
+            strDate = strYear + "-" + strM ;
+            nDate = Integer.valueOf((strYear + strMonth).trim());
+
+            if (nDate == tmpDate){
+
+                tmpTotal = tmpTotal + rec.get(j).getTotalPrice();
+                tmpTax = tmpTax + rec.get(j).getTaxDeductionTotal();
+
+
+            }else{
+                if (tmpDate != 0) {
+                    lstMonthly.add(  tmpM + "\t\t\t\t\t\t\t\t\t\t\t\t" + tmpTotal + "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + tmpTax);
+                    csvData.append("\n" +tmpM + "," + tmpTotal + "," + tmpTax);
+                    tmpTotal = rec.get(j).getTotalPrice();
+                    tmpTax = rec.get(j).getTaxDeductionTotal();
+
+                }
+                tmpDate = nDate;
+                tmpM = strDate;
+            }
+
+
+
+
+        }
+
+        lstMonthly.add(strDate + "\t\t\t\t\t\t\t\t\t\t\t\t" + tmpTotal + "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + tmpTax );
+        csvData.append("\n" +tmpM + "," + tmpTotal + "," + tmpTax);
+
+
+
+    }
+    private void readCustomData(){
+        lstMonthly.clear();
+        csvData = new StringBuilder();
+
+        List<Receipt> rec = dbOpener.selectAllReceipt();
+        tmpDate = 0;
+        tmpTax = 0;
+        tmpTotal = 0;
+        lstMonthly.add("Month" + "\t\t\t\t\t\t\t\t\t" + "Total Amount" + "\t\t\t\t\t\t\t\t\t" + "Total Deduction");
+        csvData.append( "Month" + "," + "Total Amount" + "," + "Total Deduction");
+
+
+        for (int j = 0; j < rec.size(); j++) {
+
+            strYear = (rec.get(j).getDate()).substring(24, 28).trim();
+            strM = (rec.get(j).getDate()).substring(4, 7).trim();
+            strDay = (rec.get(j).getDate()).substring(8, 10).trim();
+
+
+            // nYear = Integer.getInteger(uYear);
+            // nDay = Integer.getInteger(uDay);
+
+            switch (strM) {
+                case "Jan":
+                    strMonth = "1";
+                    break;
+                case "Feb":
+                    strMonth = "2";
+                    break;
+                case "Mar":
+                    strMonth = "3";
+                    break;
+                case "Apr":
+                    strMonth = "4";
+                    break;
+                case "May":
+                    strMonth = "5";
+                    break;
+                case "Jun":
+                    strMonth = "6";
+                    break;
+                case "Jul":
+                    strMonth = "7";
+                    break;
+                case "Aug":
+                    strMonth = "8";
+                    break;
+                case "Sep":
+                    strMonth = "9";
+                    break;
+                case "Oct":
+                    strMonth = "10";
+                    break;
+                case "Nov":
+                    strMonth = "11";
+                    break;
+                case "Dec":
+                    strMonth = "12";
+                    break;
+            }
+
+            uSub = String.valueOf(rec.get(j).getTotalPrice());
+            uTax = String.valueOf(rec.get(j).getTaxDeductionTotal());
+
+            strDate = strYear + "-" + strM + "-" + strDay;
+            nDate = Integer.valueOf((strYear + strMonth + strDay).trim());
+
+            if (nDate >= startDate && nDate <= endDate){
+
+                //tmpTotal = tmpTotal + rec.get(j).getTotalPrice();
+                //tmpTax = tmpTax + rec.get(j).getTaxDeductionTotal();
+                lstMonthly.add( strDate + "\t\t\t\t\t\t\t\t\t\t\t\t" + uSub + "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + uTax);
+                
+                csvData.append("\n" + strDate + "," + uSub + "," + uTax);
+                tmpTotal = tmpTotal + rec.get(j).getTotalPrice();
+                tmpTax =tmpTax + rec.get(j).getTaxDeductionTotal();
+
+
+
+            }
+
+
+
+
+
+        }
+
+        lstMonthly.add("Total:" + "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + tmpTotal + "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + tmpTax );
+        csvData.append("\n" + "Total:" + "," + tmpTotal + "," + tmpTax);
+
+
+
+    }
 
 }
