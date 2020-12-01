@@ -121,11 +121,26 @@ public class Product {
         }
     }
 
-    public double getDeduction() {
+    /*public double getDeduction() {
         return deduction;
+    } */
+
+    public double getDeduction() {
+        if(getLinkedProduct() != null)
+            return getDisplayedPrice() - getLinkedProduct().getDisplayedPrice();
+        else
+            return 0;
     }
 
     public void setDeduction(double deduction) {
         this.deduction = deduction;
+    }
+
+    public String getDisplayedPriceAsString(){
+        return String.format("%.2f", getDisplayedPrice());
+    }
+
+    public String getDeductionAsString(){
+        return String.format("%.2f", getDeduction());
     }
 }

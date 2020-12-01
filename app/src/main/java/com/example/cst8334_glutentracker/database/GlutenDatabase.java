@@ -24,7 +24,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * Database's version number.
      */
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
 
     /**
      * SQLite database object.
@@ -244,7 +244,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                 cs.getString(1),
                 cs.getString(2),
                 cs.getDouble(3),
-                cs.getInt(4) == 0);
+                cs.getInt(4) == 1); // changed from 0 to 1
     }catch(Exception e){
         Log.e(ERROR_TAG, "Unable to select product", e);
         return null;

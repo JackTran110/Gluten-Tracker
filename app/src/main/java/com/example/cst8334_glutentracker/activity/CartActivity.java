@@ -1,4 +1,4 @@
-package com.example.cst8334_glutentracker.activity;
+package com.example.cst8334_glutentracker;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +47,10 @@ public class CartActivity extends AppCompatActivity {
     private double totalDeductible = 0;
     Toolbar cartTbar;
 
+    /**
+     * This method is called when the page is first loaded
+     * @param savedInstanceState
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +83,25 @@ public class CartActivity extends AppCompatActivity {
         totalDeductibleDisplay = findViewById(R.id.totalDeductible);
         total = findViewById(R.id.amount);
         purchases.setAdapter(adapter);
+
+ /*       if(!getProductsArrayList().isEmpty()) {
+            double totalDeductibleAsDouble = 0;
+            double totalAsDouble = 0;
+            for (Product products : getProductsArrayList()) {
+                if (products.getLinkedProduct() != null) {
+                    totalDeductibleAsDouble += products.getDisplayedPrice() - products.getLinkedProduct().getDisplayedPrice();
+                }
+                totalAsDouble += products.getDisplayedPrice();
+                // total.setText(totalAsDouble + "");
+                total.setText(String.format("%.2f", totalAsDouble));
+                totalPaid = totalAsDouble;
+                //totalDeductibleDisplay.setText(totalDeductibleAsDouble + "");
+                totalDeductibleDisplay.setText(String.format("%.2f", totalDeductibleAsDouble));
+                totalDeductible = totalDeductibleAsDouble;
+            }
+            adapter.notifyDataSetChanged();
+        } */
+
         adapter.notifyDataSetChanged();
 
 //        addProductButton.setOnClickListener((View v)->{
@@ -135,10 +160,17 @@ public class CartActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method returns the arraylist of products
+     * @return The arraylist of products
+     */
     public static ArrayList<Product> getProductsArrayList(){
         return productsArrayList;
     }
 
+    /**
+     * This method is called when the activity is resumed
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -154,6 +186,9 @@ public class CartActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This method pauses the activity
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -201,23 +236,48 @@ public class CartActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * This inner class is an adapter for the arraylist.
+     */
     class Adapter extends BaseAdapter{
 
+        /**
+         * Counts the number of items in the arraylist
+         * @return The number of items in the arraylist
+         */
         @Override
         public int getCount() {
             return productsArrayList.size();
         }
 
+        /**
+         * This method gets the Product in the selected position
+         * @param position The position of the arraylist
+         * @return The found Product
+         */
         @Override
         public Product getItem(int position) {
             return productsArrayList.get(position);
         }
 
+        /**
+         * This method returns the id (upc code) of the Product in the selected position
+         * @param position The position of the arraylist
+         * @return The product's upc code
+         */
         @Override
         public long getItemId(int position) {
             return productsArrayList.get(position).getId();
         }
 
+        /**
+         * This method returns the view that populates a row. This view changes whether the Product is linked or not, and it changes depending on
+         * if the product is gluten-free or not (only gluten-free items may be linked, otherwise the link button will be disabled).
+         * @param position The position of the arraylist
+         * @param convertView Allows for recycling of views when scrolling
+         * @param parent The parent class.
+         * @return The view for the row
+         */
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Product product = (Product) getItem(position);
@@ -238,36 +298,42 @@ public class CartActivity extends AppCompatActivity {
             //final View testView = newView;
             TextView deductibleText = newView.findViewById(R.id.deductibleText);
             if(product.getLinkedProduct() != null) {
-                deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + ""); //changed to displayed price
+              //  deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + ""); //changed to displayed price
+                deductibleText.setText(product.getDeductionAsString());
             }
 
             TextView productName = newView.findViewById(R.id.productName);
             productName.setText(product.getProductName());
 
             TextView price = newView.findViewById(R.id.price);
-            price.setText(product.getDisplayedPrice() + "");
+     //       price.setText(product.getDisplayedPrice() + "");
+            price.setText(product.getDisplayedPriceAsString());
             //EditText quantity = newView.findViewById(R.id.quantity); what it was before
             //quantity.setText("1"); not needed
             TextView quantity = newView.findViewById(R.id.quantity);
             quantity.setText(Integer.toString(product.getQuantity()));
 
-            Button plusButton = newView.findViewById(R.id.plusButton);
+            //Button plusButton = newView.findViewById(R.id.plusButton);
+            ImageButton plusButton = newView.findViewById(R.id.plusButton);
             plusButton.setOnClickListener((v) ->{
                 int convertedToInt = (Integer.parseInt(quantity.getText().toString())) +1;
                 product.changeQuantityAndDisplayedPrice(convertedToInt);
                 if(product.getLinkedProduct() != null){
-                    deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+                   // deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+                    deductibleText.setText(product.getDeductionAsString());
                 }
                 adapter.notifyDataSetChanged();
             });
 
-            Button minusButton = newView.findViewById(R.id.minusButton);
+            //Button minusButton = newView.findViewById(R.id.minusButton);
+            ImageButton minusButton = newView.findViewById(R.id.minusButton);
             minusButton.setOnClickListener((v) ->{
                 if(product.getQuantity() > 1) {
                     int convertedToInt = (Integer.parseInt(quantity.getText().toString())) - 1;
                     product.changeQuantityAndDisplayedPrice(convertedToInt);
                     if(product.getLinkedProduct() != null){
-                        deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+                      //  deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
+                        deductibleText.setText(product.getDeductionAsString());
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -275,12 +341,19 @@ public class CartActivity extends AppCompatActivity {
 
            Button removeButton = newView.findViewById(R.id.removeFromCart);
             removeButton.setOnClickListener((v) -> {
-                productsArrayList.remove(position);
+                totalPaid = totalPaid - getProductsArrayList().get(position).getDisplayedPrice();
+                totalDeductible = totalDeductible - getProductsArrayList().get(position).getDeduction();
+                //productsArrayList.remove(position);
+                getProductsArrayList().remove(position);
                 //Toast.makeText(this, "Should be working", Toast.LENGTH_SHORT).show();
                 adapter.notifyDataSetChanged();
             });
 
             Button linkButton = newView.findViewById(R.id.linkButton);
+            boolean test = product.isGlutenFree();
+            if(!product.isGlutenFree()){
+                linkButton.setEnabled(false);
+            }
             linkButton.setOnClickListener((v) -> {
                 // Finish the rest of this
                 Bundle dataToPass = new Bundle();
@@ -437,9 +510,11 @@ public class CartActivity extends AppCompatActivity {
                     totalDeductibleAsDouble += products.getDisplayedPrice() - products.getLinkedProduct().getDisplayedPrice();
                 }
                 totalAsDouble += products.getDisplayedPrice();
-                total.setText(totalAsDouble + "");
+               // total.setText(totalAsDouble + "");
+                total.setText(String.format("%.2f", totalAsDouble));
                 totalPaid = totalAsDouble;
-                totalDeductibleDisplay.setText(getString(R.string.total_deductible) + totalDeductibleAsDouble);
+                //totalDeductibleDisplay.setText(totalDeductibleAsDouble + "");
+                totalDeductibleDisplay.setText(String.format("%.2f", totalDeductibleAsDouble));
                 totalDeductible = totalDeductibleAsDouble;
             }
             return newView;
