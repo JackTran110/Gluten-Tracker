@@ -19,15 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.example.cst8334_glutentracker;
+package com.example.cst8334_glutentracker.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -64,8 +64,10 @@ public class ScanActivity extends AppCompatActivity {
     SQLiteDatabase db;
     CodeScanner codeScanner;
     CodeScannerView scannerView;
+    Product barcodeCheck;
     Toolbar scannerTbar;
-    AlertDialog.Builder alertDialog;
+    AlertDialog.Builder glutenToCartDialog;
+    AlertDialog.Builder glutenDatabaseMismatchDialog;
     boolean cameraPermission;
     int CAMERA_PERMISSION_CODE;
     // Adding six second delay between scans, https://github.com/journeyapps/zxing-android-embedded/issues/59
@@ -84,7 +86,8 @@ public class ScanActivity extends AppCompatActivity {
         cancelScannerButton = (Button) findViewById(R.id.cancelScannerButton);
         dbOpener = new GlutenDatabase(this);
         db = dbOpener.getWritableDatabase();
-
+        glutenToCartDialog = new AlertDialog.Builder(this);
+        glutenDatabaseMismatchDialog = new AlertDialog.Builder(this);
 
         /**
          * Logic to request camera permissions from the user if not already granted.
@@ -178,65 +181,53 @@ public class ScanActivity extends AppCompatActivity {
             retrieve the item if it exists.
 
          @param upc - Barcode value retrieved from Edamam or the database
-         @param isGluten - parameter passed from the Check Box to declare if the item is gluten free or not
+         @param isGlutenFree - parameter passed from the Check Box to declare if the item is gluten free or not
 
      */
-    private void runQuery(long upc, boolean isGluten) {
+    private void runQuery(long upc, boolean isGlutenFree) {
         boolean boolCartItem = false;
         db = dbOpener.getReadableDatabase();
-        Product barcodeCheck = dbOpener.selectProductByID(upc);
-
-        DialogInterface.OnClickListener dialogInterfaceListener = (dialog, which) -> {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    CartActivity.getProductsArrayList().add(barcodeCheck);
-                    Toast.makeText(this, barcodeCheck.getProductName() + " added to the cart from database", Toast.LENGTH_LONG).show();
-                    break;
-                case DialogInterface.BUTTON_NEGATIVE:
-                    Toast.makeText(this, barcodeCheck.getProductName() + " was not added to the cart", Toast.LENGTH_LONG).show();
-                    break;
-            }
-        };
-
+        barcodeCheck = dbOpener.selectProductByID(upc);
 
         /**
          * Logic to confirm if the item has already been added to the cart. If it has,
          * simply display a message to the user.
          */
-        if (CartActivity.getProductsArrayList().size() != 0){
-            for (Product prod : CartActivity.getProductsArrayList()) {
-                if (prod.getId() == upc) {
-                    boolCartItem = true;
-                    Toast.makeText(ScanActivity.this, "Item already exists in the cart", Toast.LENGTH_LONG).show();
-                }
-            }
-        }
+        boolCartItem = productInCart(upc);
 
         /**
-         * Logic that occurs if the item doesn't exist in the cart, database query is performed
-         * and adds the item to the cart.
-         *
-         * Also verifies if the item retrieved is gluten and will
-         * ask the user if they want to also add this to the cart (they are not by default).
-         *
+         * Verify if the item was previously scanned (added to the database)
          */
-        if (barcodeCheck != null && boolCartItem == false) {
-            if (!barcodeCheck.isGlutenFree()){
-                alertDialog = new AlertDialog.Builder(this).setTitle("Add gluten item to cart?")
-                        .setMessage("Would you like to add this gluten item to the cart?")
-                        .setPositiveButton("Yes", dialogInterfaceListener).setNegativeButton("No", dialogInterfaceListener);;
-                alertDialog.create().show();
-            } else {
-                CartActivity.getProductsArrayList().add(barcodeCheck);
-                Toast.makeText(this, barcodeCheck.getProductName() + " added to the cart from database", Toast.LENGTH_LONG).show();
+        if (barcodeCheck !=null) {
+            if (barcodeCheck.isGlutenFree() != isGlutenFree) {
+                showGlutenMismatchDialog();
+            } else if (barcodeCheck.isGlutenFree() == isGlutenFree) {
+                if (boolCartItem == false) {
+                    if (barcodeCheck.isGlutenFree()) {
+                        CartActivity.getProductsArrayList().add(barcodeCheck);
+                        Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " added to the cart", Toast.LENGTH_LONG).show();
+                    } else if (!barcodeCheck.isGlutenFree()) {
+                        showGlutenToCartDialog();
+                    }
+                } else if (boolCartItem == true) {
+                    Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " already exists in the cart", Toast.LENGTH_LONG).show();
+                }
             }
-        } else if (barcodeCheck == null && boolCartItem == false) {
-            new EdamamQuery(ScanActivity.this, upc, isGluten).execute();
+        /**
+         * Perform API query to Edamam
+         */
+        } else if (barcodeCheck == null) {
+            new EdamamQuery(ScanActivity.this, upc, isGlutenFree).execute();
+            barcodeCheck = dbOpener.selectProductByID(upc);
+
+            if (!isGlutenFree && barcodeCheck != null) {
+                showGlutenToCartDialog();
+            }
         }
     }
 
     /**
-     *     Retrieve Edit text field
+     *     Return Edit text field value
       */
     private long getUPCEditText() {
         return Long.valueOf(upcBarcode.getText().toString());
@@ -254,12 +245,21 @@ public class ScanActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Method used to release resources used by CodeScanner when this method is called
+     */
     @Override
     protected void onPause() {
         codeScanner.releaseResources();
         super.onPause();
     }
 
+    /**
+     * Method to hide the icons of the currently selected activity (ScanActivity.java)
+     *
+     * @param menu instance of the menu for the top toolbar
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -269,6 +269,11 @@ public class ScanActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Method used to change activities when clicking/tapping on the toolbar icons
+     *
+     * @param item Item clicked/tapped on the main toolbar
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -292,6 +297,98 @@ public class ScanActivity extends AppCompatActivity {
         return true;
     }
 
+    public AlertDialog.Builder setAlertDialog(AlertDialog.Builder alertDialog, String title, String message, DialogInterface.OnClickListener listener) {
+        return alertDialog.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Yes", listener).setNegativeButton("No", listener);
+    }
+
+    public void showGlutenToCartDialog() {
+        setAlertDialog(glutenToCartDialog, "Add gluten item to cart", "Would you like to add this gluten item to the cart? By default, only gluten-free items are added.", glutenToCartListener);
+        glutenToCartDialog.create().show();
+    }
+
+    public void showGlutenMismatchDialog() {
+        setAlertDialog(glutenDatabaseMismatchDialog, "Mismatching gluten value", "The item previously retrieved does not match the selected item, would you like to change this?", glutenMismatchListener);
+        glutenDatabaseMismatchDialog.show();
+    }
+
+    /**
+     * Method used to change the gluten value of a product retrieved from the database. If the item exists in the cart, it will also update this item.
+     */
+    DialogInterface.OnClickListener glutenMismatchListener = (dialog, which) -> {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                dbOpener.getWritableDatabase();
+                barcodeCheck.setIsGlutenFree(checkBox.isChecked());
+                dbOpener.updateProductById(barcodeCheck);
+                boolean itemInCart = false;
+                int index;
+                String glutenString = "";
+                if (checkBox.isChecked()) {
+                    glutenString = "gluten-free";
+                } else {
+                    glutenString = "gluten";
+                }
+
+                Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " successfully changed to " + glutenString, Toast.LENGTH_LONG).show();
+                /**
+                 * Verify if the item exists in the cart. If it does, update the item in the cart.
+                 */
+                if (CartActivity.getProductsArrayList().size() != 0){
+                    for (Product prod : CartActivity.getProductsArrayList()) {
+                        index = 0;
+                        if (prod.getId() == barcodeCheck.getId()) {
+                            itemInCart = true;
+                            CartActivity.getProductsArrayList().set(index, barcodeCheck).setLinkedProduct(null);
+                            break;
+                        }
+                        index++;
+                    }
+                }
+                if (!barcodeCheck.isGlutenFree() && !productInCart(barcodeCheck.getId())) {
+                    showGlutenToCartDialog();
+                } else if (barcodeCheck.isGlutenFree() && !productInCart(barcodeCheck.getId())) {
+                    CartActivity.getProductsArrayList().add(barcodeCheck);
+                    Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " successfully added to cart ", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case DialogInterface.BUTTON_NEGATIVE:
+                Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " was not changed", Toast.LENGTH_LONG).show();
+                if (!barcodeCheck.isGlutenFree() && !productInCart(barcodeCheck.getId())) {
+                    showGlutenToCartDialog();
+                }
+                break;
+        }
+    };
+
+    DialogInterface.OnClickListener glutenToCartListener = (dialog, which) -> {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                CartActivity.getProductsArrayList().add(barcodeCheck);
+                Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " successfully added to the cart", Toast.LENGTH_LONG).show();
+                break;
+            case DialogInterface.BUTTON_NEGATIVE:
+                Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " was not added to the cart", Toast.LENGTH_LONG).show();
+                break;
+        }
+    };
+
+    /**
+     * Method to verify if the item exists in the cart.
+     * @param upc Barcode to compare in the cart
+     * @return Return true if the product is found in the cart, return false if the item is not found.
+     */
+    public boolean productInCart(long upc) {
+        if (CartActivity.getProductsArrayList().size() != 0){
+            for (Product prod : CartActivity.getProductsArrayList()) {
+                if (prod.getId() == upc) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
     /**
      * Overwritten method used to enable/disable camera based on permissions selected
      * by the user.
