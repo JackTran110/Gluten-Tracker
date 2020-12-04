@@ -312,6 +312,11 @@ public class CartActivity extends AppCompatActivity {
             //context = parent.getContext();
             context = newView.getContext();
             //final View testView = newView;
+            TextView isGluten = newView.findViewById(R.id.glutenFree);
+            if(product.isGlutenFree())
+                isGluten.setText("Gluten-Free");
+            else
+                isGluten.setText("Not Gluten-Free");
             TextView deductibleText = newView.findViewById(R.id.deductibleText);
             TextView linkedProductName = newView.findViewById(R.id.linkedProductName);
             if(product.getLinkedProduct() != null) {

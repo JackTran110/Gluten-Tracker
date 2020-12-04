@@ -94,7 +94,8 @@ public class CartListViewHolder {
         TextView priceEdit = row.findViewById(R.id.priceEdit);
         //priceEdit.setText(product.getDisplayedPrice() + ""); originally there
   //      priceEdit.setText(editedProduct.getDisplayedPrice() + "");
-        priceEdit.setText(editedProduct.getDisplayedPriceAsString());
+  //      priceEdit.setText(editedProduct.getDisplayedPriceAsString());
+        priceEdit.setText(context.getString(R.string.price) + editedProduct.getDisplayedPriceAsString());
         EditText quantityEdit = row.findViewById(R.id.quantityEdit);
         if(context instanceof Link){
             //quantityEdit.setVisibility(row.INVISIBLE);
@@ -147,7 +148,8 @@ public class CartListViewHolder {
                     editedProduct.setDisplayedPrice(newPrice);
                     editedProduct.setPrice(newPrice / editedProduct.getQuantity());
               //      priceEdit.setText(editedProduct.getDisplayedPrice() + "");
-                    priceEdit.setText(editedProduct.getDisplayedPriceAsString());
+         //           priceEdit.setText(editedProduct.getDisplayedPriceAsString());
+                    priceEdit.setText(context.getString(R.string.price) + editedProduct.getDisplayedPriceAsString());
                     if(editedProduct.getLinkedProduct() != null){
                         //deductibleEdit.setText(editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice() + "");
                   //      deductibleEdit.setText(editedProduct.getDeductionAsString());
@@ -194,7 +196,8 @@ public class CartListViewHolder {
                 }
                 editedProduct.changeQuantityAndDisplayedPrice(newQuantity);
             //    priceEdit.setText(editedProduct.getDisplayedPrice() + "");
-                priceEdit.setText(editedProduct.getDisplayedPriceAsString());
+       //         priceEdit.setText(editedProduct.getDisplayedPriceAsString());
+                priceEdit.setText(context.getString(R.string.price) + editedProduct.getDisplayedPriceAsString());
                 if(editedProduct.getLinkedProduct() != null){
                     //deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
                    // deductibleEdit.setText(editedProduct.getDeductionAsString());

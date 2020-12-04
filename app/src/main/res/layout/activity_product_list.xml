@@ -109,6 +109,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/glutenFree"
+        android:layout_below="@+id/productName"/>
+
  <!-- original block   <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -139,7 +145,7 @@
       android:layout_height="wrap_content"
       android:id="@+id/price"
       android:text="@string/price"
-      android:layout_below="@+id/productName" />
+      android:layout_below="@+id/glutenFree" />
     <!--<EditText
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
