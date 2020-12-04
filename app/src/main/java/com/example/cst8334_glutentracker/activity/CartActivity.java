@@ -124,6 +124,20 @@ public class CartActivity extends AppCompatActivity {
         } */
         checkoutButton.setOnClickListener((View v) -> {
             if(!productsArrayList.isEmpty()) {
+                int numberOfNotLinkedProducts = 0;
+                String message;
+                for(Product product: getProductsArrayList()){
+                    if(product.getLinkedProduct() == null && product.isGlutenFree() == true)
+                        numberOfNotLinkedProducts++;
+                }
+                if(numberOfNotLinkedProducts > 0 && numberOfNotLinkedProducts > 1)
+                    message = "There are " + numberOfNotLinkedProducts + " gluten-free products not linked. Do you still wish to continue checkout? "
+                        + "This will clear your current cart and finalize your purchase.";
+                else if(numberOfNotLinkedProducts == 1)
+                    message = "There is " + numberOfNotLinkedProducts + " gluten-free product not linked. Do you still wish to continue checkout? "
+                            + "This will clear your current cart and finalize your purchase.";
+                else
+                    message = "Are you sure you would like to checkout? This will clear your current cart.";
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
                 // DialogInterface learned from https://stackoverflow.com/questions/20494542/using-dialoginterfaces-onclick-method
                 DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
@@ -146,7 +160,7 @@ public class CartActivity extends AppCompatActivity {
                 }
             };
             alertDialog.setTitle("Finalize Purchase");
-            alertDialog.setMessage("Are you sure you would like to checkout? This will clear your current cart.");
+            alertDialog.setMessage(message);
             alertDialog.setPositiveButton("No", dialogClickListener);
             alertDialog.setNegativeButton("Yes", dialogClickListener);
             alertDialog.create().show();

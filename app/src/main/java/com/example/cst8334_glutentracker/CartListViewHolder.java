@@ -79,14 +79,15 @@ public class CartListViewHolder {
         //View row = getLayoutInflater().inflate(R.layout.activity_product_list, parent, false); // worked
         // View row = getLayoutInflater().inflate(R.layout.activity_edit_product, parent, false); original
         TextView deductibleEdit = row.findViewById(R.id.deductibleTextEdit);
-        TextView deductibleViewEdit = row.findViewById(R.id.deductibleViewEdit);
+  //      TextView deductibleViewEdit = row.findViewById(R.id.deductibleViewEdit);
         if(editedProduct.getLinkedProduct() == null){
-            deductibleViewEdit.setVisibility(row.INVISIBLE);
+   //         deductibleViewEdit.setVisibility(row.INVISIBLE);
             deductibleEdit.setVisibility(row.INVISIBLE);
         }
         else{
            // deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
-            deductibleEdit.setText(editedProduct.getDeductionAsString());
+       //     deductibleEdit.setText(editedProduct.getDeductionAsString());
+            deductibleEdit.setText(context.getString(R.string.deductible) + editedProduct.getDeductionAsString());
         }
         EditText changePriceEdit = row.findViewById(R.id.changePriceAndQuantityTextEdit);
 //        Button changePriceEditButton = row.findViewById(R.id.changePriceEdit);
@@ -149,7 +150,8 @@ public class CartListViewHolder {
                     priceEdit.setText(editedProduct.getDisplayedPriceAsString());
                     if(editedProduct.getLinkedProduct() != null){
                         //deductibleEdit.setText(editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice() + "");
-                        deductibleEdit.setText(editedProduct.getDeductionAsString());
+                  //      deductibleEdit.setText(editedProduct.getDeductionAsString());
+                        deductibleEdit.setText(context.getString(R.string.deductible) + editedProduct.getDeductionAsString());
                     }
                     adapter.notifyDataSetChanged();
 
@@ -195,7 +197,8 @@ public class CartListViewHolder {
                 priceEdit.setText(editedProduct.getDisplayedPriceAsString());
                 if(editedProduct.getLinkedProduct() != null){
                     //deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
-                    deductibleEdit.setText(editedProduct.getDeductionAsString());
+                   // deductibleEdit.setText(editedProduct.getDeductionAsString());
+                    deductibleEdit.setText(context.getString(R.string.deductible) + editedProduct.getDeductionAsString());
                 }
                 adapter.notifyDataSetChanged();
 
@@ -220,7 +223,8 @@ public class CartListViewHolder {
                 quantityEdit.setText(editedProduct.getQuantity() + "");
                 if (editedProduct.getLinkedProduct() != null) {
                    // deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
-                    deductibleEdit.setText(editedProduct.getDeductionAsString());
+                 //   deductibleEdit.setText(editedProduct.getDeductionAsString());
+                    deductibleEdit.setText(context.getString(R.string.deductible) + editedProduct.getDeductionAsString());
                 }
                 adapter.notifyDataSetChanged();
             });
@@ -232,7 +236,8 @@ public class CartListViewHolder {
                     quantityEdit.setText(editedProduct.getQuantity() + "");
                     if (editedProduct.getLinkedProduct() != null) {
                        // deductibleEdit.setText((editedProduct.getDisplayedPrice() - editedProduct.getLinkedProduct().getDisplayedPrice()) + "");
-                        deductibleEdit.setText(editedProduct.getDeductionAsString());
+                    //    deductibleEdit.setText(editedProduct.getDeductionAsString());
+                        deductibleEdit.setText(context.getString(R.string.deductible) + editedProduct.getDeductionAsString());
                     }
                     adapter.notifyDataSetChanged();
                 }
