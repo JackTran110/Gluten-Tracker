@@ -27,13 +27,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/productFoundName" />
 
-    <TextView
+  <!--  <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/productFoundDescription"
-        android:layout_toRightOf="@+id/productFoundName"/>
+        android:layout_toRightOf="@+id/productFoundName"/> -->
 
-    <TextView
+  <!--  <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/productFoundDollarSign"
@@ -45,7 +45,15 @@
         android:layout_height="wrap_content"
         android:id="@+id/productFoundPrice"
         android:layout_below="@+id/productFoundName"
-        android:layout_toRightOf="@+id/productFoundDollarSign"/>
+        android:layout_toRightOf="@+id/productFoundDollarSign"/> -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/productFoundPrice"
+        android:text="@string/price"
+        android:layout_below="@+id/productFoundName" />
+
     <!--<EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

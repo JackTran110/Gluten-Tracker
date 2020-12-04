@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "980537074160-039acha57dugs8c341q215dpg7u91te1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cst8334_glutentracker",
+            "certificate_hash": "d25e76cdf5d4492291a0bc8164ad49c5a86323c9"
+          }
+        },
+        {
           "client_id": "980537074160-bcnhvb9fhptsdi4ekvt034p5ntsdu488.apps.googleusercontent.com",
           "client_type": 3
         }

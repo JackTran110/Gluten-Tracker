@@ -150,13 +150,13 @@ public class Link extends AppCompatActivity {
             View newView = inflater.inflate(R.layout.activity_fragment_populate_listview, parent, false);
             context = newView.getContext();
             TextView nameText = newView.findViewById(R.id.productFoundName);
-            TextView descriptionText = newView.findViewById(R.id.productFoundDescription);
+   //         TextView descriptionText = newView.findViewById(R.id.productFoundDescription);
             TextView priceText = newView.findViewById(R.id.productFoundPrice);
             //EditText priceText = newView.findViewById(R.id.productFoundPrice);
             nameText.setText(product.getProductName() + " ");
-            descriptionText.setText(product.getProductDescription() + " ");
+    //        descriptionText.setText(product.getProductDescription() + " ");
          //   priceText.setText(product.getDisplayedPrice() + " ");
-            priceText.setText(product.getDisplayedPriceAsString());
+            priceText.setText(getString(R.string.price) + product.getDisplayedPriceAsString());
 
    // worked        TextView textTest = newView.findViewById(R.id.textTest);
    //  worked       TextView testPrice = newView.findViewById(R.id.testPrice);
