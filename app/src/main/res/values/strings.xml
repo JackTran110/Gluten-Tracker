@@ -1,6 +1,21 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">CST8334 - Gluten Tracker</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="total_deductible">Total Deductible: $</string>
+    <string name="form_description">Register form\'s border</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="login_name_text">Login Name</string>
+    <string name="login_name_hint">Enter your login name!</string>
+    <string name="password_text">Password</string>
+    <string name="enter_password_hint">Enter password!</string>
+    <string name="re_password_text">Validate Password</string>
+    <string name="re_password_hint">Enter password again!</string>
+    <string name="user_name_text">User Name</string>
+    <string name="user_name_hint">Enter your user name!</string>
+    <string name="email_text">Email Address</string>
+    <string name="email_hint">Enter your email address!</string>
+    <string name="submit_btn">SUBMIT</string>
+    <string name="cancel_btn" tools:ignore="ButtonCase">CANCEL</string>
+    <string name="facebook_app_id">880845565995717</string>
+    <string name="fb_login_protocol_scheme">fb880845565995717</string>
 </resources>

@@ -49,10 +49,14 @@ dependencies {
 
     // from https://console.firebase.google.com/u/0/project/gluten-tracker/overview
     implementation platform('com.google.firebase:firebase-bom:26.1.0')
-    implementation 'com.google.firebase:firebase-analytics:17.2.1'
-    implementation 'com.google.firebase:firebase-database:19.2.0'
+    implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
     implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
 
+    // from https://github.com/material-components/material-components-android/blob/master/docs/getting-started.md
+    implementation 'com.google.android.material:material:1.2.1'
 
-
+    //from https://developers.facebook.com/apps/880845565995717/fb-login/quickstart/
+    implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
 }

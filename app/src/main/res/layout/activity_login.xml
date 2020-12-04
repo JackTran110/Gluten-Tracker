@@ -7,54 +7,122 @@
     android:background="@drawable/logo">
 
     <TextView
-        android:id="@+id/login_text"
+        android:id="@+id/sign_in_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Log In"
+        android:text="Sign In"
         android:textSize="50sp"
         android:textColor="@color/colorBlack"
         android:textStyle="bold"
         android:fontFamily="serif"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="100dp"
         android:layout_centerHorizontal="true"/>
 
     <EditText
         android:id="@+id/login_name"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_margin="50dp"
-        android:layout_below="@+id/login_text"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginVertical="25dp"
+        android:layout_below="@+id/sign_in_text"
         android:hint="Please enter your login name!"
         android:fontFamily="serif"
         android:background="@color/colorWhite"
+        android:paddingLeft="10dp"
         android:alpha="0.8"/>
 
-    <EditText
-        android:id="@+id/password"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/password_input_layout"
+        app:passwordToggleEnabled="true"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:ems="10"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/login_name"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:inputType="textPassword"
-        android:hint="Please enter password!"
-        android:fontFamily="serif"
-        android:background="@color/colorWhite"
-        android:alpha="0.8"/>
+        android:layout_marginHorizontal="50dp"
+        app:hintEnabled="false">
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:hint="Please enter password!"
+            android:fontFamily="serif"
+            android:background="@color/colorWhite"
+            android:alpha="0.8"
+            android:paddingLeft="10dp"/>
+    </com.google.android.material.textfield.TextInputLayout >
 
     <Button
-        android:id="@+id/login_button"
-        android:layout_width="150dp"
+        android:id="@+id/sign_in_button"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/password"
+        android:layout_below="@+id/password_input_layout"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:text="LOG IN"
+        android:layout_marginTop="20dp"
+        android:text="SIGN IN"
+        android:textStyle="bold"
         android:textSize="25sp"
         android:fontFamily="serif"
         android:textColor="@color/colorWhite"
         android:background="@drawable/btn_background"/>
+
+    <TextView
+        android:id="@+id/sign_up_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/sign_in_button"
+        android:text="Do not have an account?"
+        android:textStyle="bold"
+        android:textColor="@color/colorWhite"
+        android:textSize="10sp"
+        android:fontFamily="serif"
+        android:layout_below="@id/sign_in_button"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/sign_up_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/sign_in_button"
+        android:text="Sign Up!"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent"
+        android:textSize="10sp"
+        android:fontFamily="serif"
+        android:layout_below="@id/sign_in_button"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/also_sign_in_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="- Also sign in with -"
+        android:textStyle="bold"
+        android:textColor="@color/colorWhite"
+        android:textSize="20sp"
+        android:fontFamily="serif"
+        android:layout_below="@id/sign_up_text"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        android:id="@+id/google_sign_in_btn"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/gmail_icon"
+        android:layout_below="@id/also_sign_in_text"
+        android:layout_alignRight="@id/also_sign_in_text"
+        android:layout_marginTop="20dp"/>
+
+    <Button
+        android:id="@+id/facebook_sign_in_btn"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/facebook_icon"
+        android:layout_below="@id/also_sign_in_text"
+        android:layout_alignLeft="@id/also_sign_in_text"
+        android:layout_marginTop="20dp"/>
 
     <TextView
         android:id="@+id/version"
@@ -62,11 +130,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:text="Version 0.3"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textColor="@color/colorBlack"
-        android:textStyle="bold"
         android:fontFamily="serif"/>
 
 </RelativeLayout>

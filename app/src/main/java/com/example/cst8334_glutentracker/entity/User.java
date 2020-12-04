@@ -2,27 +2,18 @@ package com.example.cst8334_glutentracker.entity;
 
 public class User {
 
-    private long userID;
     private String userName;
     private String loginName;
     private String email;
     private String password;
 
-    public User(long userID, String userName, String loginName, String email, String password){
-        setUserID(userID)
-                .setUserName(userName)
-                .setLoginName(loginName)
-                .setEmail(email)
-                .setPassword(password);
+    private static final User INSTANCE = new User();
+
+    private User(){
     }
 
-    public long getUserID(){
-        return userID;
-    }
-
-    public User setUserID(long userID){
-        this.userID = userID;
-        return this;
+    public static User getInstance(){
+        return INSTANCE;
     }
 
     public String getUserName(){

@@ -22,7 +22,7 @@ import java.util.List;
 
 //version feng
 
-public class MainActivity extends AppCompatActivity {
+public class MainMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,30 +43,28 @@ public class MainActivity extends AppCompatActivity {
         mainMenu.setOnItemClickListener((AdapterView<?> list, View view, int position, long id) -> {
             switch (menu.get(position).getButtonName()){
                 case("Barcode Scanner"): {
-                    startActivity(new Intent(MainActivity.this, ScanActivity.class));
+                    startActivity(new Intent(MainMenuActivity.this, ScanActivity.class));
                     break;
                 }
 
                 case("To Cart"): {
-                    startActivity(new Intent(MainActivity.this, CartActivity.class));
+                    startActivity(new Intent(MainMenuActivity.this, CartActivity.class));
                     break;
                 }
 
                 case("Receipt List"): {
-                    startActivity(new Intent(MainActivity.this, ReceiptActivity.class));
+                    startActivity(new Intent(MainMenuActivity.this, ReceiptActivity.class));
                     break;
                 }
 
                 case("To Report Page"): {
-                    startActivity(new Intent(MainActivity.this, ReportActivity.class));
+                    startActivity(new Intent(MainMenuActivity.this, ReportActivity.class));
                     break;
                 }
 
                 default: break;
             }
         });
-
-        startActivity(new Intent(MainActivity.this, LoginActivity.class));
     }
 
     private class MenuItem {
