@@ -160,6 +160,7 @@ public class DigitalReceipt extends AppCompatActivity {
         private ArrayList<Product> rData;
 
         Context mContext;
+        TextView proid;
         TextView name;
         TextView desc;
         TextView gluten;
@@ -180,6 +181,7 @@ public class DigitalReceipt extends AppCompatActivity {
 
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(R.layout.digital_receipt_layout, parent, false);
+            proid=(TextView) convertView.findViewById(R.id.proid);
             name = (TextView) convertView.findViewById(R.id.pname);
             desc = (TextView) convertView.findViewById(R.id.pdesc);
             gluten = (TextView) convertView.findViewById(R.id.gluten);
@@ -188,9 +190,11 @@ public class DigitalReceipt extends AppCompatActivity {
             edit=convertView.findViewById(R.id.edit);
             Context context=convertView.getContext();
 
+            proid.setText(Long.toString(product.getId()));
             name.setText(product.getProductName());
             desc.setText(product.getProductDescription());
-            gluten.setText(Boolean.toString(product.isGlutenFree()));
+            if(product.getLinkedProduct()!=null)
+                gluten.setText(product.getLinkedProduct().getProductName());
             quantity.setText(Integer.toString(product.getQuantity()));
             ded.setText(Double.toString(product.getDisplayedPrice()));
 
