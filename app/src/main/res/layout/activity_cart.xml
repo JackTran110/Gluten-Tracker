@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/totalDeductibleTextView"/>
+        android:layout_above="@+id/totalDeductible"/>
 
     <Button
         android:id="@+id/addNewProductButton"
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/addNewProductButton"
         android:layout_marginBottom="1dp"
-        android:text="Total:"
+        android:text="@string/total"
         android:textSize="20sp"
         android:textColor="@color/colorBlack"
         android:fontFamily="serif"
@@ -71,13 +71,13 @@
         android:text="amount"
         android:textSize="13dp"
         android:layout_alignParentRight="true"/> -->
-    <TextView
+   <!-- <TextView
         android:id="@+id/amount"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:text="amount"
         android:textSize="13dp"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"/> -->
 
 
 

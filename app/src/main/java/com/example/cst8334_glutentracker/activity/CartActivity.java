@@ -85,7 +85,8 @@ public class CartActivity extends AppCompatActivity {
         //productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", "test", 3.00, false));
         //productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", "test", 5.00, true));
         totalDeductibleDisplay = findViewById(R.id.totalDeductible);
-        total = findViewById(R.id.amount);
+        //total = findViewById(R.id.amount);
+        total = findViewById(R.id.total);
         purchases.setAdapter(adapter);
 
  /*       if(!getProductsArrayList().isEmpty()) {
@@ -288,22 +289,25 @@ public class CartActivity extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
             View newView = inflater.inflate(R.layout.activity_product_list, parent, false);
 
-            if(product.getLinkedProduct() == null){
+        /*    if(product.getLinkedProduct() == null){
                 newView = inflater.inflate(R.layout.activity_product_list, parent, false);
-
             }
             else{
                 newView = inflater.inflate(R.layout.activity_product_list_linked, parent, false);
-                /*TextView deductibleText = newView.findViewById(R.id.deductibleText);
-                deductibleText.setText((product.getPrice() - product.getLinkedProduct().getPrice()) + ""); */
-            }
+            } */
             //context = parent.getContext();
             context = newView.getContext();
             //final View testView = newView;
             TextView deductibleText = newView.findViewById(R.id.deductibleText);
+            TextView linkedProductName = newView.findViewById(R.id.linkedProductName);
             if(product.getLinkedProduct() != null) {
               //  deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + ""); //changed to displayed price
-                deductibleText.setText(product.getDeductionAsString());
+                deductibleText.setText(getString(R.string.deductible) + product.getDeductionAsString());
+                linkedProductName.setText(getString(R.string.linkedProductName) + product.getLinkedProduct().getProductName());
+            }
+            else{ // added else statement
+                deductibleText.setVisibility(View.INVISIBLE);
+                linkedProductName.setVisibility(View.INVISIBLE);
             }
 
             TextView productName = newView.findViewById(R.id.productName);
@@ -311,7 +315,7 @@ public class CartActivity extends AppCompatActivity {
 
             TextView price = newView.findViewById(R.id.price);
      //       price.setText(product.getDisplayedPrice() + "");
-            price.setText(product.getDisplayedPriceAsString());
+            price.setText(getString(R.string.price) + product.getDisplayedPriceAsString());
             //EditText quantity = newView.findViewById(R.id.quantity); what it was before
             //quantity.setText("1"); not needed
             TextView quantity = newView.findViewById(R.id.quantity);
@@ -324,7 +328,7 @@ public class CartActivity extends AppCompatActivity {
                 product.changeQuantityAndDisplayedPrice(convertedToInt);
                 if(product.getLinkedProduct() != null){
                    // deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
-                    deductibleText.setText(product.getDeductionAsString());
+                    deductibleText.setText(getString(R.string.deductible) + product.getDeductionAsString());
                 }
                 adapter.notifyDataSetChanged();
             });
@@ -337,7 +341,7 @@ public class CartActivity extends AppCompatActivity {
                     product.changeQuantityAndDisplayedPrice(convertedToInt);
                     if(product.getLinkedProduct() != null){
                       //  deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
-                        deductibleText.setText(product.getDeductionAsString());
+                        deductibleText.setText(getString(R.string.deductible) + product.getDeductionAsString());
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -354,7 +358,12 @@ public class CartActivity extends AppCompatActivity {
             });
 
             Button linkButton = newView.findViewById(R.id.linkButton);
-            boolean test = product.isGlutenFree();
+            if(product.getLinkedProduct() == null){
+                linkButton.setText("Link Product");
+            }
+            else{
+                linkButton.setText("Linked!");
+            }
             if(!product.isGlutenFree()){
                 linkButton.setEnabled(false);
             }
@@ -515,7 +524,7 @@ public class CartActivity extends AppCompatActivity {
                 }
                 totalAsDouble += products.getDisplayedPrice();
                // total.setText(totalAsDouble + "");
-                total.setText(String.format("%.2f", totalAsDouble));
+                total.setText(getString(R.string.total) + String.format("%.2f", totalAsDouble));
                 totalPaid = totalAsDouble;
                 //totalDeductibleDisplay.setText(totalDeductibleAsDouble + "");
                 totalDeductibleDisplay.setText(getString(R.string.total_deductible) + String.format("%.2f", totalDeductibleAsDouble));
