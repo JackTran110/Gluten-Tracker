@@ -83,9 +83,45 @@ public class FirebaseOnlineDatabase extends AsyncTask<String, String, List<User>
     protected void onPostExecute(List<User> u) {
         switch (firstArgument){
             case LoginActivity.LOGIN:{
-                if(u.size() == 1 && u.get(0).getPassword().equals(thirdArgument) && fromActivity != null){
-                    fromActivity.startActivity(new Intent(fromActivity.getBaseContext(), MainMenuActivity.class));
+                if(u.size() == 1 &&
+                        u.get(0).getPassword().equals(thirdArgument) &&
+                        fromActivity != null &&
+                        !u.get(0).getLoginName().equals("Admin")){
+                    firebaseAuth.signInWithEmailAndPassword(u.get(0).getEmail(), u.get(0).getLoginName())
+                            .addOnCompleteListener(task -> {
+                                if(task.isSuccessful()){
+                                    if(firebaseAuth.getCurrentUser().isEmailVerified()) {
+                                        fromActivity.startActivity(new Intent(
+                                                fromActivity.getBaseContext(),
+                                                MainMenuActivity.class));
+                                    } else {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(fromActivity);
+                                        builder.setTitle("Sign in denied!")
+                                                .setMessage("Please verify your email to sign in!");
+                                        builder.create().show();
+                                        firebaseAuth.signOut();
+                                    }
+                                } else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(fromActivity);
+                                    builder.setTitle("Sign in denied!")
+                                            .setMessage("You login name or password is not correct. Please try again!");
+                                    builder.create().show();
+                                    firebaseAuth.signOut();
+                                }
+                            });
+                    break;
                 }
+                if(u.get(0).getLoginName().equals("Admin") &&
+                        u.get(0).getPassword().equals(thirdArgument)){
+                    fromActivity.startActivity(new Intent(
+                            fromActivity.getBaseContext(),
+                            MainMenuActivity.class));
+                    break;
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(fromActivity);
+                builder.setTitle("Sign in denied!")
+                        .setMessage("You login name or password is not correct. Please try again!");
+                builder.create().show();
                 break;
             }
             case LoginActivity.CHECK_LOGIN_NAME:{
@@ -132,7 +168,7 @@ public class FirebaseOnlineDatabase extends AsyncTask<String, String, List<User>
         }
     }
 
-    public boolean registerNewUser(User user){
+    private boolean registerNewUser(User user){
         Map<String, String> userMap = new HashMap<>();
         userMap.put(USER_NAME, user.getUserName());
         userMap.put(LOGIN_NAME, user.getLoginName());
