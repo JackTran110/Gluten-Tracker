@@ -143,20 +143,20 @@ public class ReceiptActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.scannerButton:
-                Intent goToScanner = new Intent(ReceiptActivity.this, ScanActivity.class);
-                startActivity(goToScanner);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_SCANNER);
+                finish();
                 break;
             case R.id.cartButton:
-                Intent goToCart = new Intent(ReceiptActivity.this, CartActivity.class);
-                startActivity(goToCart);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_CART);
+                finish();
                 break;
             case R.id.receiptButton:
-                Intent goToReceipt = new Intent(ReceiptActivity.this, ReceiptActivity.class);
-                startActivity(goToReceipt);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_RECEIPT);
+                finish();
                 break;
             case R.id.reportButton:
-                Intent goToReport = new Intent(ReceiptActivity.this, ReportActivity.class);
-                startActivity(goToReport);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_REPORT);
+                finish();
                 break;
         }
         return true;

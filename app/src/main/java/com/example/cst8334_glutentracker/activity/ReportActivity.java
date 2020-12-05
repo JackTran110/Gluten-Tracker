@@ -180,18 +180,20 @@ public class ReportActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.scannerButton:
-                Intent goToScanner = new Intent(ReportActivity.this, ScanActivity.class);
-                startActivity(goToScanner);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_SCANNER);
+                finish();
                 break;
             case R.id.cartButton:
-                Intent goToCart = new Intent(ReportActivity.this, CartActivity.class);
-                startActivity(goToCart);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_CART);
+                finish();
                 break;
             case R.id.receiptButton:
-                Intent goToReceipt = new Intent(ReportActivity.this, ReceiptActivity.class);
-                startActivity(goToReceipt);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_RECEIPT);
+                finish();
                 break;
-            case R.id.search_view:
+            case R.id.reportButton:
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_REPORT);
+                finish();
                 break;
         }
         return true;

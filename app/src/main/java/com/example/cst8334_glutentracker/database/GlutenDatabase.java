@@ -202,12 +202,6 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         for(Product product: products) {
             Product linkedProduct = product.getLinkedProduct();
             if (linkedProduct != null) {
-                try{
-                    linkedProduct = selectProductByID(product.getLinkedProduct().getId());
-                }catch (SQLiteException e){
-                    Log.e(ERROR_TAG, "Unable to find linked product in the database", e);
-                    return false;
-                }
                 cv.put(ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID, linkedProduct.getId());
                 cv.put(ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE, linkedProduct.getPrice());
                 cv.put(ProductReceipt.COLUMN_NAME_DEDUCTION, product.getDeduction());

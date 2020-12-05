@@ -19,29 +19,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.cst8334_glutentracker.CartListViewHolder;
+import com.example.cst8334_glutentracker.functionality.CartListViewHolder;
 import com.example.cst8334_glutentracker.R;
-import com.example.cst8334_glutentracker.activity.Link;
-import com.example.cst8334_glutentracker.activity.ReceiptActivity;
-import com.example.cst8334_glutentracker.activity.ReportActivity;
-import com.example.cst8334_glutentracker.activity.ScanActivity;
 import com.example.cst8334_glutentracker.database.GlutenDatabase;
 import com.example.cst8334_glutentracker.entity.Product;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class CartActivity extends AppCompatActivity {
 
     private Adapter adapter = new Adapter();
-    private static ArrayList<Product> productsArrayList = new ArrayList<Product>();
-    private int productCount = 0;
+    private static ArrayList<Product> productsArrayList;
+    private static List<Long> productIdList;
+    private static int productCount;
     private GlutenDatabase db = new GlutenDatabase(this);
     public static ArrayList<String> editTextList = new ArrayList<String>(); //test
     private Context context;
@@ -64,9 +62,19 @@ public class CartActivity extends AppCompatActivity {
         cartTbar = (Toolbar)findViewById(R.id.cartToolbar);
 
         SharedPreferences pre = getSharedPreferences("cart_activity", Context.MODE_PRIVATE);
+        productIdList = new ArrayList<>();
+        productsArrayList = new ArrayList<>();
         productCount = pre.getInt("Product count", 0);
-        for(int i = 1; i <= productCount; i++){
-//            productsArrayList.add()
+
+        while (productCount >0){
+            productIdList.add(pre.getLong(Integer.toString(productCount), 1));
+            productCount--;
+        }
+        for(String key: pre.getAll().keySet()){
+            pre.edit().remove(key).apply();
+        }
+        for(long id: productIdList){
+            productsArrayList.add(db.selectProductByID(id));
         }
 
         ListView purchases = findViewById(R.id.purchases);
@@ -214,9 +222,15 @@ public class CartActivity extends AppCompatActivity {
 
         SharedPreferences pre = getSharedPreferences("cart_activity", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = pre.edit();
+        productCount = productsArrayList.size();
+        for(int i = 0; i< productCount; i++){
+            edit.putLong(Integer.toString(i), productsArrayList.get(i).getId());
+        }
+        edit.putInt("Product count", productCount);
+        edit.apply();
+        db.insertIntoProductsTable(productsArrayList);
     }
-
- /*   // added this to check edittext bug
+/*   // added this to check edittext bug
     @Override
     protected void onStart() {
         super.onStart();
@@ -236,21 +250,21 @@ public class CartActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.scannerButton:
-                Intent goToScanner = new Intent(CartActivity.this, ScanActivity.class);
-                startActivity(goToScanner);
-            break;
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_SCANNER);
+                finish();
+                break;
             case R.id.cartButton:
-                Intent goToCart = new Intent(CartActivity.this, CartActivity.class);
-                startActivity(goToCart);
-            break;
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_CART);
+                finish();
+                break;
             case R.id.receiptButton:
-                Intent goToReceipt = new Intent(CartActivity.this, ReceiptActivity.class);
-                startActivity(goToReceipt);
-            break;
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_RECEIPT);
+                finish();
+                break;
             case R.id.reportButton:
-                Intent goToReport = new Intent(CartActivity.this, ReportActivity.class);
-                startActivity(goToReport);
-            break;
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_REPORT);
+                finish();
+                break;
         }
         return true;
     }
