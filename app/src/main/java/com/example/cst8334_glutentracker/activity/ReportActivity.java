@@ -1,3 +1,10 @@
+/**
+ * Project: cst83334 team 11 project
+ * Name: Feng Sun
+ * Student id: 040634005
+ * Date: 2020-12-05
+ */
+
 package com.example.cst8334_glutentracker.activity;
 
 import androidx.appcompat.app.AlertDialog;
@@ -31,6 +38,9 @@ import com.example.cst8334_glutentracker.entity.Receipt;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * class ReportActivity for the receipt find
+ */
 public class ReportActivity extends AppCompatActivity {
 
     AlertDialog myDialog;
@@ -39,7 +49,9 @@ public class ReportActivity extends AppCompatActivity {
 
     ListView lstView;
     Button btnRpt;
-
+    /**
+     * define private value
+     */
     private GlutenDatabase dbOpener = new GlutenDatabase(this);
     private String uId,uDate,uItem,uSub,uTax;
     private List<Product> uItems;
@@ -47,13 +59,7 @@ public class ReportActivity extends AppCompatActivity {
 
 
     int images = R.drawable.image;
-//    String rId[] = {"12301","14502","30003","45601","67834","002345"};
-//    String rDate[] = {"2020-9-3","2020-8-12","2020-10-8","2020-6-5","2020-4-22","2020-10-1"};
-//    String rItem[] = {"Purchease detail is Oatmeal","Purchease detail is Pasta","Purchease detail is Banana","Purchease detail is Oatmeal","Purchease detail is orange","Purchease detail is apple"};
-//    String rSub[] = {"23.50","105.89","78.45","23.50","105.89","78.45"};
-//    String rTax[] = {"0.8","5.25","1.05","0.8","5.25","1.05"};
 
-    // String receipts[] = {"","","","",""}
 
 
     List<ItemsModel> listItems = new ArrayList<>();
@@ -61,6 +67,10 @@ public class ReportActivity extends AppCompatActivity {
     CustomeAdapter customeAdapter;
     Toolbar reportTbar;
 
+    /**
+     * on create method load inital value
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,52 +81,65 @@ public class ReportActivity extends AppCompatActivity {
         btnRpt = (Button) findViewById(R.id.btnReport);
 
         List<Receipt> rec = dbOpener.selectAllReceipt();
+        if ( rec != null ){
+
+            for (int j = 0; j < rec.size(); j++) {
+                uId = String.valueOf(rec.get(j).getId());
+                uDate = (rec.get(j).getDate()).substring(4, 7).trim() + "-" + (rec.get(j).getDate()).substring(8, 10).trim() + "-" + (rec.get(j).getDate()).substring(24, 28).trim() ;
+                uSub = String.valueOf(rec.get(j).getTotalPrice());
+                uTax = String.valueOf(rec.get(j).getTaxDeductionTotal());
+                uItems = rec.get(j).getProducts();
+
+                ItemsModel itemsModel = new ItemsModel(uId, uDate,uItems, uSub, uTax);
+                listItems.add(itemsModel);
+            }
+/**
+ * set on click listener for the receipt find
+ */
+            btnRpt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(ReportActivity.this, ReportMActivity.class));
+
+                }
+            });
+
+/**
+ * set on item click listener for the lst view
+ */
+            lstView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                    ArrayList<String> lstP = new ArrayList<>();
 
 
-        for (int j = 0; j < rec.size(); j++) {
-            uId = String.valueOf(rec.get(j).getId());
-            uDate = (rec.get(j).getDate()).substring(4, 7).trim() + "-" + (rec.get(j).getDate()).substring(8, 10).trim() + "-" + (rec.get(j).getDate()).substring(24, 28).trim() ;
-            uSub = String.valueOf(rec.get(j).getTotalPrice());
-            uTax = String.valueOf(rec.get(j).getTaxDeductionTotal());
-            uItems = rec.get(j).getProducts();
 
-            ItemsModel itemsModel = new ItemsModel(uId, uDate,uItems, uSub, uTax);
-            listItems.add(itemsModel);
+                    //ArrayAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,lstP);
+
+
+                    createNewDiaglog(position);
+
+                }
+            });
+
+
+
+            customeAdapter = new CustomeAdapter(listItems, this);
+            lstView.setAdapter(customeAdapter);
+
         }
 
-        btnRpt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(ReportActivity.this, ReportMActivity.class));
-
-            }
-        });
 
 
-        lstView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                ArrayList<String> lstP = new ArrayList<>();
-
-
-
-                //ArrayAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,lstP);
-
-
-                createNewDiaglog(position);
-
-            }
-        });
-
-
-
-        customeAdapter = new CustomeAdapter(listItems, this);
-        lstView.setAdapter(customeAdapter);
 
 
     }
 
+    /**
+     * create a new diaglog for display the receipt detail
+     * @param position
+     */
     public void createNewDiaglog(int position){
 
         AlertDialog.Builder mybuilder = new AlertDialog.Builder(this);
@@ -151,7 +174,11 @@ public class ReportActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * on create iption menu for the receipt
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar,menu);
@@ -176,6 +203,11 @@ public class ReportActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * on options item selected by the list for the receipt list
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -199,6 +231,9 @@ public class ReportActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * customer adapter for the receipt items show in the list
+     */
     public class CustomeAdapter extends BaseAdapter implements Filterable {
 
         private List<ItemsModel> itemsModelList;
@@ -211,20 +246,44 @@ public class ReportActivity extends AppCompatActivity {
             this.context = context;
         }
 
+        /**
+         * get item number for list
+         * @return number of the list item
+         */
         @Override
         public int getCount() {
             return itemsModelListFiltered.size();
         }
+
+        /**
+         * get item for list
+         * @param position
+         * @return item of pick
+         */
 
         @Override
         public Object getItem(int position) {
             return null;
         }
 
+        /**
+         * get item id for the pick item
+         * @param position
+         * @return id for the pick item
+         */
+
         @Override
         public long getItemId(int position) {
             return position;
         }
+
+        /**
+         * get view for the list view
+         * @param position
+         * @param convertView
+         * @param parent
+         * @return a custom view of the list
+         */
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -246,6 +305,11 @@ public class ReportActivity extends AppCompatActivity {
 
             return view;
         }
+
+        /**
+         * get filter for the receipt find
+         * @return key word of the receipt
+         */
 
         @Override
         public Filter getFilter() {
@@ -282,6 +346,11 @@ public class ReportActivity extends AppCompatActivity {
                     return filterResults;
                 }
 
+                /**
+                 * publich the results to the list view
+                 * @param constraint
+                 * @param results
+                 */
                 @Override
                 protected void publishResults(CharSequence constraint, FilterResults results) {
 
