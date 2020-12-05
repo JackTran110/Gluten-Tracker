@@ -37,6 +37,14 @@ public class DigitalReceipt extends AppCompatActivity {
     public static long passedIndex;
     Receipt receipt;
 
+
+
+    static Product productToPass;
+
+
+
+    static int index;
+
     public static long getPassedIndex() {
         return passedIndex;
     }
@@ -52,16 +60,12 @@ public class DigitalReceipt extends AppCompatActivity {
         setContentView(R.layout.activity_digital_receipt);
 
         fromActivity=getIntent();
-//       passedIndex=fromActivity.getIntExtra("index",);
-
+//      passedIndex=fromActivity.getIntExtra("index",);
         productList=findViewById(R.id.products);
         products=new ArrayList<>();
         rrid=findViewById(R.id.ridf);
         rdate=findViewById(R.id.datef);
         ded=findViewById(R.id.dedf);
-
-
-
 //        productList.setOnItemLongClickListener((adapterView, view, i, l) -> {
 //            AlertDialog.Builder alertDialog = new AlertDialog.Builder(adapterView.getContext());
 //            DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
@@ -80,9 +84,7 @@ public class DigitalReceipt extends AppCompatActivity {
 //            alertDialog.setPositiveButton("No", dialogClickListener);
 //            alertDialog.show();
 //            return true;
-//        });
-
-
+//        })
         loadFromDatabase();
         rrid.setText(receipt.getId()+"");
         rdate.setText(receipt.getDate());
@@ -90,16 +92,11 @@ public class DigitalReceipt extends AppCompatActivity {
         adapter=new ProductAdapter(products,this);
         productList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-
     }
 
-    private void loadFromDatabase()
-    {
-
+    private void loadFromDatabase(){
         receipt=dbOpener.selectReceiptByID(passedIndex);
         products.addAll(receipt.getProducts());
-
-
         /*        database = dbOpener.getReadableDatabase();
         Cursor rc = database.query(false, DatabaseActivity.Receipts.TABLE_NAME, new String[]{DatabaseActivity.Receipts.COLUMN_NAME_ID, DatabaseActivity.Receipts.COLUMN_NAME_FILE, DatabaseActivity.Receipts.COLUMN_NAME_DATE, DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_DEDUCTION}, "receiptID=?",new String[]{Integer.toString(passedIndex)}, null, null, null, null, null);
 
@@ -154,7 +151,31 @@ public class DigitalReceipt extends AppCompatActivity {
          */
     }
 
+    public static Product getProductToPass() {
+        return productToPass;
+    }
 
+    public static void setProductToPass(Product productToPass) {
+        DigitalReceipt.productToPass = productToPass;
+    }
+
+    public static int getIndex() {
+        return index;
+    }
+
+    public static void setIndex(int index) {
+        DigitalReceipt.index = index;
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(getProductToPass() != null){
+            products.set(getIndex(),getProductToPass());
+            setProductToPass(null);
+            setIndex(0);
+            adapter.notifyDataSetChanged();
+        }
+    }
 
     public class ProductAdapter extends ArrayAdapter<Product> {
         private ArrayList<Product> rData;
@@ -167,6 +188,7 @@ public class DigitalReceipt extends AppCompatActivity {
         TextView quantity;
         TextView ded;
         Button edit;
+        Button link;
 
         public ProductAdapter(ArrayList<Product> data, Context context)  {
             super(context,R.layout.digital_receipt_layout,data);
@@ -181,13 +203,22 @@ public class DigitalReceipt extends AppCompatActivity {
 
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(R.layout.digital_receipt_layout, parent, false);
-            proid=(TextView) convertView.findViewById(R.id.proid);
+            proid = (TextView) convertView.findViewById(R.id.proid);
             name = (TextView) convertView.findViewById(R.id.pname);
             desc = (TextView) convertView.findViewById(R.id.pdesc);
             gluten = (TextView) convertView.findViewById(R.id.gluten);
-            quantity=(TextView) convertView.findViewById(R.id.qty);
+            quantity = (TextView) convertView.findViewById(R.id.qty);
             ded = (TextView) convertView.findViewById(R.id.prize);
-            edit=convertView.findViewById(R.id.edit);
+            edit = convertView.findViewById(R.id.edit);
+            link = convertView.findViewById(R.id.lnk);
+            if(product.getLinkedProduct()==null)
+                link.setText("Link");
+            else
+                link.setText("Linked");
+
+            if(!product.isGlutenFree())
+                link.setEnabled(false);
+
             Context context=convertView.getContext();
 
             proid.setText(Long.toString(product.getId()));
@@ -196,8 +227,8 @@ public class DigitalReceipt extends AppCompatActivity {
             if(product.getLinkedProduct()!=null)
                 gluten.setText(product.getLinkedProduct().getProductName());
             quantity.setText(Integer.toString(product.getQuantity()));
-            ded.setText(Double.toString(product.getDisplayedPrice()));
-
+            ded.setText(product.getDisplayedPriceAsString());
+//            ded.setText(product.getPrice()+"");
 
 
             edit.setOnClickListener((v) -> {
@@ -352,6 +383,20 @@ public class DigitalReceipt extends AppCompatActivity {
                 alertDialog.setView(row);
                 //alertDialog.setView(testView);
                 alertDialog.create().show(); */
+            });
+
+            link.setOnClickListener((v) -> {
+
+                 /*Intent intent = new Intent(CartActivity.this, EmptyActivity.class);
+                intent.putExtras(dataToPass);
+                startActivity(intent); // may need to be changed */
+                Intent intent = new Intent(DigitalReceipt.this, Link.class);
+                //intent.putExtras(dataToPass);
+                intent.putExtra("Index", position);
+                setProductToPass(product);
+                setIndex(position);
+                Link.setPassedContext(DigitalReceipt.this);
+                startActivity(intent); // may need to be changed
             });
             return convertView;
         }

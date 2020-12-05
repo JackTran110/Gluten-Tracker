@@ -398,6 +398,7 @@ public class CartActivity extends AppCompatActivity {
                  Intent intent = new Intent(CartActivity.this, Link.class);
                 //intent.putExtras(dataToPass);
                 intent.putExtra("Index", position);
+                Link.setPassedContext(CartActivity.this);
                 startActivity(intent); // may need to be changed
             });
 

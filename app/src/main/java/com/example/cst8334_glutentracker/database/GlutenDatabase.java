@@ -24,7 +24,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * Database's version number.
      */
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 1;
 
     /**
      * SQLite database object.
@@ -200,7 +200,8 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
 
         for(Product product: products) {
-            Product linkedProduct = product.getLinkedProduct();
+            Product linkedProduct = null;
+            linkedProduct=product.getLinkedProduct();
             if (linkedProduct != null) {
                 try{
                     linkedProduct = selectProductByID(product.getLinkedProduct().getId());
@@ -389,6 +390,8 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                 }
                 newProduct.setPrice(cs.getDouble(2));
                 newProduct.setQuantity(cs.getInt(3));
+                //Added by Joel
+                newProduct.setDisplayedPrice(newProduct.getPrice()*newProduct.getQuantity());
 
                 Product linkedProduct = selectProductByID(cs.getLong(5));
                 if(linkedProduct != null){
@@ -469,9 +472,13 @@ public class GlutenDatabase extends SQLiteOpenHelper {
             cv.put(ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID, product.getLinkedProduct().getId());
             cv.put(ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE, product.getLinkedProduct().getPrice());
         }
+//        return db.update(ProductReceipt.TABLE_NAME,cv,
+//                ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? ",
+//                new String[]{Long.toString(index)}) != 0;
+
         return db.update(ProductReceipt.TABLE_NAME,cv,
-                ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? ",
-                new String[]{Long.toString(index)}) != 0;
+                ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? AND "+ProductReceipt.COLUMN_NAME_PRODUCT_ID+" = ? ",
+                new String[]{Long.toString(index),Long.toString(product.getId())}) != 0;
     }
 
     /**
