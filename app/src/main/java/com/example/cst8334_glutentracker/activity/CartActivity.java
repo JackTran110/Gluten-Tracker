@@ -1,5 +1,6 @@
 package com.example.cst8334_glutentracker.activity;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,8 +10,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +24,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +54,7 @@ public class CartActivity extends AppCompatActivity {
     private  double totalPaid = 0;
     private double totalDeductible = 0;
     Toolbar cartTbar;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     /**
      * This method is called when the page is first loaded
@@ -146,7 +151,7 @@ public class CartActivity extends AppCompatActivity {
                             break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
-                        //Double totalPrice = 0.0;
+                      /*  //Double totalPrice = 0.0;
                        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                         db.insertIntoProductsTable(productsArrayList);
                         //helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, totalPrice, LocalDateTime.now().format(formatter));
@@ -156,6 +161,8 @@ public class CartActivity extends AppCompatActivity {
                         total.setText("");
                         adapter.notifyDataSetChanged();
                         Toast.makeText(this, "Purchase finalized", Toast.LENGTH_SHORT).show();
+                        break; */
+                        takePicture();
                         break;
                 }
             };
@@ -177,6 +184,43 @@ public class CartActivity extends AppCompatActivity {
                 Toast.makeText(this, "Cart is empty, unable to checkout", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void takePicture(){
+        Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(pictureIntent.resolveActivity(getPackageManager()) != null)
+            startActivityForResult(pictureIntent, REQUEST_IMAGE_CAPTURE);
+    }
+
+    private void makeAlertDialog(Bitmap receiptImage){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        ImageView receipt = new ImageView(this);
+        receipt.setImageBitmap(receiptImage);
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    //Double totalPrice = 0.0;
+                    // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    db.insertIntoProductsTable(productsArrayList);
+                    //helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, totalPrice, LocalDateTime.now().format(formatter));
+                    db.insertIntoReceiptsTable(productsArrayList, "file", totalDeductible, totalPaid, new Date().toString());
+                    getProductsArrayList().clear();
+                    totalDeductibleDisplay.setText("");
+                    total.setText("");
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(this, "Purchase finalized", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        };
+        alertDialog.setTitle("Accept this picture?");
+        alertDialog.setView(receipt);
+        alertDialog.setPositiveButton("No", dialogClickListener);
+        alertDialog.setNegativeButton("Yes", dialogClickListener);
+        alertDialog.create().show();
+
     }
 
     /**
@@ -202,6 +246,17 @@ public class CartActivity extends AppCompatActivity {
         } */
       // Log.w("Resume", "It went to onResume");
         adapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            Bundle extras = data.getExtras();
+            Bitmap image = (Bitmap) extras.get("data");
+            makeAlertDialog(image);
+        }
 
     }
 
