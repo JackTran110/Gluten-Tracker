@@ -106,7 +106,7 @@
                 android:id="@+id/sign_up_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/enter_password_hint"
+                android:hint="@string/password_hint"
                 android:textSize="15sp"
                 android:textColor="@color/colorBlack"
                 android:fontFamily="serif"

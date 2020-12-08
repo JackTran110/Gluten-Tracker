@@ -6,7 +6,7 @@ public class User {
     private String loginName;
     private String email;
     private String password;
-    private boolean isSignInByAccount;
+    private String signInType;
 
     private static final User INSTANCE = new User();
 
@@ -53,12 +53,12 @@ public class User {
         return this;
     }
 
-    public boolean isSignInByAccount() {
-        return isSignInByAccount;
+    public String getSignInType() {
+        return signInType;
     }
 
-    public User setSignInByAccount(boolean isSignInByAccount) {
-        this.isSignInByAccount = isSignInByAccount;
+    public User setSignInType(String isSignInType) {
+        this.signInType = isSignInType;
         return this;
     }
 }

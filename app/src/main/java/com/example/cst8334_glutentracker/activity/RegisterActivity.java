@@ -20,70 +20,169 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * This activity is where is user is able to register for a new account.
+ */
 public class RegisterActivity extends AppCompatActivity {
 
+    /**
+     * Edit text object where the user inputs login name.
+     */
     private EditText loginName;
+
+    /**
+     * Edit text object where the user inputs password.
+     */
     private EditText password;
+
+    /**
+     * Edit text object where the user inputs re-password.
+     */
     private EditText rePassword;
+
+    /**
+     * Edit text object where the user inputs user name.
+     */
     private EditText userName;
+
+    /**
+     * Edit text object where the user inputs email.
+     */
     private EditText email;
 
+    /**
+     * Value of login name.
+     */
     private static String loginNameValue;
+
+    /**
+     * Value of password.
+     */
     private static String passwordValue;
+
+    /**
+     * Value of re-password.
+     */
     private static String rePasswordValue;
+
+    /**
+     * Value of user name.
+     */
     private static String userNameValue;
+
+    /**
+     * Value of email.
+     */
     private static String emailValue;
 
+    /**
+     * Message fragment of login name.
+     */
     private ValidateMessageFragment errorMessageLoginName = new ValidateMessageFragment();
+
+    /**
+     * Message fragment of password.
+     */
     private ValidateMessageFragment errorMessagePassword = new ValidateMessageFragment();
+
+    /**
+     * Message fragment of re-password.
+     */
     private ValidateMessageFragment errorMessageRePassword = new ValidateMessageFragment();
+
+    /**
+     * Message fragment of user name.
+     */
     private ValidateMessageFragment errorMessageUserName = new ValidateMessageFragment();
+
+    /**
+     * Message fragment of email.
+     */
     private ValidateMessageFragment errorMessageEmail = new ValidateMessageFragment();
 
+    /**
+     * Frame ID map.
+     */
     private static Map<String, Integer> frameMap = new HashMap<>();
+
+    /**
+     * Fragment map.
+     */
     private static Map<String, ValidateMessageFragment> fragmentMap = new HashMap<>();
 
-    private static final String ERROR_LOGIN_NAME_EMPTY
-            = "Please enter login name!";
-    private static final String ERROR_LOGIN_NAME_RANGE
-            = "Your login name can only has from 1 to 20 characters!";
-    private static final String ERROR_LOGIN_NAME_CONTAIN_INVALID_VALUES
-            = "Your login name contains invalid character. Please try again!";
-    private static final String ERROR_LOGIN_NAME_ALREADY_EXIST
-            = " already exists. Please try again!";
-    private static final String ERROR_PASSWORD_EMPTY
-            = "Please enter password!";
-    private static final String ERROR_INVALID_PASSWORD
-            = "Password must contain at least 8 characters include upper case letter, lower case letter and number!";
-    private static final String ERROR_PASSWORD_DOES_NOT_MATCH
-            = "The passwords you entered didn't match! Please try again";
-    private static final String ERROR_USER_NAME_EMPTY
-            = "Please enter user name!";
-    private static final String ERROR_USER_NAME_CONTAIN_INVALID_VALUES
-            = "Your user name cannot contain characters: \\ / : ? * \" ' < > | { } ( ) [ ]";
-    private static final String ERROR_EMAIL_EMPTY
-            = "Please enter your email!";
-    private static final String ERROR_INVALID_EMAIL
-            = "Please enter a valid email address!";
-    private static final String ERROR_EMAIL_ALREADY_EXIST
-            = " is belong to another account";
-
+    /**
+     * Login name key.
+     */
     public static final String KEY_LOGIN_NAME = "Login name";
+
+    /**
+     * Password key.
+     */
     public static final String KEY_PASSWORD = "Password";
+
+    /**
+     * Re-password key.
+     */
     public static final String KEY_RE_PASSWORD = "Re-Password";
+
+    /**
+     * User name key.
+     */
     public static final String KEY_USER_NAME = "User name";
+
+    /**
+     * Email key.
+     */
     public static final String KEY_EMAIL = "Email";
+
+    /**
+     * Error message key.
+     */
     public static final String KEY_ERROR_MESSAGE = "Error message";
 
+    /**
+     * Pattern for login name's range.
+     */
     private static final String PATTERN_LOGIN_NAME_RANGE_CHECK = ".{1,20}";
+
+    /**
+     * Pattern for login name's validation.
+     */
     private static final String PATTERN_LOGIN_NAME_INVALID = "[a-zA-Z0-9_\\-]*";
+
+    /**
+     * Pattern for password.
+     */
     private static final String PATTERN_PASSWORD_INVALID = "((?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(.{8,}))";
+
+    /**
+     * Pattern for user name.
+     */
     private static final String PATTERN_USER_NAME_INVALID = "([^\\\\/:?*\"'<>|{}()\\[\\]]*)";
+
+    /**
+     * Pattern for email.
+     */
     private static final String PATTERN_EMAIL_INVALID = "[a-zA-Z0-9._-]+@[a-z]+\\.[a-z]+";
 
+    /**
+     * Error map.
+     */
     private static Map<String, List<String>> errorMap;
+
+    /**
+     * Firebase online database object.
+     */
     private static FirebaseOnlineDatabase db;
+
+    /**
+     * Is login name not null?
+     */
     private static boolean isLoginNameNotNull;
+
+    /**
+     * Is email not null?
+     */
     private static boolean isEmailNotNull;
 
     @Override
@@ -125,6 +224,9 @@ public class RegisterActivity extends AppCompatActivity {
         cancel.setOnClickListener((View v) -> finish());
     }
 
+    /**
+     * Get input values from the user.
+     */
     private void getInput(){
         loginNameValue = loginName.getText().toString();
         passwordValue = password.getText().toString();
@@ -133,74 +235,90 @@ public class RegisterActivity extends AppCompatActivity {
         emailValue = email.getText().toString();
     }
 
+    /**
+     * Validate sign up form.
+     */
     private void userValidator(){
         List<String> errors = new ArrayList<>();
         Pattern pattern;
         Matcher matcher;
 
         if(loginNameValue.isEmpty()) {
-            errors.add(ERROR_LOGIN_NAME_EMPTY);
+            errors.add(getString(R.string.error_login_name_empty));
         }else {
             pattern = Pattern.compile(PATTERN_LOGIN_NAME_RANGE_CHECK);
             matcher = pattern.matcher(loginNameValue);
-            if(!matcher.matches()) errors.add(ERROR_LOGIN_NAME_RANGE);
+            if(!matcher.matches()) errors.add(getString(R.string.error_login_name_range));
             pattern = Pattern.compile(PATTERN_LOGIN_NAME_INVALID);
             matcher = pattern.matcher(loginNameValue);
-            if(!matcher.matches()) errors.add(ERROR_LOGIN_NAME_CONTAIN_INVALID_VALUES);
+            if(!matcher.matches()) errors.add(getString(R.string.error_login_name_contains_invalid_value));
         }
         errorMap.put(KEY_LOGIN_NAME, errors);
         errors = new ArrayList<>();
 
         if(passwordValue.isEmpty()) {
-            errors.add(ERROR_PASSWORD_EMPTY);
+            errors.add(getString(R.string.error_password_empty));
         }else {
             pattern = Pattern.compile(PATTERN_PASSWORD_INVALID);
             matcher = pattern.matcher(passwordValue);
-            if(!matcher.matches()) errors.add(ERROR_INVALID_PASSWORD);
+            if(!matcher.matches()) errors.add(getString(R.string.error_invalid_password));
         }
         errorMap.put(KEY_PASSWORD, errors);
         errors = new ArrayList<>();
 
         if(rePasswordValue.isEmpty()) {
-            errors.add(ERROR_PASSWORD_EMPTY);
+            errors.add(getString(R.string.error_password_empty));
         }else {
-            if (!rePasswordValue.equals(passwordValue)) errors.add(ERROR_PASSWORD_DOES_NOT_MATCH);
+            if (!rePasswordValue.equals(passwordValue)) errors.add(getString(R.string.error_password_does_not_match));
         }
         errorMap.put(KEY_RE_PASSWORD, errors);
         errors = new ArrayList<>();
 
         if(userNameValue.isEmpty()){
-            errors.add(ERROR_USER_NAME_EMPTY);
+            errors.add(getString(R.string.error_user_name_empty));
         }else {
             pattern = Pattern.compile(PATTERN_USER_NAME_INVALID);
             matcher = pattern.matcher(userNameValue);
-            if(!matcher.matches()) errors.add(ERROR_USER_NAME_CONTAIN_INVALID_VALUES);
+            if(!matcher.matches()) errors.add(getString(R.string.error_user_name_contains_invalid_value));
         }
         errorMap.put(KEY_USER_NAME, errors);
         errors = new ArrayList<>();
 
         if(emailValue.isEmpty()){
-            errors.add(ERROR_EMAIL_EMPTY);
+            errors.add(getString(R.string.error_email_empty));
         }else {
             pattern = Pattern.compile(PATTERN_EMAIL_INVALID);
             matcher = pattern.matcher(emailValue);
-            if(!matcher.matches()) errors.add(ERROR_INVALID_EMAIL);
+            if(!matcher.matches()) errors.add(getString(R.string.error_invalid_email));
         }
         errorMap.put(KEY_EMAIL, errors);
     }
 
+    /**
+     * Check if login name already exists or not.
+     *
+     * @param isLoginNameAlreadyExist is login name already exists?
+     */
     public void checkLoginAccount(boolean isLoginNameAlreadyExist){
         List<String> errors = new ArrayList<>();
-        if(isLoginNameAlreadyExist) errors.add(loginNameValue + ERROR_LOGIN_NAME_ALREADY_EXIST);
+        if(isLoginNameAlreadyExist) errors.add(loginNameValue + getString(R.string.error_login_name_already_exits));
         errorMap.put(KEY_LOGIN_NAME, errors);
     }
 
+    /**
+     * Check if email already exists or not.
+     *
+     * @param isEmailAlreadyExist is email already exists?
+     */
     public void checkEmail(boolean isEmailAlreadyExist){
         List<String> errors = new ArrayList<>();
-        if(isEmailAlreadyExist) errors.add(emailValue + ERROR_EMAIL_ALREADY_EXIST);
+        if(isEmailAlreadyExist) errors.add(emailValue + getString(R.string.error_email_already_exists));
         errorMap.put(KEY_EMAIL, errors);
     }
 
+    /**
+     * Update sign up form.
+     */
     public void updateSignUpForm(){
         List<String> errors;
         StringBuilder updatedText;
@@ -229,6 +347,11 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Check if there is any error.
+     *
+     * @return if there is any error.
+     */
     public boolean isNoError(){
         boolean isNoError = true;
         for (List<String> v: errorMap.values()){
@@ -240,6 +363,9 @@ public class RegisterActivity extends AppCompatActivity {
         return isNoError;
     }
 
+    /**
+     * Run checking login name progress.
+     */
     public void submitLoginName(){
         if(isLoginNameNotNull){
             db = new FirebaseOnlineDatabase(RegisterActivity.this);
@@ -247,6 +373,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Run checking email progress.
+     */
     public void submitEmail(){
         if(isEmailNotNull){
             db = new FirebaseOnlineDatabase(RegisterActivity.this);
@@ -254,6 +383,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Run register progress.
+     */
     public void register(){
         if(isNoError()){
             User.getInstance()

@@ -23,19 +23,64 @@ import java.util.concurrent.ExecutionException;
 
 import android.content.Intent;
 
+/**
+ * This class helps the application to interact with the online Firebase database.
+ */
 public class FirebaseOnlineDatabase extends AsyncTask<String, String, List<User>> {
 
+    /**
+     * Firebase's Firestore object.
+     */
     private FirebaseFirestore db;
+
+    /**
+     * Firebase auth object.
+     */
     private FirebaseAuth firebaseAuth;
+
+    /**
+     * Users's table name.
+     */
     private final static String TABLE_NAME = "users";
+
+    /**
+     * User name column.
+     */
     private final static String USER_NAME = "userName";
+
+    /**
+     * Login name column.
+     */
     private final static String LOGIN_NAME = "loginName";
+
+    /**
+     * Password column.
+     */
     private final static String PASSWORD = "password";
+
+    /**
+     * email column.
+     */
     private final static String EMAIL = "email";
+
+    /**
+     * First argument of doInBackGround(String...);
+     */
     private static String firstArgument;
-    private static String secondArgument;
+
+    /**
+     * Third argument of doInBackGround(String...);
+     */
     private static String thirdArgument;
+
+    /**
+     * Are the progresses successful?
+     */
     private static boolean isSuccess;
+
+    /**
+     * Parent activity.
+     */
     @SuppressLint("StaticFieldLeak")
     private Activity fromActivity;
 
@@ -48,6 +93,10 @@ public class FirebaseOnlineDatabase extends AsyncTask<String, String, List<User>
     @Override
     protected List<User> doInBackground(String... userInfo) {
         firstArgument = userInfo[0];
+        /**
+         * Second argument of doInBackGround(String...);
+         */
+        String secondArgument;
         switch(firstArgument){
             case LoginActivity.LOGIN:{
                 thirdArgument = userInfo[2];
@@ -90,6 +139,7 @@ public class FirebaseOnlineDatabase extends AsyncTask<String, String, List<User>
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
                                         if (firebaseAuth.getCurrentUser().isEmailVerified()) {
+                                            User.getInstance().setSignInType(LoginActivity.LOGIN);
                                             fromActivity.startActivity(new Intent(
                                                     fromActivity.getBaseContext(),
                                                     MainMenuActivity.class));
@@ -173,6 +223,12 @@ public class FirebaseOnlineDatabase extends AsyncTask<String, String, List<User>
         }
     }
 
+    /**
+     * Register a new user account.
+     *
+     * @param user User object.
+     * @return is register progress is successful or not.
+     */
     private boolean registerNewUser(User user){
         Map<String, String> userMap = new HashMap<>();
         userMap.put(USER_NAME, user.getUserName());
@@ -197,6 +253,13 @@ public class FirebaseOnlineDatabase extends AsyncTask<String, String, List<User>
         return isSuccess;
     }
 
+    /**
+     * Find a user account.
+     *
+     * @param clause condition's clause.
+     * @param value condition's value.
+     * @return A list of user accounts.
+     */
     private List<User> get(String clause, String value){
         List<User> users = new ArrayList<>();
         try {

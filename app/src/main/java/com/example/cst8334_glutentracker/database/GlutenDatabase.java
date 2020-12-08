@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,6 +16,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class provides a SQLiteDatabase object and helps the application to interact with it through
+ * (C-R-U-D) methods.
+ */
 public class GlutenDatabase extends SQLiteOpenHelper {
 
     /**
@@ -27,7 +30,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * Database's version number.
      */
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
 
     /**
      * SQLite database object.
@@ -140,6 +143,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         db = getWritableDatabase();
         if(selectProductByID(product.getId()) != null){
             Log.e(ERROR_TAG, "This product is already available in the database");
+            if(updateProductById(product)) return product.getId();
             return -1;
         }
 
@@ -384,6 +388,12 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         return receipt;
     }
 
+    /**
+     * This method uses an id to get all receipts from the database.
+     *
+     * @returnA A list of receipts that has the data from the database. Return null if the receipts
+     * can't be found or an error occurs.
+     */
     public List<Receipt> selectAllReceipt(){
         db = getWritableDatabase();
         Cursor cs;
@@ -469,7 +479,6 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                 if(linkedProduct != null){
                     linkedProduct.setPrice(cs.getDouble(6));
                     linkedProduct.setQuantity(cs.getInt(3));
-                    newProduct.setDeduction(cs.getDouble(4));
                     newProduct.setLinkedProduct(linkedProduct);
                 }
                 products.add(newProduct);
@@ -531,6 +540,12 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                 new String[]{Long.toString(product.getId())}) != 0;
     }
 
+    /**
+     * This method updates a product in the database.
+     *
+     * @param receipt The receipt that needs to be updated.
+     * @return true if the receipt is updated successfully, otherwise return false.
+     */
     public boolean updateReceiptById(Receipt receipt){
         db = getWritableDatabase();
         ContentValues cv= new ContentValues();
@@ -544,6 +559,13 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                 new String[]{Long.toString(receipt.getId())}) != 0;
     }
 
+    /**
+     * This method updates product list of a receipt in the database.
+     *
+     * @param product an item of the receipt.
+     * @param index the receipt's ID.
+     * @return true if update successfully, otherwise return false.
+     */
     public boolean updateProductReceiptById(Product product, long index){
         db = getWritableDatabase();
         ContentValues cv= new ContentValues();
@@ -557,9 +579,6 @@ public class GlutenDatabase extends SQLiteOpenHelper {
             cv.put(ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID, product.getLinkedProduct().getId());
             cv.put(ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE, product.getLinkedProduct().getPrice());
         }
-//        return db.update(ProductReceipt.TABLE_NAME,cv,
-//                ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? ",
-//                new String[]{Long.toString(index)}) != 0;
 
         return db.update(ProductReceipt.TABLE_NAME,cv,
                 ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? AND "+ProductReceipt.COLUMN_NAME_PRODUCT_ID+" = ? ",
@@ -580,14 +599,6 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * The query to create the receipts table.
      */
-  /*  private static final String SQL_CREATE_RECEIPTS = "CREATE TABLE " +
-            Receipts.TABLE_NAME + " (" +
-            Receipts.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            Receipts.COLUMN_NAME_FILE + " TEXT, " +
-            Receipts.COLUMN_NAME_TOTAL_PRICE + " REAL, " +
-            Receipts.COLUMN_NAME_TOTAL_DEDUCTION + " REAL, " +
-            Receipts.COLUMN_NAME_DATE + " TEXT)"; */
-
     private static final String SQL_CREATE_RECEIPTS = "CREATE TABLE " +
             Receipts.TABLE_NAME + " (" +
             Receipts.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +

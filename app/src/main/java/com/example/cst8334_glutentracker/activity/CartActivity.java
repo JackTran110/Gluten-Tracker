@@ -141,10 +141,11 @@ public class CartActivity extends AppCompatActivity {
                 int numberOfNotLinkedProducts = 0;
                 String message;
                 for(Product product: getProductsArrayList()){
-                    if(product.getLinkedProduct() == null && product.isGlutenFree() == true)
+                    db.updateProductById(product);
+                    if(product.getLinkedProduct() == null && product.isGlutenFree())
                         numberOfNotLinkedProducts++;
                 }
-                if(numberOfNotLinkedProducts > 0 && numberOfNotLinkedProducts > 1)
+                if(numberOfNotLinkedProducts > 1)
                     message = "There are " + numberOfNotLinkedProducts + " gluten-free products not linked. Do you still wish to continue checkout? "
                         + "This will clear your current cart and finalize your purchase.";
                 else if(numberOfNotLinkedProducts == 1)
@@ -396,7 +397,7 @@ public class CartActivity extends AppCompatActivity {
             if(product.getLinkedProduct() != null) {
               //  deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + ""); //changed to displayed price
                 deductibleText.setText(getString(R.string.deductible) + product.getDeductionAsString());
-                linkedProductName.setText(getString(R.string.linkedProductName) + " " + product.getLinkedProduct().getProductName());
+                linkedProductName.setText(getString(R.string.linkedProductName) + product.getLinkedProduct().getProductName());
             }
             else{ // added else statement
                 deductibleText.setVisibility(View.INVISIBLE);
@@ -404,7 +405,7 @@ public class CartActivity extends AppCompatActivity {
             }
 
             TextView productName = newView.findViewById(R.id.productName);
-            productName.setText(getString(R.string.product_name) + " " + product.getProductName());
+            productName.setText(getString(R.string.product_name) + product.getProductName());
 
             TextView price = newView.findViewById(R.id.price);
      //       price.setText(product.getDisplayedPrice() + "");

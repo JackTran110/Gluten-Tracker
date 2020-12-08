@@ -24,15 +24,34 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
-
-//version feng
-
+/**
+ * This is the activity where the user can navigate to other activities or sign out.
+ */
 public class MainMenuActivity extends AppCompatActivity {
 
+    /**
+     * Request code from this activity;
+     */
     public static final int REQUEST_CODE = 0;
+
+    /**
+     * Result code from scanner activity;
+     */
     public static final int RESULT_CODE_NAVIGATE_TO_SCANNER = 1;
+
+    /**
+     * Result code from cart activity;
+     */
     public static final int RESULT_CODE_NAVIGATE_TO_CART = 2;
+
+    /**
+     * Result code from receipt activity;
+     */
     public static final int RESULT_CODE_NAVIGATE_TO_RECEIPT = 3;
+
+    /**
+     * Result code from report activity;
+     */
     public static final int RESULT_CODE_NAVIGATE_TO_REPORT = 4;
 
     @Override
@@ -55,16 +74,16 @@ public class MainMenuActivity extends AppCompatActivity {
 
         menu.add(new MenuItem(R.drawable.barcode_icon,
                 RESULT_CODE_NAVIGATE_TO_SCANNER,
-                "Barcode Scanner"));
+                getString(R.string.scanner_activity)));
         menu.add(new MenuItem(R.drawable.cart_icon,
                 RESULT_CODE_NAVIGATE_TO_CART,
-                "To Cart"));
+                getString(R.string.cart_activity)));
         menu.add(new MenuItem(R.drawable.receipt_icon,
                 RESULT_CODE_NAVIGATE_TO_RECEIPT,
-                "Receipt List"));
+                getString(R.string.receipt_activity)));
         menu.add(new MenuItem(R.drawable.report_icon,
                 RESULT_CODE_NAVIGATE_TO_REPORT,
-                "To Report Page"));
+                getString(R.string.report_activity)));
         adapter.notifyDataSetChanged();
 
         mainMenu.setOnItemClickListener((AdapterView<?> list, View view, int position, long id) -> {
@@ -83,8 +102,11 @@ public class MainMenuActivity extends AppCompatActivity {
         navigateToActivity(resultCode);
     }
 
-
-
+    /**
+     * This method will navigate the current activity to another activity.
+     *
+     * @param buttonNavigateCode code of the target activity.
+     */
     private void navigateToActivity(int buttonNavigateCode){
         switch (buttonNavigateCode){
             case RESULT_CODE_NAVIGATE_TO_SCANNER: {
@@ -119,46 +141,103 @@ public class MainMenuActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This class represents an item of the main menu.
+     */
     private class MenuItem {
+        /**
+         * Resource ID of the item's icon.
+         */
         int iconId;
+
+        /**
+         * Navigate code of the item.
+         */
         int buttonNavigateCode;
+
+        /**
+         * Name of the item.
+         */
         String buttonName;
 
+        /**
+         * Constructor of this class.
+         *
+         * @param iconId item's icon ID.
+         * @param buttonNavigateCode item's navigate code.
+         * @param buttonName item's name.
+         */
         MenuItem(int iconId, int buttonNavigateCode, String buttonName){
             setIconId(iconId)
                     .setButtonNavigateCode(buttonNavigateCode)
                     .setButtonName(buttonName);
         }
 
+        /**
+         * Setter of icon's ID.
+         *
+         * @param iconId icon's ID.
+         * @return the current instance.
+         */
         MenuItem setIconId(int iconId){
             this.iconId = iconId;
             return this;
         }
 
+        /**
+         * getter of icon's ID.
+         *
+         * @return icon's ID.
+         */
         int getIconId(){
             return iconId;
         }
 
+        /**
+         * Setter of navigate code.
+         *
+         * @param buttonNavigateCode navigate code.
+         * @return the current instance.
+         */
         MenuItem setButtonNavigateCode(int buttonNavigateCode){
             this.buttonNavigateCode = buttonNavigateCode;
             return this;
         }
 
+        /**
+         * getter of navigate code.
+         *
+         * @return navigate code.
+         */
         int getButtonNavigateCode(){
             return buttonNavigateCode;
         }
 
+        /**
+         * Setter of item's name.
+         *
+         * @param buttonName item's name.
+         * @return the current instance.
+         */
         MenuItem setButtonName(String buttonName){
             this.buttonName = buttonName;
             return this;
         }
 
+        /**
+         * getter of item's name.
+         *
+         * @return item's name.
+         */
         String getButtonName(){
             return buttonName;
         }
 
     }
 
+    /**
+     * Adapter of MenuItem.
+     */
     private class MenuAdapter extends ArrayAdapter<MenuItem> {
 
         MenuAdapter(List<MenuItem> menu, Context context){

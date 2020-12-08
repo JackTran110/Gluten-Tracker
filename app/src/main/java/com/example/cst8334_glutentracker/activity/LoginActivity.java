@@ -34,15 +34,39 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.Collections;
 
+/**
+ *This activity is where the user can sign in or sign up an account.
+ */
 public class LoginActivity extends AppCompatActivity {
 
+    /**
+     * Edit text object where the user inputs login name.
+     */
     private EditText loginName;
+
+    /**
+     * Edit text object where the user inputs password.
+     */
     private EditText password;
+
+    /**
+     * Firebase online database object.
+     */
     private FirebaseOnlineDatabase db;
+
+    /**
+     * Firebase Auth object;
+     */
     private FirebaseAuth firebaseAuth;
+
+    /**
+     * Call back manager object;
+     */
     private CallbackManager callbackManager;
 
     public final static String LOGIN = "Login";
+    public final static String LOGIN_BY_FACEBOOK = "Login by Facebook";
+    public final static String LOGIN_BY_GMAIL = "Login by Gmail";
     public final static String CHECK_LOGIN_NAME = "Check login name";
     public final static String CHECK_EMAIL = "Check email";
     public final static String REGISTER = "register";
@@ -98,7 +122,12 @@ public class LoginActivity extends AppCompatActivity {
                     public void onSuccess(LoginResult loginResult) {
                         AuthCredential credential = FacebookAuthProvider.getCredential(loginResult.getAccessToken().getToken());
                         firebaseAuth.signInWithCredential(credential)
-                                .addOnCompleteListener(taskFirebase -> startActivity(new Intent(LoginActivity.this, MainMenuActivity.class)));
+                                .addOnCompleteListener(taskFirebase -> {
+                                    User.getInstance().setUserName(firebaseAuth.getCurrentUser().getDisplayName())
+                                            .setEmail(firebaseAuth.getCurrentUser().getEmail())
+                                            .setSignInType(LOGIN_BY_FACEBOOK);
+                                    startActivity(new Intent(LoginActivity.this, MainMenuActivity.class));
+                                });
                     }
 
                     @Override
@@ -111,8 +140,6 @@ public class LoginActivity extends AppCompatActivity {
                 });
             LoginManager.getInstance().logIn(this, Collections.singletonList(EMAIL));
         });
-
-      //  startActivity(new Intent(LoginActivity.this, MainMenuActivity.class));
     }
 
     @Override
@@ -135,6 +162,9 @@ public class LoginActivity extends AppCompatActivity {
                 firebaseAuth.signInWithCredential(
                         GoogleAuthProvider.getCredential(account.getIdToken(), null)
                 ).addOnCompleteListener(taskFirebase -> {
+                    User.getInstance().setUserName(account.getDisplayName())
+                            .setEmail(account.getEmail())
+                            .setSignInType(LOGIN_BY_GMAIL);
                     startActivity(new Intent(LoginActivity.this, MainMenuActivity.class));
                 });
             } catch (ApiException e) {
