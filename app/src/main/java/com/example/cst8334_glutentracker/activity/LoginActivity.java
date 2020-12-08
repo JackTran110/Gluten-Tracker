@@ -111,6 +111,8 @@ public class LoginActivity extends AppCompatActivity {
                 });
             LoginManager.getInstance().logIn(this, Collections.singletonList(EMAIL));
         });
+
+      //  startActivity(new Intent(LoginActivity.this, MainMenuActivity.class));
     }
 
     @Override

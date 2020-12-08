@@ -1,3 +1,9 @@
+/**
+ * Project: cst83334 team 11 project
+ * Name: Feng Sun
+ * Student id: 040634005
+ * Date: 2020-12-05
+ */
 package com.example.cst8334_glutentracker.activity;
 
 import androidx.appcompat.app.AlertDialog;
@@ -32,6 +38,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * class ReportMActivity for the monthly and custom report,
+ * upload report to google drive and email
+ */
+
 public class ReportMActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     ListView lstMReport;
@@ -62,6 +73,10 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
     ArrayList<String> lstMonthly = new ArrayList<>();
     StringBuilder csvData;
 
+    /**
+     * on create method for inital all value for the repot
+     * @param savedInstanceState
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +87,8 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
 
         btnReport = (Button)findViewById(R.id.btnReceipt);
         btnCsvFile = (Button)findViewById(R.id.btnCsvFile);
+
+
 
         btnMonth = (Button)findViewById(R.id.btnMonth);
         btnSearch = (Button)findViewById(R.id.btnSearch);
@@ -85,21 +102,27 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
 
         ArrayAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,lstMonthly);
         lstMReport.setAdapter(adapter);
-
+/**
+ * set on click listener for the report
+ */
         btnReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(ReportMActivity.this,ReportActivity.class));
             }
         });
-
+/**
+ * set on click listener for the csv file upload
+ */
         btnCsvFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 outputCsvFile();
             }
         });
-
+/**
+ * set on click listener for the custom report
+ */
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,12 +135,14 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
 
             }
         });
-
+/**
+ * set on click listener for the monthly report
+ */
         btnMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-              readMonthData();
+                readMonthData();
 
                 adapter.notifyDataSetChanged();
                 Toast.makeText(ReportMActivity.this,"Report for Customer Search",Toast.LENGTH_LONG).show();
@@ -125,6 +150,9 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
             }
         });
 
+        /**
+         * set on click listener for the start date of the date picker
+         */
         txtFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,7 +162,9 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
 
             }
         });
-
+/**
+ * set on click listener for the end date of the date picker
+ */
         txtTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,6 +181,9 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
 
     }
 
+    /**
+     * display a dailog for the date picker
+     */
     private void showDatePickerDailog(){
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
@@ -163,15 +196,22 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
 
     }
 
+    /**
+     * on date set for the picker
+     * @param view
+     * @param year
+     * @param month
+     * @param dayOfMonth
+     */
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
 
 
-            String  m = String.format("%02d", (month+1));
-            String d = String.format("%02d", dayOfMonth);
+        String  m = String.format("%02d", (month+1));
+        String d = String.format("%02d", dayOfMonth);
 
-         pickDate = String.valueOf(year) + m + d;
+        pickDate = String.valueOf(year) + m + d;
 
         if( isFrom == false ){
 
@@ -192,13 +232,15 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
 
     }
 
-
+    /**
+     * upload a csv file for the report
+     */
     //#34
     public void outputCsvFile()  {
         //generate data
         //StringBuilder cData = new StringBuilder();
 
-       // csvData.append("abc,ddd");
+        // csvData.append("abc,ddd");
 
         // saving the file into device
         try {
@@ -223,12 +265,19 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
         }
     }
 
+    /**
+     * read data from database for the monthly report
+     */
+
     private void readMonthData(){
         lstMonthly.clear();
         csvData = new StringBuilder();
 
         List<Receipt> rec = dbOpener.selectAllReceipt();
         tmpDate = 0;
+        tmpTax = 0;
+        tmpTotal = 0;
+        nDate =0;
         lstMonthly.add("Month" + "\t\t\t\t\t\t\t\t\t" + "Total Amount" + "\t\t\t\t\t\t\t\t\t" + "Total Deduction");
         csvData.append("\n" + "Month" + "," + "Total Amount" + "," + "Total Deduction");
 
@@ -295,9 +344,11 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
 
 
             }else{
-                if (tmpDate != 0) {
-                    lstMonthly.add(  tmpM + "\t\t\t\t\t\t\t\t\t\t\t\t" + tmpTotal + "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + tmpTax);
-                    csvData.append("\n" +tmpM + "," + tmpTotal + "," + tmpTax);
+                if (nDate != 0) {
+                    if (tmpTotal != 0) {
+                        lstMonthly.add(tmpM + "\t\t\t\t\t\t\t\t\t\t\t\t" + tmpTotal + "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t" + tmpTax);
+                        csvData.append("\n" + tmpM + "," + tmpTotal + "," + tmpTax);
+                    }
                     tmpTotal = rec.get(j).getTotalPrice();
                     tmpTax = rec.get(j).getTaxDeductionTotal();
 
@@ -317,6 +368,10 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
 
 
     }
+
+    /**
+     * read data from database for the custom report
+     */
     private void readCustomData(){
         lstMonthly.clear();
         csvData = new StringBuilder();
