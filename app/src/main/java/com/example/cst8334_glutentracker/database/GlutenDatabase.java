@@ -358,6 +358,33 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         return receipt;
     }
 
+    public Receipt selectReceiptByIDWithImage(long id){
+        db = getWritableDatabase();
+        Cursor cs;
+        Receipt receipt;
+        try {
+            cs = db.query(false, Receipts.TABLE_NAME, null,
+                    Receipts.COLUMN_NAME_ID + " = ? ", new String[]{Long.toString(id)},
+                    null, null, null, null, null);
+            cs.moveToNext();
+            // Learned about how to decode the BLOB from https://stackoverflow.com/questions/11790104/how-to-storebitmap-image-and-retrieve-image-from-sqlite-database-in-android
+            byte[] imageAsByte = cs.getBlob(5);
+            Bitmap image = BitmapFactory.decodeByteArray(imageAsByte, 0, imageAsByte.length);
+            receipt = new Receipt(cs.getLong(0),
+                    selectProductReceipt(id),
+                    cs.getString(1),
+                    cs.getDouble(3),
+                    cs.getDouble(2),
+                    cs.getString(4),
+                    image);
+        }catch (Exception e){
+            Log.e(ERROR_TAG, "Unable to select receipt", e);
+            return null;
+        }
+        cs.close();
+        return receipt;
+    }
+
     public List<Receipt> selectAllReceipt(){
         db = getWritableDatabase();
         Cursor cs;
