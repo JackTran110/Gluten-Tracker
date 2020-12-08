@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 public class CartActivity extends AppCompatActivity {
 
     private Adapter adapter = new Adapter();
-    private static ArrayList<Product> productsArrayList;
+    private static ArrayList<Product> productsArrayList = new ArrayList<>();;
     private static List<Long> productIdList;
     private static int productCount;
     private GlutenDatabase db = new GlutenDatabase(this);
@@ -65,21 +65,22 @@ public class CartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cart);
 
         cartTbar = (Toolbar)findViewById(R.id.cartToolbar);
+        if(getProductsArrayList().isEmpty()) {
+            SharedPreferences pre = getSharedPreferences("cart_activity", Context.MODE_PRIVATE);
+            productIdList = new ArrayList<>();
+            // productsArrayList = new ArrayList<>();
+            productCount = pre.getInt("Product count", 0);
 
-        SharedPreferences pre = getSharedPreferences("cart_activity", Context.MODE_PRIVATE);
-        productIdList = new ArrayList<>();
-        productsArrayList = new ArrayList<>();
-        productCount = pre.getInt("Product count", 0);
-
-        while (productCount >0){
-            productIdList.add(pre.getLong(Integer.toString(productCount), 1));
-            productCount--;
-        }
-        for(String key: pre.getAll().keySet()){
-            pre.edit().remove(key).apply();
-        }
-        for(long id: productIdList){
-            productsArrayList.add(db.selectProductByID(id));
+            while (productCount > 0) {
+                productIdList.add(pre.getLong(Integer.toString(productCount), 1));
+                productCount--;
+            }
+            for (String key : pre.getAll().keySet()) {
+                pre.edit().remove(key).apply();
+            }
+            for (long id : productIdList) {
+                productsArrayList.add(db.selectProductByID(id));
+            }
         }
 
         ListView purchases = findViewById(R.id.purchases);
@@ -278,6 +279,9 @@ public class CartActivity extends AppCompatActivity {
 
         SharedPreferences pre = getSharedPreferences("cart_activity", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = pre.edit();
+        for(String key: pre.getAll().keySet()){
+            pre.edit().remove(key).apply();
+        }
         productCount = productsArrayList.size();
         for(int i = 0; i< productCount; i++){
             edit.putLong(Integer.toString(i), productsArrayList.get(i).getId());
