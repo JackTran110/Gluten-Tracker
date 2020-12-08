@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,9 +15,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.cst8334_glutentracker.CartListViewHolder;
+import com.example.cst8334_glutentracker.functionality.CartListViewHolder;
 import com.example.cst8334_glutentracker.R;
-import com.example.cst8334_glutentracker.activity.CartActivity;
 import com.example.cst8334_glutentracker.database.GlutenDatabase;
 import com.example.cst8334_glutentracker.entity.Product;
 
@@ -45,6 +45,8 @@ public class Link extends AppCompatActivity {
      */
     int passedIndex;
     Context context;
+
+    static Context passedContext;
     private SQLiteDatabase database;
     /**
      * An instance of the GlutenDatabase class. This will be used to load Products from the Products table that are not gluten-free.
@@ -98,6 +100,14 @@ public class Link extends AppCompatActivity {
         resultsQuery.close();
     } */
 
+    public static Context getPassedContext() {
+        return passedContext;
+    }
+
+    public static void setPassedContext(Context passedContext) {
+        Link.passedContext = passedContext;
+    }
+
   public ArrayList<Product> getNonGlutenArrayList(){return listOfProducts;}
 
     class FragmentAdapter extends BaseAdapter {
@@ -142,7 +152,10 @@ public class Link extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Product product = (Product) getItem(position);
-            product.setQuantity(CartActivity.getProductsArrayList().get(passedIndex).getQuantity());
+            if(getPassedContext() instanceof CartActivity)
+                product.setQuantity(CartActivity.getProductsArrayList().get(passedIndex).getQuantity());
+            if(getPassedContext() instanceof DigitalReceipt)
+                product.setQuantity(DigitalReceipt.getProductToPass().getQuantity());
             product.setDisplayedPrice(product.getPrice() * product.getQuantity());
             LayoutInflater inflater = getLayoutInflater();
             //View newView = inflater.inflate(R.layout.activity_product_list, parent, false);
@@ -171,7 +184,13 @@ public class Link extends AppCompatActivity {
                 //passedProduct.setPrice(product.getPrice());
                /* CartActivity.getProductsArrayList().get(passedIndex).setDisplayedPrice(product.getPrice());
                 CartActivity.getProductsArrayList().add(new Product(5, "M", "Meow", "M", 4.00, false)); */
-                CartActivity.getProductsArrayList().get(passedIndex).setLinkedProduct(product);
+//                CartActivity.getProductsArrayList().get(passedIndex).setLinkedProduct(product);
+
+                if(getPassedContext() instanceof CartActivity)
+                    CartActivity.getProductsArrayList().get(passedIndex).setLinkedProduct(product);
+                if(getPassedContext() instanceof DigitalReceipt)
+                    DigitalReceipt.getProductToPass().setLinkedProduct(product);
+
                 adapter.notifyDataSetChanged();
                 finish();
             });

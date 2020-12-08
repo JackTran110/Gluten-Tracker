@@ -1,4 +1,4 @@
-package com.example.cst8334_glutentracker;
+package com.example.cst8334_glutentracker.functionality;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.cst8334_glutentracker.R;
 import com.example.cst8334_glutentracker.activity.DigitalReceipt;
 import com.example.cst8334_glutentracker.activity.Link;
 import com.example.cst8334_glutentracker.database.GlutenDatabase;

@@ -1,5 +1,6 @@
 package com.example.cst8334_glutentracker.activity;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -24,6 +25,12 @@ import java.util.List;
 
 public class MainMenuActivity extends AppCompatActivity {
 
+    public static final int REQUEST_CODE = 0;
+    public static final int RESULT_CODE_NAVIGATE_TO_SCANNER = 1;
+    public static final int RESULT_CODE_NAVIGATE_TO_CART = 2;
+    public static final int RESULT_CODE_NAVIGATE_TO_RECEIPT = 3;
+    public static final int RESULT_CODE_NAVIGATE_TO_REPORT = 4;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,45 +41,74 @@ public class MainMenuActivity extends AppCompatActivity {
         MenuAdapter adapter = new MenuAdapter(menu, this);
         mainMenu.setAdapter(adapter);
 
-        menu.add(new MenuItem(R.drawable.barcode_icon, "Barcode Scanner"));
-        menu.add(new MenuItem(R.drawable.cart_icon, "To Cart"));
-        menu.add(new MenuItem(R.drawable.receipt_icon, "Receipt List"));
-        menu.add(new MenuItem(R.drawable.report_icon, "To Report Page"));
+        menu.add(new MenuItem(R.drawable.barcode_icon,
+                RESULT_CODE_NAVIGATE_TO_SCANNER,
+                "Barcode Scanner"));
+        menu.add(new MenuItem(R.drawable.cart_icon,
+                RESULT_CODE_NAVIGATE_TO_CART,
+                "To Cart"));
+        menu.add(new MenuItem(R.drawable.receipt_icon,
+                RESULT_CODE_NAVIGATE_TO_RECEIPT,
+                "Receipt List"));
+        menu.add(new MenuItem(R.drawable.report_icon,
+                RESULT_CODE_NAVIGATE_TO_REPORT,
+                "To Report Page"));
         adapter.notifyDataSetChanged();
 
         mainMenu.setOnItemClickListener((AdapterView<?> list, View view, int position, long id) -> {
-            switch (menu.get(position).getButtonName()){
-                case("Barcode Scanner"): {
-                    startActivity(new Intent(MainMenuActivity.this, ScanActivity.class));
-                    break;
-                }
-
-                case("To Cart"): {
-                    startActivity(new Intent(MainMenuActivity.this, CartActivity.class));
-                    break;
-                }
-
-                case("Receipt List"): {
-                    startActivity(new Intent(MainMenuActivity.this, ReceiptActivity.class));
-                    break;
-                }
-
-                case("To Report Page"): {
-                    startActivity(new Intent(MainMenuActivity.this, ReportActivity.class));
-                    break;
-                }
-
-                default: break;
-            }
+            navigateToActivity(menu.get(position).getButtonNavigateCode());
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        navigateToActivity(resultCode);
+    }
+
+    private void navigateToActivity(int buttonNavigateCode){
+        switch (buttonNavigateCode){
+            case RESULT_CODE_NAVIGATE_TO_SCANNER: {
+                startActivityForResult(
+                        new Intent(MainMenuActivity.this, ScanActivity.class),
+                        REQUEST_CODE);
+                break;
+            }
+
+            case RESULT_CODE_NAVIGATE_TO_CART: {
+                startActivityForResult(
+                        new Intent(MainMenuActivity.this, CartActivity.class),
+                        REQUEST_CODE);
+                break;
+            }
+
+            case RESULT_CODE_NAVIGATE_TO_RECEIPT: {
+                startActivityForResult(
+                        new Intent(MainMenuActivity.this, ReceiptActivity.class),
+                        REQUEST_CODE);
+                break;
+            }
+
+            case RESULT_CODE_NAVIGATE_TO_REPORT: {
+                startActivityForResult(
+                        new Intent(MainMenuActivity.this, ReportActivity.class),
+                        REQUEST_CODE);
+                break;
+            }
+
+            default: break;
+        }
     }
 
     private class MenuItem {
         int iconId;
+        int buttonNavigateCode;
         String buttonName;
 
-        MenuItem(int iconId, String buttonName){
-            setIconId(iconId).setButtonName(buttonName);
+        MenuItem(int iconId, int buttonNavigateCode, String buttonName){
+            setIconId(iconId)
+                    .setButtonNavigateCode(buttonNavigateCode)
+                    .setButtonName(buttonName);
         }
 
         MenuItem setIconId(int iconId){
@@ -82,6 +118,15 @@ public class MainMenuActivity extends AppCompatActivity {
 
         int getIconId(){
             return iconId;
+        }
+
+        MenuItem setButtonNavigateCode(int buttonNavigateCode){
+            this.buttonNavigateCode = buttonNavigateCode;
+            return this;
+        }
+
+        int getButtonNavigateCode(){
+            return buttonNavigateCode;
         }
 
         MenuItem setButtonName(String buttonName){

@@ -30,27 +30,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReceiptActivity extends AppCompatActivity {
+    /**
+     * ArrayList that stores all receipt objects
+     */
     ArrayList<Receipt> receipt;
+
+    /**
+     * Listview to display the receipts
+     */
     ListView receiptList;
+    /**
+     * An instance of the ReceiptAdapter inner class used to populate the ListView
+     */
     private static ReceiptAdapter adapter;
     private SQLiteDatabase database;
+
+    /**
+     * An instance of the GlutenDatabase class. This will be used to load receipts from the Receipt table.
+     */
     private GlutenDatabase dbOpener = new GlutenDatabase(this);
+
+    /**
+     * Toolbar to navigate between different activities
+     */
     Toolbar receiptTbar;
 
+    /**
+     * This method is called when the page is first loaded
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receipt);
-        receiptList=(ListView)findViewById(R.id.receiptList);
-        receipt= new ArrayList<>();
+        receiptList=(ListView)findViewById(R.id.receiptList);// initializing the listview
+        receipt= new ArrayList<>(); // initializing the arraylist to store receipts
 
-        receiptTbar = (Toolbar)findViewById(R.id.receiptToolbar);
+        receiptTbar = (Toolbar)findViewById(R.id.receiptToolbar);// initializing the toolbar
 
-//      insertTestValuesIntoDatabase();
-        readFromDatabase();
-        adapter=new ReceiptAdapter(receipt,this);
-        receiptList.setAdapter(adapter);
+
+        readFromDatabase();// to read any data from the database
+        adapter=new ReceiptAdapter(receipt,this);// the adapter is instantiated
+        receiptList.setAdapter(adapter);// to set the instance of ReceiptAdapter in the listview
+
         receiptList.setOnItemLongClickListener((adapterView, view, i, l) -> {
+            //alertdialog to delete a receipt from the list
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(adapterView.getContext());
             DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
                 switch (which){
@@ -59,11 +83,10 @@ public class ReceiptActivity extends AppCompatActivity {
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
-                        Long d=receipt.get(i).getId();
-                        dbOpener.deleteReceiptByID(d);
-                        receipt.remove(i);
-                        adapter.notifyDataSetChanged();
-
+                        Long d=receipt.get(i).getId();// to get the id of the receipt to be deleted
+                        dbOpener.deleteReceiptByID(d);// to delete the receipt from the database
+                        receipt.remove(i);// to delete the receipt object from the arraylist
+                        adapter.notifyDataSetChanged();// to refresh the listview
                         break;
                 }
             };
@@ -74,61 +97,24 @@ public class ReceiptActivity extends AppCompatActivity {
             alertDialog.show();
             return true;
         });
-
+        //to open a digital receipt based on the receipt clicked by the user
         receiptList.setOnItemClickListener((list,item,position,id)->{
-//            position=position+1;
             Intent intent= new Intent(ReceiptActivity.this,DigitalReceipt.class);
-//            intent.putExtra("index",position);
-//            intent.putExtra("index",receipt.get(position).getId());
+
                 DigitalReceipt.setPassedIndex(receipt.get(position).getId());
             startActivity(intent);
             });
         adapter.notifyDataSetChanged();
     }
 
-
+    /**
+     * To read all receipts from the database
+     */
     private void readFromDatabase(){
         List<Receipt> rec= dbOpener.selectAllReceipt();
         if(rec!=null)
             receipt.addAll(rec);
-
-       /* database = dbOpener.getReadableDatabase();
-        Cursor pc = database.query(false, DatabaseActivity.Products.TABLE_NAME, new String[]{DatabaseActivity.Products.COLUMN_NAME_ID, DatabaseActivity.Products.COLUMN_NAME_PRODUCT_NAME, DatabaseActivity.Products.COLUMN_NAME_DESCRIPTION, DatabaseActivity.Products.COLUMN_NAME_GLUTEN, DatabaseActivity.Products.COLUMN_NAME_PRICE}, null, null, null, null, null, null, null);
-       // Cursor rc = database.query(false, DatabaseActivity.Receipts.TABLE_NAME, new String[]{DatabaseActivity.Receipts.COLUMN_NAME_ID, DatabaseActivity.Receipts.COLUMN_NAME_FILE, DatabaseActivity.Receipts.COLUMN_NAME_DATE, DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_PRICE}, null, null, null, null, null, null, null);
-        Cursor rc = database.query(false, DatabaseActivity.Receipts.TABLE_NAME, new String[]{DatabaseActivity.Receipts.COLUMN_NAME_ID, DatabaseActivity.Receipts.COLUMN_NAME_FILE, DatabaseActivity.Receipts.COLUMN_NAME_DATE, DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_DEDUCTION}, null, null, null, null, null, null, null);
-        int idIndex=rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_ID);
-        int fileNamename=rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_FILE);
-        int dateIndex= rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_DATE);
-        int deductionIndex= rc.getColumnIndex(DatabaseActivity.Receipts.COLUMN_NAME_TOTAL_DEDUCTION);
-
-        while(rc.moveToNext()){
-        int rid=rc.getInt(idIndex);
-        String fileName= rc.getString(fileNamename);
-        String date=rc.getString(dateIndex);
-        //Double deduction=rc.getDouble(deductionIndex);
-        double deduction = rc.getDouble(deductionIndex);
-
-
-        //Fix receipt.add
-        receipt.add(new Receipt(rid,null,fileName,deduction, 0, date));
-        } */
     }
-
-//    private void insertTestValuesIntoDatabase(){
-//        database = dbOpener.getWritableDatabase();
-//        ContentValues newRowValues = new ContentValues();
-//        newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_FILE, "test2");
-//        newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_DATE,"2020-08-15");
-//        newRowValues.put(databaseActivity.Receipts.COLUMN_NAME_DEDUCTION,20);
-//        database.insert(databaseActivity.Receipts.TABLE_NAME, null, newRowValues);
-//
-//        ContentValues productRowValues = new ContentValues();
-//        productRowValues.put(databaseActivity.Products.COLUMN_NAME_PNAME, "Real Apple Juice");
-//        productRowValues.put(databaseActivity.Products.COLUMN_NAME_DESCRIPTION, "Apple Juice 1L");
-//        productRowValues.put(databaseActivity.Products.COLUMN_NAME_PRICE, 6.25);
-//        productRowValues.put(databaseActivity.Products.COLUMN_NAME_GLUTEN, 0);
-//        database.insert(databaseActivity.Products.TABLE_NAME, null, productRowValues);
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -143,34 +129,37 @@ public class ReceiptActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.scannerButton:
-                Intent goToScanner = new Intent(ReceiptActivity.this, ScanActivity.class);
-                startActivity(goToScanner);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_SCANNER);
+                finish();
                 break;
             case R.id.cartButton:
-                Intent goToCart = new Intent(ReceiptActivity.this, CartActivity.class);
-                startActivity(goToCart);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_CART);
+                finish();
                 break;
             case R.id.receiptButton:
-                Intent goToReceipt = new Intent(ReceiptActivity.this, ReceiptActivity.class);
-                startActivity(goToReceipt);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_RECEIPT);
+                finish();
                 break;
             case R.id.reportButton:
-                Intent goToReport = new Intent(ReceiptActivity.this, ReportActivity.class);
-                startActivity(goToReport);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_REPORT);
+                finish();
                 break;
         }
         return true;
     }
 
+    /**
+     * Inner class used to set a custom adapter to the listview
+     */
     public class ReceiptAdapter extends ArrayAdapter<Receipt> {
         private ArrayList<Receipt> rData;
 
         Context mContext;
-        TextView id;
-        TextView img;
-        TextView amt;
-        TextView dte;
-        Button edit;
+        TextView id;// to display the receipt id
+        TextView img;// to the display the file path for image
+        TextView amt;// to display the claimable amount
+        TextView dte;//to display the date
+        Button edit;// to edit the quantity or price
 
         public ReceiptAdapter(ArrayList<Receipt> data, Context context)  {
             super(context,R.layout.receipt_layout,data);
@@ -178,6 +167,13 @@ public class ReceiptActivity extends AppCompatActivity {
             this.mContext=context;
         }
 
+        /**
+         * Method to create a custom view
+         * @param position position of the item in the list
+         * @param convertView view of the list
+         * @param parent
+         * @return a view with custom items
+         */
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -189,10 +185,11 @@ public class ReceiptActivity extends AppCompatActivity {
                 amt = (TextView) convertView.findViewById(R.id.deduction);
                 dte = (TextView) convertView.findViewById(R.id.summarydate);
                 edit=convertView.findViewById(R.id.edit);
-                id.setText(Long.toString(rS.getId()));
-                img.setText(rS.getReceiptFile());
-                amt.setText(Double.toString(rS.getTaxDeductionTotal()));
-                dte.setText(rS.getDate());
+
+                id.setText(Long.toString(rS.getId()));//setting the receipt id
+                img.setText(rS.getReceiptFile());//setting the path to the image file
+                amt.setText(Double.toString(rS.getTaxDeductionTotal()));//setting the claimable amount
+                dte.setText(rS.getDate());//setting the date of transaction
             return convertView;
         }
     }

@@ -66,11 +66,13 @@
         android:id="@+id/gln"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="italic"
+        android:layout_below="@+id/protitle"
+        android:layout_marginTop="-1dp"
+        android:layout_marginRight="2dp"
+        android:layout_toLeftOf="@id/qnty"
+        android:text="Linked Product"
         android:textSize="15dp"
-        android:text="Gluten Free"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/protitle"/>
+        android:textStyle="italic" />
 
     <TextView
         android:id="@+id/qnty"
@@ -78,7 +80,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/protitle"
         android:layout_marginLeft="45dp"
-        android:layout_toRightOf="@id/gln"
+        android:layout_marginTop="0dp"
+        android:layout_marginRight="13dp"
+        android:layout_toLeftOf="@id/prc"
         android:text="Quantity"
         android:textSize="15dp"
         android:textStyle="italic" />
@@ -94,12 +98,12 @@
         android:layout_below="@+id/protitle"/>
 
 
-
     <ListView
         android:id="@+id/products"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/name"/>
+
     <TextView
         android:id="@+id/ded"
         android:layout_width="wrap_content"
@@ -115,4 +119,20 @@
         android:layout_toRightOf="@+id/ded"
         android:textSize="19dp"
         android:layout_alignParentBottom="true"/>
+    <TextView
+        android:id="@+id/totalamount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total: "
+        android:textSize="19dp"
+        android:layout_above="@+id/ded"
+        />
+    <TextView
+        android:id="@+id/ta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_toRightOf="@+id/totalamount"
+        android:textSize="19dp"
+        android:layout_above="@+id/ded"/>
 </RelativeLayout>

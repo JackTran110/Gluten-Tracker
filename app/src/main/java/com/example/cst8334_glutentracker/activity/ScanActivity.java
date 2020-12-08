@@ -27,7 +27,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -47,7 +46,7 @@ import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ScanMode;
-import com.example.cst8334_glutentracker.EdamamQuery;
+import com.example.cst8334_glutentracker.functionality.EdamamQuery;
 import com.example.cst8334_glutentracker.R;
 import com.example.cst8334_glutentracker.database.GlutenDatabase;
 import com.example.cst8334_glutentracker.entity.Product;
@@ -285,20 +284,20 @@ public class ScanActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.scannerButton:
-                Intent goToScanner = new Intent(ScanActivity.this, ScanActivity.class);
-                startActivity(goToScanner);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_SCANNER);
+                finish();
                 break;
             case R.id.cartButton:
-                Intent goToCart = new Intent(ScanActivity.this, CartActivity.class);
-                startActivity(goToCart);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_CART);
+                finish();
                 break;
             case R.id.receiptButton:
-                Intent goToReceipt = new Intent(ScanActivity.this, ReceiptActivity.class);
-                startActivity(goToReceipt);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_RECEIPT);
+                finish();
                 break;
             case R.id.reportButton:
-                Intent goToReport = new Intent(ScanActivity.this, ReportActivity.class);
-                startActivity(goToReport);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_REPORT);
+                finish();
                 break;
         }
         return true;
