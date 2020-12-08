@@ -1,5 +1,7 @@
 package com.example.cst8334_glutentracker.entity;
 
+import android.graphics.Bitmap;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +12,14 @@ public class Receipt {
     private double taxDeductionTotal = 0;
     private double totalPrice = 0;
     private String date = "now";
+    private Bitmap image;
 
     public Receipt(long id, List<Product> products, String receiptFile, double taxDeductionTotal, double totalPrice, String date){
         setId(id).setProducts(products).setReceiptFile(receiptFile).setTaxDeductionTotal(taxDeductionTotal).setTotalPrice(totalPrice).setDate(date);
+    }
+
+    public Receipt(long id, List<Product> products, String receiptFile, double taxDeductionTotal, double totalPrice, String date, Bitmap image){
+        setId(id).setProducts(products).setReceiptFile(receiptFile).setTaxDeductionTotal(taxDeductionTotal).setTotalPrice(totalPrice).setDate(date).setImage(image);
     }
 
     public long getId() {
@@ -68,4 +75,8 @@ public class Receipt {
         this.totalPrice = totalPrice;
         return this;
     }
+
+    public Bitmap getImage(){return image;}
+
+    public void setImage(Bitmap image){this.image = image;}
 }

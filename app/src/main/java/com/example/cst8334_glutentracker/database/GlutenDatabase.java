@@ -6,11 +6,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.example.cst8334_glutentracker.entity.Product;
 import com.example.cst8334_glutentracker.entity.Receipt;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +27,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * Database's version number.
      */
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
 
     /**
      * SQLite database object.
@@ -188,6 +191,26 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         return id;
     }
 
+    public long insertIntoReceiptsTableWithImage(List<Product> products, String file, double totalDeduction, double totalPrice, String date, Bitmap image){
+        db = getWritableDatabase();
+        // Learned how to convert Bitmap image to BLOB from https://stackoverflow.com/questions/11790104/how-to-storebitmap-image-and-retrieve-image-from-sqlite-database-in-android
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 0, byteArrayOutputStream);
+        byte[] imageToBytes = byteArrayOutputStream.toByteArray();
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(Receipts.COLUMN_NAME_FILE, file);
+        cv.put(Receipts.COLUMN_NAME_TOTAL_DEDUCTION, totalDeduction);
+        cv.put(Receipts.COLUMN_NAME_TOTAL_PRICE, totalPrice);
+        cv.put(Receipts.COLUMN_NAME_DATE, date);
+        cv.put(Receipts.COLUMN_NAME_IMAGE, imageToBytes);
+        long id = db.insert(Receipts.TABLE_NAME, null, cv);
+
+        if(!insertIntoProductReceiptTable(products, id)) return -1;
+        return id;
+    }
+
     /**
      * This method inserts a list of products of a receipt into the database.
      *
@@ -335,6 +358,33 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         return receipt;
     }
 
+    public Receipt selectReceiptByIDWithImage(long id){
+        db = getWritableDatabase();
+        Cursor cs;
+        Receipt receipt;
+        try {
+            cs = db.query(false, Receipts.TABLE_NAME, null,
+                    Receipts.COLUMN_NAME_ID + " = ? ", new String[]{Long.toString(id)},
+                    null, null, null, null, null);
+            cs.moveToNext();
+            // Learned about how to decode the BLOB from https://stackoverflow.com/questions/11790104/how-to-storebitmap-image-and-retrieve-image-from-sqlite-database-in-android
+            byte[] imageAsByte = cs.getBlob(5);
+            Bitmap image = BitmapFactory.decodeByteArray(imageAsByte, 0, imageAsByte.length);
+            receipt = new Receipt(cs.getLong(0),
+                    selectProductReceipt(id),
+                    cs.getString(1),
+                    cs.getDouble(3),
+                    cs.getDouble(2),
+                    cs.getString(4),
+                    image);
+        }catch (Exception e){
+            Log.e(ERROR_TAG, "Unable to select receipt", e);
+            return null;
+        }
+        cs.close();
+        return receipt;
+    }
+
     public List<Receipt> selectAllReceipt(){
         db = getWritableDatabase();
         Cursor cs;
@@ -351,6 +401,34 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                         cs.getDouble(3),
                         cs.getDouble(2),
                         cs.getString(4)));
+            }while(cs.moveToNext());
+        }catch (Exception e){
+            Log.e(ERROR_TAG, "Unable to select receipts", e);
+            return null;
+        }
+        cs.close();
+        return receipts;
+    }
+
+    public List<Receipt> selectAllReceiptWithImage(){
+        db = getWritableDatabase();
+        Cursor cs;
+        List<Receipt > receipts = new ArrayList<>();
+        try {
+            cs = db.query(false, Receipts.TABLE_NAME, null,
+                    null,null, null, null, null,
+                    null, null);
+            cs.moveToFirst();
+            do{
+                // Learned about how to decode the BLOB from https://stackoverflow.com/questions/11790104/how-to-storebitmap-image-and-retrieve-image-from-sqlite-database-in-android
+                byte[] imageAsByte = cs.getBlob(5);
+                Bitmap image = BitmapFactory.decodeByteArray(imageAsByte, 0, imageAsByte.length);
+                receipts.add(new Receipt(cs.getLong(0),
+                        selectProductReceipt(cs.getLong(0)),
+                        cs.getString(1),
+                        cs.getDouble(3),
+                        cs.getDouble(2),
+                        cs.getString(4), image));
             }while(cs.moveToNext());
         }catch (Exception e){
             Log.e(ERROR_TAG, "Unable to select receipts", e);
@@ -503,13 +581,22 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * The query to create the receipts table.
      */
+  /*  private static final String SQL_CREATE_RECEIPTS = "CREATE TABLE " +
+            Receipts.TABLE_NAME + " (" +
+            Receipts.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            Receipts.COLUMN_NAME_FILE + " TEXT, " +
+            Receipts.COLUMN_NAME_TOTAL_PRICE + " REAL, " +
+            Receipts.COLUMN_NAME_TOTAL_DEDUCTION + " REAL, " +
+            Receipts.COLUMN_NAME_DATE + " TEXT)"; */
+
     private static final String SQL_CREATE_RECEIPTS = "CREATE TABLE " +
             Receipts.TABLE_NAME + " (" +
             Receipts.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             Receipts.COLUMN_NAME_FILE + " TEXT, " +
             Receipts.COLUMN_NAME_TOTAL_PRICE + " REAL, " +
             Receipts.COLUMN_NAME_TOTAL_DEDUCTION + " REAL, " +
-            Receipts.COLUMN_NAME_DATE + " TEXT)";
+            Receipts.COLUMN_NAME_DATE + " TEXT, " +
+            Receipts.COLUMN_NAME_IMAGE + " BLOB)";
 
     /**
      * The query to create the productReceipt table.
@@ -573,6 +660,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_TOTAL_DEDUCTION = "totalTaxDeduction";
         public static final String COLUMN_NAME_TOTAL_PRICE = "totalPrice";
         public static final String COLUMN_NAME_DATE = "date";
+        public static final String COLUMN_NAME_IMAGE = "image"; // added by Naimul
     }
 
     private static class ProductReceipt{

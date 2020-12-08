@@ -19,9 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.cst8334_glutentracker.ImageReceipt;
 import com.example.cst8334_glutentracker.R;
 import com.example.cst8334_glutentracker.database.GlutenDatabase;
 import com.example.cst8334_glutentracker.entity.Receipt;
@@ -111,7 +114,8 @@ public class ReceiptActivity extends AppCompatActivity {
      * To read all receipts from the database
      */
     private void readFromDatabase(){
-        List<Receipt> rec= dbOpener.selectAllReceipt();
+        //List<Receipt> rec= dbOpener.selectAllReceipt(); original
+        List<Receipt> rec = dbOpener.selectAllReceiptWithImage();
         if(rec!=null)
             receipt.addAll(rec);
     }
@@ -160,6 +164,7 @@ public class ReceiptActivity extends AppCompatActivity {
         TextView amt;// to display the claimable amount
         TextView dte;//to display the date
         Button edit;// to edit the quantity or price
+        ImageButton receiptImage; // to display an image of the receipt
 
         public ReceiptAdapter(ArrayList<Receipt> data, Context context)  {
             super(context,R.layout.receipt_layout,data);
@@ -184,12 +189,20 @@ public class ReceiptActivity extends AppCompatActivity {
                 img = (TextView) convertView.findViewById(R.id.rpt);
                 amt = (TextView) convertView.findViewById(R.id.deduction);
                 dte = (TextView) convertView.findViewById(R.id.summarydate);
+                receiptImage = convertView.findViewById(R.id.receiptImage);
                 edit=convertView.findViewById(R.id.edit);
 
                 id.setText(Long.toString(rS.getId()));//setting the receipt id
                 img.setText(rS.getReceiptFile());//setting the path to the image file
                 amt.setText(Double.toString(rS.getTaxDeductionTotal()));//setting the claimable amount
                 dte.setText(rS.getDate());//setting the date of transaction
+                receiptImage.setImageBitmap(rS.getImage());
+
+                receiptImage.setOnClickListener((v) ->{
+                    Intent intent = new Intent(ReceiptActivity.this, ImageReceipt.class);
+                    intent.putExtra("ReceiptId", rS.getId());
+                    startActivity(intent);
+                });
             return convertView;
         }
     }
