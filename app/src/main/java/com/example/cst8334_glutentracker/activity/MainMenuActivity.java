@@ -1,7 +1,10 @@
 package com.example.cst8334_glutentracker.activity;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.cst8334_glutentracker.R;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +40,18 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         ListView mainMenu = findViewById(R.id.main_menu);
         List<MenuItem> menu = new ArrayList<>();
         MenuAdapter adapter = new MenuAdapter(menu, this);
         mainMenu.setAdapter(adapter);
+
+        setSupportActionBar(toolbar);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+        toggle.syncState();
+        toolbar.setNavigationIcon(R.drawable.navigation_icon);
 
         menu.add(new MenuItem(R.drawable.barcode_icon,
                 RESULT_CODE_NAVIGATE_TO_SCANNER,
@@ -58,6 +70,11 @@ public class MainMenuActivity extends AppCompatActivity {
         mainMenu.setOnItemClickListener((AdapterView<?> list, View view, int position, long id) -> {
             navigateToActivity(menu.get(position).getButtonNavigateCode());
         });
+
+        navigationView.setNavigationItemSelectedListener(i -> {
+            navigateToActivity(i.getOrder());
+            return true;
+        });
     }
 
     @Override
@@ -65,6 +82,8 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         navigateToActivity(resultCode);
     }
+
+
 
     private void navigateToActivity(int buttonNavigateCode){
         switch (buttonNavigateCode){

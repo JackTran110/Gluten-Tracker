@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -209,8 +210,8 @@ public class CartListViewHolder {
             }
         });
 
-        ImageButton plusButtonEdit = row.findViewById(R.id.plusButtonEdit);
-        ImageButton minusButtonEdit = row.findViewById(R.id.minusButtonEdit);
+        Button plusButtonEdit = row.findViewById(R.id.plusButtonEdit);
+        Button minusButtonEdit = row.findViewById(R.id.minusButtonEdit);
         if(context instanceof Link){
             //plusButtonEdit.setVisibility(row.INVISIBLE);
            // minusButtonEdit.setVisibility(row.INVISIBLE);
