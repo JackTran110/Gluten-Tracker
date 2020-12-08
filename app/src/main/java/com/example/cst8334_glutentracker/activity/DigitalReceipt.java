@@ -201,9 +201,7 @@ public class DigitalReceipt extends AppCompatActivity {
 
             LayoutInflater inflater = LayoutInflater.from(mContext);
             convertView = inflater.inflate(R.layout.digital_receipt_layout, parent, false);
-            proid = (TextView) convertView.findViewById(R.id.proid);
             name = (TextView) convertView.findViewById(R.id.pname);
-            desc = (TextView) convertView.findViewById(R.id.pdesc);
             gluten = (TextView) convertView.findViewById(R.id.gluten);
             quantity = (TextView) convertView.findViewById(R.id.qty);
             dedp = (TextView) convertView.findViewById(R.id.prize);
@@ -219,13 +217,11 @@ public class DigitalReceipt extends AppCompatActivity {
 
             Context context=convertView.getContext();
 
-            proid.setText(Long.toString(product.getId()));// to set the product id
-            name.setText(product.getProductName());// to set the product name
-            desc.setText(product.getProductDescription());// to set the product description
+            name.setText(getString(R.string.product_name) + product.getProductName());// to set the product name
             if(product.getLinkedProduct()!=null)// to prevent an app from crashing, if there is no linked product
-                gluten.setText(product.getLinkedProduct().getProductName());// to set the linked product
-            quantity.setText(Integer.toString(product.getQuantity()));// to set the quantity of the products purchased
-            dedp.setText(product.getDisplayedPriceAsString());// to set the displayed price of a product
+                gluten.setText(getString(R.string.linkedProductName) + product.getLinkedProduct().getProductName());// to set the linked product
+            quantity.setText(getString(R.string.quantity) + Integer.toString(product.getQuantity()));// to set the quantity of the products purchased
+            dedp.setText(getString(R.string.price) + product.getDisplayedPriceAsString());// to set the displayed price of a product
 
 
             edit.setOnClickListener((v) -> {

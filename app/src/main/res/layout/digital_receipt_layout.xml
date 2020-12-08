@@ -5,66 +5,72 @@
 
     <Button
         android:id="@+id/edit"
-        android:layout_width="55dp"
-        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:focusable="false"
         android:text="Edit"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/gluten"/>
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/btn_background"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"/>
 
     <TextView
-        android:id="@+id/proid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Id"/>
-    <TextView
         android:id="@+id/pname"
-        android:layout_below="@+id/proid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="name"
+        android:text="@string/product_name"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"
+        android:layout_margin="10dp"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/edit"
         android:textStyle="bold"/>
-    <TextView
-        android:id="@+id/pdesc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="desc"
-        android:layout_below="@+id/pname"/>
+
     <TextView
         android:id="@+id/prize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="price"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignStart="@id/pname"
+        android:layout_below="@id/pname"
+        android:layout_marginBottom="10dp"
+        android:text="@string/price"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif" />
 
     <TextView
         android:id="@+id/qty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="6dp"
-        android:layout_toRightOf="@+id/gluten"
-        android:text="quantity" />
+        android:layout_alignStart="@id/pname"
+        android:layout_below="@id/prize"
+        android:layout_marginBottom="10dp"
+        android:text="@string/quantity"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"/>
 
     <TextView
         android:id="@+id/gluten"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/pdesc"
-        android:layout_alignParentLeft="true"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="111dp"
-        android:layout_marginTop="0dp"
-        android:text="id"
+        android:layout_alignStart="@id/pname"
+        android:layout_below="@id/qty"
+        android:layout_toStartOf="@id/edit"
+        android:layout_marginBottom="10dp"
+        android:text="@string/linkedProductName"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"
         android:textStyle="italic" />
 
     <Button
         android:id="@+id/lnk"
-        android:layout_width="72dp"
-        android:layout_height="37dp"
-        android:layout_below="@+id/gluten"
-        android:layout_marginLeft="19dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginHorizontal="10dp"
+        android:layout_below="@id/edit"
         android:layout_marginTop="1dp"
-        android:layout_toRightOf="@id/edit"
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/btn_background"
         />
 
 

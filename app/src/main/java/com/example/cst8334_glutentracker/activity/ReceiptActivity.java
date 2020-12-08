@@ -185,16 +185,14 @@ public class ReceiptActivity extends AppCompatActivity {
                 LayoutInflater inflater = LayoutInflater.from(mContext);
                 convertView = inflater.inflate(R.layout.receipt_layout, parent, false);
                 id= (TextView) convertView.findViewById(R.id.rid);
-                img = (TextView) convertView.findViewById(R.id.rpt);
                 amt = (TextView) convertView.findViewById(R.id.deduction);
                 dte = (TextView) convertView.findViewById(R.id.summarydate);
                 receiptImage = convertView.findViewById(R.id.receiptImage);
                 edit=convertView.findViewById(R.id.edit);
 
-                id.setText(Long.toString(rS.getId()));//setting the receipt id
-                img.setText(rS.getReceiptFile());//setting the path to the image file
-                amt.setText(Double.toString(rS.getTaxDeductionTotal()));//setting the claimable amount
-                dte.setText(rS.getDate());//setting the date of transaction
+                id.setText(getString(R.string.receipt_id) + Long.toString(rS.getId()));//setting the receipt id
+                amt.setText(getString(R.string.claim_amount) + Double.toString(rS.getTaxDeductionTotal()));//setting the claimable amount
+                dte.setText(getString(R.string.date) + rS.getDate());//setting the date of transaction
                 receiptImage.setImageBitmap(rS.getImage());
 
                 receiptImage.setOnClickListener((v) ->{

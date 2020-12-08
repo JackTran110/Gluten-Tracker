@@ -108,7 +108,7 @@ public class ReportMActivity extends AppCompatActivity implements DatePickerDial
         btnReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ReportMActivity.this,ReportActivity.class));
+                finish();
             }
         });
 /**

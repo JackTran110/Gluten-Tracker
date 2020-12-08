@@ -11,14 +11,15 @@ import androidx.fragment.app.Fragment;
 import com.example.cst8334_glutentracker.R;
 import com.example.cst8334_glutentracker.activity.RegisterActivity;
 
+/**
+ * This class is the container of validate messages.
+ */
 public class ValidateMessageFragment extends Fragment {
-
-    private TextView validateMessage;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View validateMessageView = inflater.inflate(R.layout.validate_message_fragment, container, false);
-        validateMessage = validateMessageView.findViewById(R.id.validate_message);
+        TextView validateMessage = validateMessageView.findViewById(R.id.validate_message);
         Bundle getMessages = getArguments();
         validateMessage.setText(getMessages.getString(RegisterActivity.KEY_ERROR_MESSAGE));
         return validateMessageView;

@@ -3,19 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/scannerButton"
-        android:title="Barcode Scanner"
+        android:title="@string/scanner_activity"
         android:icon="@drawable/barcode_icon_white"
         android:orderInCategory="1"
         app:showAsAction="always"/>
 
     <item android:id="@+id/cartButton"
-        android:title="Shopping Cart"
+        android:title="@string/cart_activity"
         android:icon="@drawable/cart_icon_white"
         android:orderInCategory="2"
         app:showAsAction="always"/>
 
     <item android:id="@+id/receiptButton"
-        android:title="Receipts"
+        android:title="@string/receipt_activity"
         android:icon="@drawable/receipt_icon_white"
         android:orderInCategory="3"
         app:showAsAction="always"/>
@@ -28,7 +28,7 @@
 
     <item
         android:id="@+id/search_view"
-        android:title="Search View"
+        android:title="@string/report_activity"
         android:icon="@drawable/search_icon"
         android:orderInCategory="5"
         app:showAsAction="always"

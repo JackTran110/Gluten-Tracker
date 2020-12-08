@@ -405,6 +405,11 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         return receipt;
     }
 
+    /**
+     * Select all the receipts in the database.
+     *
+     * @return A list of all receipts.
+     */
     public List<Receipt> selectAllReceipt(){
         db = getWritableDatabase();
         Cursor cs;

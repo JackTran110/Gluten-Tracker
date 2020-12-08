@@ -108,9 +108,9 @@
         android:id="@+id/productName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_margin="10dp"
         android:layout_toStartOf="@id/editProduct"
-        android:textSize="20sp"
         android:textColor="@color/colorBlack"
         android:fontFamily="serif"/>
 
@@ -121,7 +121,6 @@
         android:layout_below="@+id/productName"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="10dp"
-        android:textSize="20sp"
         android:textColor="@color/colorBlack"
         android:fontFamily="serif"/>
 
@@ -158,7 +157,6 @@
       android:layout_below="@+id/glutenFree"
       android:layout_marginStart="10dp"
       android:layout_marginBottom="10dp"
-      android:textSize="20sp"
       android:textColor="@color/colorBlack"
       android:fontFamily="serif"/>
     <!--<EditText
@@ -177,14 +175,13 @@
 
   <TextView
       android:id="@+id/quantity"
-      android:layout_width="50dp"
+      android:layout_width="25dp"
       android:layout_height="wrap_content"
       android:layout_alignTop="@id/plusButton"
       android:layout_toEndOf="@id/plusButton"
       android:fontFamily="serif"
       android:gravity="center"
-      android:textColor="@color/colorBlack"
-      android:textSize="20sp" />
+      android:textColor="@color/colorBlack" />
 
  <!-- original block <ImageButton
         android:id="@+id/plusButton"
@@ -206,23 +203,21 @@
         android:text="Minus" /> -->
   <Button
       android:id="@+id/plusButton"
-      android:layout_width="30dp"
-      android:layout_height="30dp"
+      android:layout_width="20dp"
+      android:layout_height="20dp"
       android:text="+"
       android:layout_alignTop="@id/price"
       android:layout_marginStart="150dp"
       android:textColor="@color/colorWhite"
-      android:textSize="20sp"
       android:background="@drawable/btn_background"/>
 
   <Button
       android:id="@+id/minusButton"
-      android:layout_width="30dp"
-      android:layout_height="30dp"
+      android:layout_width="20dp"
+      android:layout_height="20dp"
       android:layout_toEndOf="@id/quantity"
       android:layout_alignTop="@id/plusButton"
       android:text="-"
-      android:textSize="20sp"
       android:textColor="@color/colorWhite"
       android:background="@drawable/btn_background"/>
 
@@ -259,10 +254,10 @@
         android:textColor="@color/colorWhite"
         android:textSize="15sp"
         android:background="@drawable/btn_background"
-        android:layout_below="@+id/price"
+        android:layout_below="@+id/removeFromCart"
         android:layout_alignStart="@id/removeFromCart"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginVertical="10dp"
         android:layout_marginEnd="10dp"/>
 
   <!--  <TextView
@@ -288,19 +283,18 @@
       android:id="@+id/linkedProductName"
       android:text="@string/linkedProductName"
       android:textColor="@color/colorBlack"
-      android:textSize="20sp"
       android:fontFamily="serif"
       android:layout_marginStart="10dp"
       android:layout_marginBottom="10dp"
       android:layout_toStartOf="@id/linkButton"
       android:layout_alignTop="@id/linkButton"
-      android:layout_below="@+id/plusButton" />
+      android:layout_below="@+id/plusButton"
+      android:layout_alignParentStart="true"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/deductibleText"
         android:text="@string/deductible"
-        android:textSize="20dp"
         android:textColor="@color/colorBlack"
         android:fontFamily="serif"
         android:layout_marginStart="10dp"

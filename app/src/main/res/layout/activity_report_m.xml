@@ -9,19 +9,24 @@
         android:id="@+id/btnReceipt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:background="@color/colorBlack"
         android:text=" Go to Receipt Management"
+        android:textColor="@color/colorWhite"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
         />
 
     <TextView
         android:id="@+id/txtRpt_m"
         android:layout_width="350dp"
         android:layout_height="39dp"
-        android:layout_below="@+id/btnReceipt"
         android:text="Report Management:"
         android:textSize="15dp"
         android:textStyle="bold"
-
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
         tools:layout_editor_absoluteX="93dp"
         tools:layout_editor_absoluteY="4dp" />
 
@@ -35,6 +40,9 @@
         android:text="From:"
         android:textSize="15dp"
         android:textStyle="bold"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"
+        android:layout_marginStart="10dp"
         tools:layout_editor_absoluteX="93dp"
         tools:layout_editor_absoluteY="4dp" />
     <TextView
@@ -44,6 +52,8 @@
         android:layout_below="@+id/txtRpt_m"
         android:layout_toRightOf="@+id/txtFrom"
         android:hint="pick date"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"
         tools:layout_editor_absoluteX="93dp"
         tools:layout_editor_absoluteY="4dp" />
     <TextView
@@ -54,6 +64,8 @@
         android:layout_toRightOf="@+id/txtFrom_data"
         android:text="To:"
         android:textSize="15dp"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"
         android:textStyle="bold"
         tools:layout_editor_absoluteX="93dp"
         tools:layout_editor_absoluteY="4dp" />
@@ -64,6 +76,8 @@
         android:layout_below="@+id/txtRpt_m"
         android:layout_toRightOf="@+id/txtTo"
         android:hint="Pick Date"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"
         tools:layout_editor_absoluteX="93dp"
         tools:layout_editor_absoluteY="4dp" />
     <Button
@@ -104,7 +118,9 @@
         android:layout_width="1dp"
         android:layout_height="39dp"
         android:layout_below="@+id/txtRpt_m"
-
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"
+        android:layout_marginStart="10dp"
         tools:layout_editor_absoluteX="93dp"
         tools:layout_editor_absoluteY="4dp" />
 
@@ -120,6 +136,9 @@
         android:text="Recent records:"
         android:textSize="15dp"
         android:textStyle="bold"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"
+        android:layout_marginStart="10dp"
         tools:layout_editor_absoluteX="93dp"
         tools:layout_editor_absoluteY="4dp" />
     <TextView
@@ -127,7 +146,9 @@
         android:layout_width="220dp"
         android:layout_height="39dp"
         android:layout_below="@+id/txtFindrpt_m"
-
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"
+        android:layout_marginStart="10dp"
         tools:layout_editor_absoluteX="93dp"
         tools:layout_editor_absoluteY="4dp" />
 
@@ -135,8 +156,8 @@
         android:id="@+id/lstMReport"
         android:layout_below="@+id/txtRecnt_m"
         android:layout_width="wrap_content"
-
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@id/btnReceipt"/>
 
 
 </RelativeLayout>
