@@ -19,7 +19,6 @@ import org.json.JSONObject;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.cst8334_glutentracker.activity.CartActivity;
-import com.example.cst8334_glutentracker.activity.ScanActivity;
 import com.example.cst8334_glutentracker.database.GlutenDatabase;
 import com.example.cst8334_glutentracker.entity.Product;
 

@@ -55,6 +55,11 @@ import com.google.zxing.Result;
 
 import static java.lang.Long.parseLong;
 
+/**
+ * This activity is used to display the layout for the barcode scanner activity in order to add items
+ * to the shopping cart. Validation checks are performed as required to update the database and cart
+ * as required.
+ */
 public class ScanActivity extends AppCompatActivity {
     Button acceptScannerButton;
     Button cancelScannerButton;
@@ -118,7 +123,8 @@ public class ScanActivity extends AppCompatActivity {
          * @link https://github.com/yuriy-budiyev/code-scanner
          *
          * Enables the camera to constantly refresh and wait until a barcode image is found.
-         *
+         * Once a barcode is found and decoded, send it to the runQuery() method and perform validation
+         * checks.
          */
         codeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
@@ -127,7 +133,8 @@ public class ScanActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         /**
-                         * Logic to delay the time between scans.
+                         * Logic to delay the time between scans. Currently set to 6 seconds
+                         * as we currently have limitations with the current API (10 lookups per minute)
                          */
                         if (System.currentTimeMillis() - delayTimeStamp < DELAY){
                             return;
