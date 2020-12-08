@@ -25,7 +25,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/productFoundName" />
+        android:id="@+id/productFoundName"
+        android:layout_margin="10dp"
+        android:layout_toStartOf="@id/editGlutenButton"
+        android:textSize="20sp"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"/>
 
   <!--  <TextView
         android:layout_width="wrap_content"
@@ -52,7 +57,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/productFoundPrice"
         android:text="@string/price"
-        android:layout_below="@+id/productFoundName" />
+        android:layout_below="@+id/productFoundName"
+        android:layout_marginStart="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/colorBlack"
+        android:fontFamily="serif"/>
 
     <!--<EditText
         android:layout_width="wrap_content"
@@ -66,7 +75,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/linkCommit"
         android:text="Link"
-        android:layout_alignParentRight="true"/>
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/btn_background"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/editGlutenButton"/>
 
  <!--   <Button
         android:layout_width="wrap_content"
@@ -88,6 +102,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/editGlutenButton"
         android:text="Edit"
-        android:layout_below="@+id/linkCommit" />
+        android:textColor="@color/colorWhite"
+        android:background="@drawable/btn_background"
+        android:layout_margin="10dp"
+        android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

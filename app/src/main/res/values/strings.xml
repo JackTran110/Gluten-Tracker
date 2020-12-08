@@ -20,6 +20,11 @@
     <string name="fb_login_protocol_scheme">fb880845565995717</string>
     <string name="total">Total: $</string>
     <string name="deductible">Deductible: $</string>
-    <string name="price">$</string>
+    <string name="product_name">Product name: </string>
+    <string name="product_type_gluten">Product type: gluten-free</string>
+    <string name="product_type_not_gluten">Product type: not gluten-free</string>
+    <string name="price">Price: $</string>
     <string name="linkedProductName">Linked Product: </string>
+    <string name="open">OPEN</string>
+    <string name="close">CLOSE</string>
 </resources>

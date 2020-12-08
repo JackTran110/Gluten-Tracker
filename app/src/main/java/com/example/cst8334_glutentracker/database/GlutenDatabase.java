@@ -233,7 +233,6 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                     null, null, null, null, null);
         cs.moveToFirst();
 
-        String test = cs.getString(0);
         product = new Product(cs.getLong(0),
                 cs.getString(1),
                 cs.getString(2),

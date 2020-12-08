@@ -151,7 +151,7 @@ public class Link extends AppCompatActivity {
    //         TextView descriptionText = newView.findViewById(R.id.productFoundDescription);
             TextView priceText = newView.findViewById(R.id.productFoundPrice);
             //EditText priceText = newView.findViewById(R.id.productFoundPrice);
-            nameText.setText(product.getProductName() + " ");
+            nameText.setText(getString(R.string.product_name) + " " + product.getProductName());
     //        descriptionText.setText(product.getProductDescription() + " ");
          //   priceText.setText(product.getDisplayedPrice() + " ");
             priceText.setText(getString(R.string.price) + product.getDisplayedPriceAsString());

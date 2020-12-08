@@ -328,15 +328,15 @@ public class CartActivity extends AppCompatActivity {
             //final View testView = newView;
             TextView isGluten = newView.findViewById(R.id.glutenFree);
             if(product.isGlutenFree())
-                isGluten.setText("Gluten-Free");
+                isGluten.setText(getString(R.string.product_type_gluten));
             else
-                isGluten.setText("Not Gluten-Free");
+                isGluten.setText(R.string.product_type_not_gluten);
             TextView deductibleText = newView.findViewById(R.id.deductibleText);
             TextView linkedProductName = newView.findViewById(R.id.linkedProductName);
             if(product.getLinkedProduct() != null) {
               //  deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + ""); //changed to displayed price
                 deductibleText.setText(getString(R.string.deductible) + product.getDeductionAsString());
-                linkedProductName.setText(getString(R.string.linkedProductName) + product.getLinkedProduct().getProductName());
+                linkedProductName.setText(getString(R.string.linkedProductName) + " " + product.getLinkedProduct().getProductName());
             }
             else{ // added else statement
                 deductibleText.setVisibility(View.INVISIBLE);
@@ -344,7 +344,7 @@ public class CartActivity extends AppCompatActivity {
             }
 
             TextView productName = newView.findViewById(R.id.productName);
-            productName.setText(product.getProductName());
+            productName.setText(getString(R.string.product_name) + " " + product.getProductName());
 
             TextView price = newView.findViewById(R.id.price);
      //       price.setText(product.getDisplayedPrice() + "");
@@ -355,7 +355,7 @@ public class CartActivity extends AppCompatActivity {
             quantity.setText(Integer.toString(product.getQuantity()));
 
             //Button plusButton = newView.findViewById(R.id.plusButton);
-            ImageButton plusButton = newView.findViewById(R.id.plusButton);
+            Button plusButton = newView.findViewById(R.id.plusButton);
             plusButton.setOnClickListener((v) ->{
                 int convertedToInt = (Integer.parseInt(quantity.getText().toString())) +1;
                 product.changeQuantityAndDisplayedPrice(convertedToInt);
@@ -367,7 +367,7 @@ public class CartActivity extends AppCompatActivity {
             });
 
             //Button minusButton = newView.findViewById(R.id.minusButton);
-            ImageButton minusButton = newView.findViewById(R.id.minusButton);
+            Button minusButton = newView.findViewById(R.id.minusButton);
             minusButton.setOnClickListener((v) ->{
                 if(product.getQuantity() > 1) {
                     int convertedToInt = (Integer.parseInt(quantity.getText().toString())) - 1;
@@ -399,6 +399,7 @@ public class CartActivity extends AppCompatActivity {
             }
             if(!product.isGlutenFree()){
                 linkButton.setEnabled(false);
+                linkButton.setBackgroundResource(R.drawable.disable_btn_background);
             }
             linkButton.setOnClickListener((v) -> {
                 // Finish the rest of this

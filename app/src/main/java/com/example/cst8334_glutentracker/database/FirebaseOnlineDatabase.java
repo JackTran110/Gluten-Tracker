@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import android.content.Intent;
 
@@ -82,45 +80,52 @@ public class FirebaseOnlineDatabase extends AsyncTask<String, String, List<User>
     @Override
     protected void onPostExecute(List<User> u) {
         switch (firstArgument){
-            case LoginActivity.LOGIN:{
-                if(u.size() == 1 &&
-                        u.get(0).getPassword().equals(thirdArgument) &&
-                        fromActivity != null &&
-                        !u.get(0).getLoginName().equals("Admin")){
-                    firebaseAuth.signInWithEmailAndPassword(u.get(0).getEmail(), u.get(0).getLoginName())
-                            .addOnCompleteListener(task -> {
-                                if(task.isSuccessful()){
-                                    if(firebaseAuth.getCurrentUser().isEmailVerified()) {
-                                        fromActivity.startActivity(new Intent(
-                                                fromActivity.getBaseContext(),
-                                                MainMenuActivity.class));
+            case LoginActivity.LOGIN: {
+                if (!u.isEmpty()) {
+                    if (u.size() == 1 &&
+                            u.get(0).getPassword().equals(thirdArgument) &&
+                            fromActivity != null &&
+                            !u.get(0).getLoginName().equals("Admin")) {
+                        firebaseAuth.signInWithEmailAndPassword(u.get(0).getEmail(), u.get(0).getLoginName())
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        if (firebaseAuth.getCurrentUser().isEmailVerified()) {
+                                            fromActivity.startActivity(new Intent(
+                                                    fromActivity.getBaseContext(),
+                                                    MainMenuActivity.class));
+                                        } else {
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(fromActivity);
+                                            builder.setTitle("Sign in denied!")
+                                                    .setMessage("Please verify your email to sign in!");
+                                            builder.create().show();
+                                            firebaseAuth.signOut();
+                                        }
                                     } else {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(fromActivity);
                                         builder.setTitle("Sign in denied!")
-                                                .setMessage("Please verify your email to sign in!");
+                                                .setMessage("You login name or password is not correct. Please try again!");
                                         builder.create().show();
                                         firebaseAuth.signOut();
                                     }
-                                } else {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(fromActivity);
-                                    builder.setTitle("Sign in denied!")
-                                            .setMessage("You login name or password is not correct. Please try again!");
-                                    builder.create().show();
-                                    firebaseAuth.signOut();
-                                }
-                            });
-                    break;
-                }
-                if(u.get(0).getLoginName().equals("Admin") &&
-                        u.get(0).getPassword().equals(thirdArgument)){
-                    fromActivity.startActivity(new Intent(
-                            fromActivity.getBaseContext(),
-                            MainMenuActivity.class));
+                                });
+                        break;
+                    }
+                    if (u.get(0).getLoginName().equals("Admin") &&
+                            u.get(0).getPassword().equals(thirdArgument)) {
+                        fromActivity.startActivity(new Intent(
+                                fromActivity.getBaseContext(),
+                                MainMenuActivity.class));
+                        break;
+                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(fromActivity);
+                    builder.setTitle("Sign in denied!")
+                            .setMessage("You login name or password is not correct. Please try again!");
+                    builder.create().show();
                     break;
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(fromActivity);
                 builder.setTitle("Sign in denied!")
-                        .setMessage("You login name or password is not correct. Please try again!");
+                        .setMessage("Please enter your account and password!");
                 builder.create().show();
                 break;
             }
