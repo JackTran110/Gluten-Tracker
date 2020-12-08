@@ -8,30 +8,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
- <!--   <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/dollarSignEdit"
-        android:text="$"
-        android:layout_toRightOf="@+id/productNameEdit"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/priceEdit"
-        android:layout_toRightOf="@id/dollarSignEdit"/> -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/priceEdit"
         android:text="@string/price"
         android:layout_below="@+id/productNameEdit"/>
-    <!--<EditText
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:id="@+id/price"
-       android:inputType="numberDecimal"
-       android:layout_toRightOf="@id/productName"/> -->
 
     <EditText
         android:id="@+id/quantityEdit"
@@ -60,63 +42,18 @@
         android:src="@drawable/minus"
         android:text="Minus" />
 
-  <!--  <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/removeFromCartEdit"
-        android:text="Remove"
-        android:layout_alignParentRight="true"/> originally there -->
-
-  <!--  <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/linkButtonEdit"
-        android:text="Link Product"
-        android:layout_below="@+id/removeFromCartEdit"
-        android:layout_alignParentRight="true"/> originally there-->
-
-  <!--  <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/deductibleViewEdit"
-        android:text="Deductible: $"
-
-        android:layout_below="@+id/plusButtonEdit" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/deductibleTextEdit"
-        android:layout_below="@+id/minusButtonEdit"
-        android:layout_toRightOf="@+id/deductibleViewEdit"/> -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/deductibleTextEdit"
         android:text="@string/deductible"
-
         android:layout_below="@+id/plusButtonEdit" />
-
- <!--   <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/changePriceEdit"
-        android:layout_below="@+id/linkButtonEdit"
-        android:text="Change Price" /> was originally working -->
-
-<!--    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/changePriceEdit"
-        android:layout_below="@+id/deductibleViewEdit"
-        android:text="Change Price" /> -->
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
-
         android:id="@+id/changePriceAndQuantityTextEdit"
-        android:layout_toRightOf="@+id/changePriceEdit"
         android:layout_below="@+id/deductibleTextEdit"/>
 
 

@@ -20,14 +20,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.cst8334_glutentracker.ImageReceipt;
 import com.example.cst8334_glutentracker.R;
 import com.example.cst8334_glutentracker.database.GlutenDatabase;
 import com.example.cst8334_glutentracker.entity.Receipt;
+import com.example.cst8334_glutentracker.functionality.ImageReceipt;
 
 import java.util.ArrayList;
 import java.util.List;
