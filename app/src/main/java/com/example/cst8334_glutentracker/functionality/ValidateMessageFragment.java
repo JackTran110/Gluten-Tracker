@@ -1,4 +1,4 @@
-package com.example.cst8334_glutentracker;
+package com.example.cst8334_glutentracker.functionality;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.cst8334_glutentracker.R;
 import com.example.cst8334_glutentracker.activity.RegisterActivity;
 
 public class ValidateMessageFragment extends Fragment {

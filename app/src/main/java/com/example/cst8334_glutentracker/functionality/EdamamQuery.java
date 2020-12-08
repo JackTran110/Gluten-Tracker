@@ -1,4 +1,4 @@
-package com.example.cst8334_glutentracker;
+package com.example.cst8334_glutentracker.functionality;
 
 import android.content.Context;
 import android.content.DialogInterface;

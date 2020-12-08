@@ -8,7 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.cst8334_glutentracker.R;
-import com.example.cst8334_glutentracker.ValidateMessageFragment;
+import com.example.cst8334_glutentracker.entity.User;
+import com.example.cst8334_glutentracker.functionality.ValidateMessageFragment;
 import com.example.cst8334_glutentracker.database.FirebaseOnlineDatabase;
 
 import java.util.ArrayList;
@@ -64,6 +65,8 @@ public class RegisterActivity extends AppCompatActivity {
             = "Please enter your email!";
     private static final String ERROR_INVALID_EMAIL
             = "Please enter a valid email address!";
+    private static final String ERROR_EMAIL_ALREADY_EXIST
+            = " is belong to another account";
 
     public static final String KEY_LOGIN_NAME = "Login name";
     public static final String KEY_PASSWORD = "Password";
@@ -79,6 +82,9 @@ public class RegisterActivity extends AppCompatActivity {
     private static final String PATTERN_EMAIL_INVALID = "[a-zA-Z0-9._-]+@[a-z]+\\.[a-z]+";
 
     private static Map<String, List<String>> errorMap;
+    private static FirebaseOnlineDatabase db;
+    private static boolean isLoginNameNotNull;
+    private static boolean isEmailNotNull;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,9 +115,10 @@ public class RegisterActivity extends AppCompatActivity {
         submit.setOnClickListener((View v) ->{
             getInput();
             userValidator();
-            if(Objects.requireNonNull(errorMap.get(KEY_LOGIN_NAME)).isEmpty()){
-                FirebaseOnlineDatabase db = new FirebaseOnlineDatabase(RegisterActivity.this);
-                db.execute(LoginActivity.CHECK_REGISTER, loginNameValue);
+            isLoginNameNotNull = Objects.requireNonNull(errorMap.get(KEY_LOGIN_NAME)).isEmpty();
+            isEmailNotNull = Objects.requireNonNull(errorMap.get(KEY_EMAIL)).isEmpty();
+            if(isLoginNameNotNull || isEmailNotNull){
+                submitLoginName();
             }else updateSignUpForm();
         });
 
@@ -184,10 +191,14 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void checkLoginAccount(boolean isLoginNameAlreadyExist){
         List<String> errors = new ArrayList<>();
-        if(isLoginNameAlreadyExist){
-            errors.add(loginNameValue + ERROR_LOGIN_NAME_ALREADY_EXIST);
-            errorMap.put(KEY_LOGIN_NAME, errors);
-        }
+        if(isLoginNameAlreadyExist) errors.add(loginNameValue + ERROR_LOGIN_NAME_ALREADY_EXIST);
+        errorMap.put(KEY_LOGIN_NAME, errors);
+    }
+
+    public void checkEmail(boolean isEmailAlreadyExist){
+        List<String> errors = new ArrayList<>();
+        if(isEmailAlreadyExist) errors.add(emailValue + ERROR_EMAIL_ALREADY_EXIST);
+        errorMap.put(KEY_EMAIL, errors);
     }
 
     public void updateSignUpForm(){
@@ -218,30 +229,40 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    public String getLoginNameValue(){
-        return loginNameValue;
-    }
-
-    public String getPasswordValue(){
-        return passwordValue;
-    }
-
-    public String getUserNameValue(){
-        return userNameValue;
-    }
-
-    public String getEmailValue(){
-        return emailValue;
-    }
-
-    public Map<String, List<String>> getErrorMap(){
-        List<String> emptyValues = new ArrayList<>();
-        for(String key: errorMap.keySet()){
-            if (errorMap.get(key).isEmpty()) emptyValues.add(key);
+    public boolean isNoError(){
+        boolean isNoError = true;
+        for (List<String> v: errorMap.values()){
+            if(!v.isEmpty()){
+                isNoError = false;
+                break;
+            }
         }
-        for (String key: emptyValues){
-            errorMap.remove(key);
+        return isNoError;
+    }
+
+    public void submitLoginName(){
+        if(isLoginNameNotNull){
+            db = new FirebaseOnlineDatabase(RegisterActivity.this);
+            db.execute(LoginActivity.CHECK_LOGIN_NAME, loginNameValue);
         }
-        return errorMap;
+    }
+
+    public void submitEmail(){
+        if(isEmailNotNull){
+            db = new FirebaseOnlineDatabase(RegisterActivity.this);
+            db.execute(LoginActivity.CHECK_EMAIL, emailValue);
+        }
+    }
+
+    public void register(){
+        if(isNoError()){
+            User.getInstance()
+                    .setLoginName(loginNameValue)
+                    .setPassword(passwordValue)
+                    .setUserName(userNameValue)
+                    .setEmail(emailValue);
+            db = new FirebaseOnlineDatabase(RegisterActivity.this);
+            db.execute(LoginActivity.REGISTER);
+        }
     }
 }
