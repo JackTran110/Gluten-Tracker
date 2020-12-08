@@ -148,15 +148,6 @@ public class Link extends AppCompatActivity {
             Button testButton = newView.findViewById(R.id.linkCommit);
             testButton.setOnClickListener((v) -> {
 
-
-                if(getPassedContext() instanceof CartActivity)
-                    CartActivity.getProductsArrayList().get(passedIndex).setLinkedProduct(product);
-                if(getPassedContext() instanceof DigitalReceipt)
-                    DigitalReceipt.getProductToPass().setLinkedProduct(product);
-
-                adapter.notifyDataSetChanged();
-                finish();
-
                 DialogInterface.OnClickListener dialogInterfaceListener = (dialog, which) -> {
                     switch (which) {
                         case DialogInterface.BUTTON_POSITIVE:
@@ -188,6 +179,11 @@ public class Link extends AppCompatActivity {
                             .setPositiveButton("Yes", dialogInterfaceListener).setNegativeButton("No", dialogInterfaceListener);
                     alertDialog.create().show();
                 }
+
+                if(getPassedContext() instanceof CartActivity)
+                    CartActivity.getProductsArrayList().get(passedIndex).setLinkedProduct(product);
+                if(getPassedContext() instanceof DigitalReceipt)
+                    DigitalReceipt.getProductToPass().setLinkedProduct(product);
             });
 
            Button editButton = newView.findViewById(R.id.editGlutenButton);
