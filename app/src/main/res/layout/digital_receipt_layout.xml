@@ -10,9 +10,16 @@
         android:focusable="false"
         android:text="Edit"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/pdesc"/>
+        android:layout_below="@id/gluten"/>
+
+    <TextView
+        android:id="@+id/proid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Id"/>
     <TextView
         android:id="@+id/pname"
+        android:layout_below="@+id/proid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="name"
@@ -34,7 +41,7 @@
         android:id="@+id/qty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="60dp"
+        android:layout_marginLeft="6dp"
         android:layout_toRightOf="@+id/gluten"
         android:text="quantity" />
 
@@ -42,10 +49,23 @@
         android:id="@+id/gluten"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="italic"
+        android:layout_below="@+id/pdesc"
+        android:layout_alignParentLeft="true"
         android:layout_centerInParent="true"
-        android:layout_alignParentTop="true"
-        android:text="gluten"/>
+        android:layout_marginLeft="111dp"
+        android:layout_marginTop="0dp"
+        android:text="id"
+        android:textStyle="italic" />
+
+    <Button
+        android:id="@+id/lnk"
+        android:layout_width="72dp"
+        android:layout_height="37dp"
+        android:layout_below="@+id/gluten"
+        android:layout_marginLeft="19dp"
+        android:layout_marginTop="1dp"
+        android:layout_toRightOf="@id/edit"
+        />
 
 
 </RelativeLayout>

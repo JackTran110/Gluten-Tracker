@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,9 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.cst8334_glutentracker.CartListViewHolder;
+import com.example.cst8334_glutentracker.functionality.CartListViewHolder;
 import com.example.cst8334_glutentracker.R;
-import com.example.cst8334_glutentracker.activity.CartActivity;
 import com.example.cst8334_glutentracker.database.GlutenDatabase;
 import com.example.cst8334_glutentracker.entity.Product;
 
@@ -51,6 +51,8 @@ public class Link extends AppCompatActivity {
     String linkedName;
     Context context;
     AlertDialog.Builder alertDialog;
+
+    static Context passedContext;
     private SQLiteDatabase database;
     /**
      * An instance of the GlutenDatabase class. This will be used to load Products from the Products table that are not gluten-free.
@@ -104,6 +106,14 @@ public class Link extends AppCompatActivity {
         resultsQuery.close();
     } */
 
+    public static Context getPassedContext() {
+        return passedContext;
+    }
+
+    public static void setPassedContext(Context passedContext) {
+        Link.passedContext = passedContext;
+    }
+
   public ArrayList<Product> getNonGlutenArrayList(){return listOfProducts;}
 
     class FragmentAdapter extends BaseAdapter {
@@ -148,20 +158,23 @@ public class Link extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Product product = (Product) getItem(position);
-            product.setQuantity(CartActivity.getProductsArrayList().get(passedIndex).getQuantity());
+            if(getPassedContext() instanceof CartActivity)
+                product.setQuantity(CartActivity.getProductsArrayList().get(passedIndex).getQuantity());
+            if(getPassedContext() instanceof DigitalReceipt)
+                product.setQuantity(DigitalReceipt.getProductToPass().getQuantity());
             product.setDisplayedPrice(product.getPrice() * product.getQuantity());
             LayoutInflater inflater = getLayoutInflater();
             //View newView = inflater.inflate(R.layout.activity_product_list, parent, false);
             View newView = inflater.inflate(R.layout.activity_fragment_populate_listview, parent, false);
             context = newView.getContext();
             TextView nameText = newView.findViewById(R.id.productFoundName);
-            TextView descriptionText = newView.findViewById(R.id.productFoundDescription);
+   //         TextView descriptionText = newView.findViewById(R.id.productFoundDescription);
             TextView priceText = newView.findViewById(R.id.productFoundPrice);
             //EditText priceText = newView.findViewById(R.id.productFoundPrice);
             nameText.setText(product.getProductName() + " ");
-            descriptionText.setText(product.getProductDescription() + " ");
+    //        descriptionText.setText(product.getProductDescription() + " ");
          //   priceText.setText(product.getDisplayedPrice() + " ");
-            priceText.setText(product.getDisplayedPriceAsString());
+            priceText.setText(getString(R.string.price) + product.getDisplayedPriceAsString());
 
    // worked        TextView textTest = newView.findViewById(R.id.textTest);
    //  worked       TextView testPrice = newView.findViewById(R.id.testPrice);
@@ -177,6 +190,15 @@ public class Link extends AppCompatActivity {
                 //passedProduct.setPrice(product.getPrice());
                /* CartActivity.getProductsArrayList().get(passedIndex).setDisplayedPrice(product.getPrice());
                 CartActivity.getProductsArrayList().add(new Product(5, "M", "Meow", "M", 4.00, false)); */
+//                CartActivity.getProductsArrayList().get(passedIndex).setLinkedProduct(product);
+
+                if(getPassedContext() instanceof CartActivity)
+                    CartActivity.getProductsArrayList().get(passedIndex).setLinkedProduct(product);
+                if(getPassedContext() instanceof DigitalReceipt)
+                    DigitalReceipt.getProductToPass().setLinkedProduct(product);
+
+                adapter.notifyDataSetChanged();
+                finish();
 
                 DialogInterface.OnClickListener dialogInterfaceListener = (dialog, which) -> {
                     switch (which) {

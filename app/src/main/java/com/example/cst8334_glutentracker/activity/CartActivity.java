@@ -1,5 +1,6 @@
 package com.example.cst8334_glutentracker.activity;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,8 +10,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,29 +22,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.cst8334_glutentracker.CartListViewHolder;
+import com.example.cst8334_glutentracker.functionality.CartListViewHolder;
 import com.example.cst8334_glutentracker.R;
-import com.example.cst8334_glutentracker.activity.Link;
-import com.example.cst8334_glutentracker.activity.ReceiptActivity;
-import com.example.cst8334_glutentracker.activity.ReportActivity;
-import com.example.cst8334_glutentracker.activity.ScanActivity;
 import com.example.cst8334_glutentracker.database.GlutenDatabase;
 import com.example.cst8334_glutentracker.entity.Product;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class CartActivity extends AppCompatActivity {
 
     private Adapter adapter = new Adapter();
-    private static ArrayList<Product> productsArrayList = new ArrayList<Product>();
-    private int productCount = 0;
+    private static ArrayList<Product> productsArrayList = new ArrayList<>();;
+    private static List<Long> productIdList;
+    private static int productCount;
     private GlutenDatabase db = new GlutenDatabase(this);
     public static ArrayList<String> editTextList = new ArrayList<String>(); //test
     private Context context;
@@ -50,6 +52,7 @@ public class CartActivity extends AppCompatActivity {
     private  double totalPaid = 0;
     private double totalDeductible = 0;
     Toolbar cartTbar;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
     /**
      * This method is called when the page is first loaded
@@ -62,11 +65,22 @@ public class CartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cart);
 
         cartTbar = (Toolbar)findViewById(R.id.cartToolbar);
+        if(getProductsArrayList().isEmpty()) {
+            SharedPreferences pre = getSharedPreferences("cart_activity", Context.MODE_PRIVATE);
+            productIdList = new ArrayList<>();
+            // productsArrayList = new ArrayList<>();
+            productCount = pre.getInt("Product count", 0);
 
-        SharedPreferences pre = getSharedPreferences("cart_activity", Context.MODE_PRIVATE);
-        productCount = pre.getInt("Product count", 0);
-        for(int i = 1; i <= productCount; i++){
-//            productsArrayList.add()
+            while (productCount > 0) {
+                productIdList.add(pre.getLong(Integer.toString(productCount), 1));
+                productCount--;
+            }
+            for (String key : pre.getAll().keySet()) {
+                pre.edit().remove(key).apply();
+            }
+            for (long id : productIdList) {
+                productsArrayList.add(db.selectProductByID(id));
+            }
         }
 
         ListView purchases = findViewById(R.id.purchases);
@@ -85,7 +99,8 @@ public class CartActivity extends AppCompatActivity {
         //productsArrayList.add(new Product(1, "Oreo", "Milk's favorite cookie", "test", 3.00, false));
         //productsArrayList.add(new Product(2, "Gluten Free Cookie", "A gluten free cookie", "test", 5.00, true));
         totalDeductibleDisplay = findViewById(R.id.totalDeductible);
-        total = findViewById(R.id.amount);
+        //total = findViewById(R.id.amount);
+        total = findViewById(R.id.total);
         purchases.setAdapter(adapter);
 
  /*       if(!getProductsArrayList().isEmpty()) {
@@ -123,6 +138,20 @@ public class CartActivity extends AppCompatActivity {
         } */
         checkoutButton.setOnClickListener((View v) -> {
             if(!productsArrayList.isEmpty()) {
+                int numberOfNotLinkedProducts = 0;
+                String message;
+                for(Product product: getProductsArrayList()){
+                    if(product.getLinkedProduct() == null && product.isGlutenFree() == true)
+                        numberOfNotLinkedProducts++;
+                }
+                if(numberOfNotLinkedProducts > 0 && numberOfNotLinkedProducts > 1)
+                    message = "There are " + numberOfNotLinkedProducts + " gluten-free products not linked. Do you still wish to continue checkout? "
+                        + "This will clear your current cart and finalize your purchase.";
+                else if(numberOfNotLinkedProducts == 1)
+                    message = "There is " + numberOfNotLinkedProducts + " gluten-free product not linked. Do you still wish to continue checkout? "
+                            + "This will clear your current cart and finalize your purchase.";
+                else
+                    message = "Are you sure you would like to checkout? This will clear your current cart.";
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
                 // DialogInterface learned from https://stackoverflow.com/questions/20494542/using-dialoginterfaces-onclick-method
                 DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
@@ -131,7 +160,7 @@ public class CartActivity extends AppCompatActivity {
                             break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
-                        //Double totalPrice = 0.0;
+                      /*  //Double totalPrice = 0.0;
                        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                         db.insertIntoProductsTable(productsArrayList);
                         //helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, totalPrice, LocalDateTime.now().format(formatter));
@@ -141,11 +170,13 @@ public class CartActivity extends AppCompatActivity {
                         total.setText("");
                         adapter.notifyDataSetChanged();
                         Toast.makeText(this, "Purchase finalized", Toast.LENGTH_SHORT).show();
+                        break; */
+                        takePicture();
                         break;
                 }
             };
             alertDialog.setTitle("Finalize Purchase");
-            alertDialog.setMessage("Are you sure you would like to checkout? This will clear your current cart.");
+            alertDialog.setMessage(message);
             alertDialog.setPositiveButton("No", dialogClickListener);
             alertDialog.setNegativeButton("Yes", dialogClickListener);
             alertDialog.create().show();
@@ -162,6 +193,44 @@ public class CartActivity extends AppCompatActivity {
                 Toast.makeText(this, "Cart is empty, unable to checkout", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void takePicture(){
+        Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(pictureIntent.resolveActivity(getPackageManager()) != null)
+            startActivityForResult(pictureIntent, REQUEST_IMAGE_CAPTURE);
+    }
+
+    private void makeAlertDialog(Bitmap receiptImage){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        ImageView receipt = new ImageView(this);
+        receipt.setImageBitmap(receiptImage);
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    //Double totalPrice = 0.0;
+                    // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    db.insertIntoProductsTable(productsArrayList);
+                    //helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, totalPrice, LocalDateTime.now().format(formatter));
+                  //  db.insertIntoReceiptsTable(productsArrayList, "file", totalDeductible, totalPaid, new Date().toString()); original
+                    db.insertIntoReceiptsTableWithImage(productsArrayList, "file", totalDeductible, totalPaid, new Date().toString(), receiptImage);
+                    getProductsArrayList().clear();
+                    totalDeductibleDisplay.setText("");
+                    total.setText("");
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(this, "Purchase finalized", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        };
+        alertDialog.setTitle("Accept this picture?");
+        alertDialog.setView(receipt);
+        alertDialog.setPositiveButton("No", dialogClickListener);
+        alertDialog.setNegativeButton("Yes", dialogClickListener);
+        alertDialog.create().show();
+
     }
 
     /**
@@ -190,6 +259,17 @@ public class CartActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            Bundle extras = data.getExtras();
+            Bitmap image = (Bitmap) extras.get("data");
+            makeAlertDialog(image);
+        }
+
+    }
+
     /**
      * This method pauses the activity
      */
@@ -199,9 +279,18 @@ public class CartActivity extends AppCompatActivity {
 
         SharedPreferences pre = getSharedPreferences("cart_activity", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = pre.edit();
+        for(String key: pre.getAll().keySet()){
+            pre.edit().remove(key).apply();
+        }
+        productCount = productsArrayList.size();
+        for(int i = 0; i< productCount; i++){
+            edit.putLong(Integer.toString(i), productsArrayList.get(i).getId());
+        }
+        edit.putInt("Product count", productCount);
+        edit.apply();
+        db.insertIntoProductsTable(productsArrayList);
     }
-
- /*   // added this to check edittext bug
+/*   // added this to check edittext bug
     @Override
     protected void onStart() {
         super.onStart();
@@ -221,21 +310,21 @@ public class CartActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.scannerButton:
-                Intent goToScanner = new Intent(CartActivity.this, ScanActivity.class);
-                startActivity(goToScanner);
-            break;
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_SCANNER);
+                finish();
+                break;
             case R.id.cartButton:
-                Intent goToCart = new Intent(CartActivity.this, CartActivity.class);
-                startActivity(goToCart);
-            break;
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_CART);
+                finish();
+                break;
             case R.id.receiptButton:
-                Intent goToReceipt = new Intent(CartActivity.this, ReceiptActivity.class);
-                startActivity(goToReceipt);
-            break;
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_RECEIPT);
+                finish();
+                break;
             case R.id.reportButton:
-                Intent goToReport = new Intent(CartActivity.this, ReportActivity.class);
-                startActivity(goToReport);
-            break;
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_REPORT);
+                finish();
+                break;
         }
         return true;
     }
@@ -288,22 +377,30 @@ public class CartActivity extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
             View newView = inflater.inflate(R.layout.activity_product_list, parent, false);
 
-            if(product.getLinkedProduct() == null){
+        /*    if(product.getLinkedProduct() == null){
                 newView = inflater.inflate(R.layout.activity_product_list, parent, false);
-
             }
             else{
                 newView = inflater.inflate(R.layout.activity_product_list_linked, parent, false);
-                /*TextView deductibleText = newView.findViewById(R.id.deductibleText);
-                deductibleText.setText((product.getPrice() - product.getLinkedProduct().getPrice()) + ""); */
-            }
+            } */
             //context = parent.getContext();
             context = newView.getContext();
             //final View testView = newView;
+            TextView isGluten = newView.findViewById(R.id.glutenFree);
+            if(product.isGlutenFree())
+                isGluten.setText("Gluten-Free");
+            else
+                isGluten.setText("Not Gluten-Free");
             TextView deductibleText = newView.findViewById(R.id.deductibleText);
+            TextView linkedProductName = newView.findViewById(R.id.linkedProductName);
             if(product.getLinkedProduct() != null) {
               //  deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + ""); //changed to displayed price
-                deductibleText.setText(product.getDeductionAsString());
+                deductibleText.setText(getString(R.string.deductible) + product.getDeductionAsString());
+                linkedProductName.setText(getString(R.string.linkedProductName) + product.getLinkedProduct().getProductName());
+            }
+            else{ // added else statement
+                deductibleText.setVisibility(View.INVISIBLE);
+                linkedProductName.setVisibility(View.INVISIBLE);
             }
 
             TextView productName = newView.findViewById(R.id.productName);
@@ -311,7 +408,7 @@ public class CartActivity extends AppCompatActivity {
 
             TextView price = newView.findViewById(R.id.price);
      //       price.setText(product.getDisplayedPrice() + "");
-            price.setText(product.getDisplayedPriceAsString());
+            price.setText(getString(R.string.price) + product.getDisplayedPriceAsString());
             //EditText quantity = newView.findViewById(R.id.quantity); what it was before
             //quantity.setText("1"); not needed
             TextView quantity = newView.findViewById(R.id.quantity);
@@ -324,7 +421,7 @@ public class CartActivity extends AppCompatActivity {
                 product.changeQuantityAndDisplayedPrice(convertedToInt);
                 if(product.getLinkedProduct() != null){
                    // deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
-                    deductibleText.setText(product.getDeductionAsString());
+                    deductibleText.setText(getString(R.string.deductible) + product.getDeductionAsString());
                 }
                 adapter.notifyDataSetChanged();
             });
@@ -337,7 +434,7 @@ public class CartActivity extends AppCompatActivity {
                     product.changeQuantityAndDisplayedPrice(convertedToInt);
                     if(product.getLinkedProduct() != null){
                       //  deductibleText.setText((product.getDisplayedPrice() - product.getLinkedProduct().getDisplayedPrice()) + "");
-                        deductibleText.setText(product.getDeductionAsString());
+                        deductibleText.setText(getString(R.string.deductible) + product.getDeductionAsString());
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -354,7 +451,12 @@ public class CartActivity extends AppCompatActivity {
             });
 
             Button linkButton = newView.findViewById(R.id.linkButton);
-            boolean test = product.isGlutenFree();
+            if(product.getLinkedProduct() == null){
+                linkButton.setText("Link Product");
+            }
+            else{
+                linkButton.setText("Linked!");
+            }
             if(!product.isGlutenFree()){
                 linkButton.setEnabled(false);
             }
@@ -370,6 +472,7 @@ public class CartActivity extends AppCompatActivity {
                  Intent intent = new Intent(CartActivity.this, Link.class);
                 //intent.putExtras(dataToPass);
                 intent.putExtra("Index", position);
+                Link.setPassedContext(CartActivity.this);
                 startActivity(intent); // may need to be changed
             });
 
@@ -515,7 +618,7 @@ public class CartActivity extends AppCompatActivity {
                 }
                 totalAsDouble += products.getDisplayedPrice();
                // total.setText(totalAsDouble + "");
-                total.setText(String.format("%.2f", totalAsDouble));
+                total.setText(getString(R.string.total) + String.format("%.2f", totalAsDouble));
                 totalPaid = totalAsDouble;
                 //totalDeductibleDisplay.setText(totalDeductibleAsDouble + "");
                 totalDeductibleDisplay.setText(getString(R.string.total_deductible) + String.format("%.2f", totalDeductibleAsDouble));

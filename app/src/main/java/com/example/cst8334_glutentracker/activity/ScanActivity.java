@@ -1,10 +1,30 @@
+/**
+ * Copyright (c) 2017 Team Novus
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.example.cst8334_glutentracker.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -26,7 +46,7 @@ import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.budiyev.android.codescanner.ScanMode;
-import com.example.cst8334_glutentracker.EdamamQuery;
+import com.example.cst8334_glutentracker.functionality.EdamamQuery;
 import com.example.cst8334_glutentracker.R;
 import com.example.cst8334_glutentracker.database.GlutenDatabase;
 import com.example.cst8334_glutentracker.entity.Product;
@@ -35,8 +55,6 @@ import com.google.zxing.Result;
 import static java.lang.Long.parseLong;
 
 public class ScanActivity extends AppCompatActivity {
-    String apiReturnMessage;
-    int CAMERA_PERMISSION_CODE;
     Button acceptScannerButton;
     Button cancelScannerButton;
     EditText upcBarcode;
@@ -45,14 +63,15 @@ public class ScanActivity extends AppCompatActivity {
     SQLiteDatabase db;
     CodeScanner codeScanner;
     CodeScannerView scannerView;
+    Product barcodeCheck;
     Toolbar scannerTbar;
-    AlertDialog.Builder alertDialog;
-
+    AlertDialog.Builder glutenToCartDialog;
+    AlertDialog.Builder glutenDatabaseMismatchDialog;
+    boolean cameraPermission;
+    int CAMERA_PERMISSION_CODE;
     // Adding six second delay between scans, https://github.com/journeyapps/zxing-android-embedded/issues/59
     static final int DELAY = 6000;
     long delayTimeStamp = 0;
-
-    String test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,22 +85,49 @@ public class ScanActivity extends AppCompatActivity {
         cancelScannerButton = (Button) findViewById(R.id.cancelScannerButton);
         dbOpener = new GlutenDatabase(this);
         db = dbOpener.getWritableDatabase();
+        glutenToCartDialog = new AlertDialog.Builder(this);
+        glutenDatabaseMismatchDialog = new AlertDialog.Builder(this);
 
-        if (ContextCompat.checkSelfPermission(ScanActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(ScanActivity.this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+        /**
+         * Logic to request camera permissions from the user if not already granted.
+         */
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            cameraPermission = false;
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+        } else {
+            cameraPermission = true;
         }
+
         scannerView = (CodeScannerView) findViewById(R.id.barcodeScanner);
         codeScanner = new CodeScanner(this, scannerView);
         codeScanner.getCamera();
+
+        /**
+         * Set the camera to continuously scan for barcodes
+         */
         codeScanner.setScanMode(ScanMode.CONTINUOUS);
+
+        /**
+         * Enable all barcode formats to be suitable for API queries to Edamam
+         */
         codeScanner.setFormats(CodeScanner.ALL_FORMATS);
 
+        /**
+         * Code example taken from the following github repository:
+         * @link https://github.com/yuriy-budiyev/code-scanner
+         *
+         * Enables the camera to constantly refresh and wait until a barcode image is found.
+         *
+         */
         codeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
             public void onDecoded(@NonNull final Result result) {
                 ScanActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        /**
+                         * Logic to delay the time between scans.
+                         */
                         if (System.currentTimeMillis() - delayTimeStamp < DELAY){
                             return;
                         } else {
@@ -93,6 +139,10 @@ public class ScanActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Logic for the accept button, pass the barcode from the EditText field and
+         * CheckBox if pressed.
+         */
         if (acceptScannerButton != null) {
             acceptScannerButton.setOnClickListener(acceptClick -> {
                 if (upcBarcode.getText().toString().length() > 0) {
@@ -101,83 +151,114 @@ public class ScanActivity extends AppCompatActivity {
             });
         }
 
+        /**
+         * Logic for the cancel button, return to previous activity if pressed.
+         */
         if (cancelScannerButton != null) {
             cancelScannerButton.setOnClickListener(cancelClick -> {
                 finish();
             });
         }
 
+        /**
+         * Logic to enable/disable the flashlight
+         */
         if (codeScanner.isFlashEnabled()) {
             codeScanner.setFlashEnabled(true);
         } else {
             codeScanner.setFlashEnabled(false);
         }
-
-//        checkBox.setOnCheckedChangeListener( (buttonView, isChecked) -> {
-//            if (checkBox.isChecked())
-//        });
     }
 
-    // Run the API query to Edamam
-    private void runQuery(long upc, boolean isGluten) {
+    /**
+     Performs verification checks and performs the necessary actions:
+        1. If the item is in the cart, do not perform database or API query to Edamam.
+        2. If the item is not in the cart but it exists in the database, perform the following:
+            A) Retrieve the item from the database
+            B) Ask the user if they want to add the item to the cart.
+        3. If the item does not exist in the cart or database, perform an API query to Edamam and
+            retrieve the item if it exists.
+
+         @param upc - Barcode value retrieved from Edamam or the database
+         @param isGlutenFree - parameter passed from the Check Box to declare if the item is gluten free or not
+
+     */
+    private void runQuery(long upc, boolean isGlutenFree) {
         boolean boolCartItem = false;
         db = dbOpener.getReadableDatabase();
-        Product barcodeCheck = dbOpener.selectProductByID(upc);
+        barcodeCheck = dbOpener.selectProductByID(upc);
 
-        DialogInterface.OnClickListener dialogInterfaceListener = (dialog, which) -> {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    CartActivity.getProductsArrayList().add(barcodeCheck);
-                    Toast.makeText(this, barcodeCheck.getProductName() + " added to the cart from database", Toast.LENGTH_LONG).show();
-                    break;
-                case DialogInterface.BUTTON_NEGATIVE:
-                    Toast.makeText(this, barcodeCheck.getProductName() + " was not added to the cart", Toast.LENGTH_LONG).show();
-                    break;
-            }
-        };
+        /**
+         * Logic to confirm if the item has already been added to the cart. If it has,
+         * simply display a message to the user.
+         */
+        boolCartItem = productInCart(upc);
 
-        // if iterator found in array, Toast.maketext (Scanactivity.this, "message", Toast.LENGTH_LONG).show();
-        if (CartActivity.getProductsArrayList().size() != 0){
-            for (Product prod : CartActivity.getProductsArrayList()) {
-                if (prod.getId() == upc) {
-                    boolCartItem = true;
-                    Toast.makeText(ScanActivity.this, "Item already exists in the cart", Toast.LENGTH_LONG).show();
+        /**
+         * Verify if the item was previously scanned (added to the database)
+         */
+        if (barcodeCheck !=null) {
+            if (barcodeCheck.isGlutenFree() != isGlutenFree) {
+                showGlutenMismatchDialog();
+            } else if (barcodeCheck.isGlutenFree() == isGlutenFree) {
+                if (boolCartItem == false) {
+                    if (barcodeCheck.isGlutenFree()) {
+                        CartActivity.getProductsArrayList().add(barcodeCheck);
+                        Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " added to the cart", Toast.LENGTH_LONG).show();
+                    } else if (!barcodeCheck.isGlutenFree()) {
+                        showGlutenToCartDialog();
+                    }
+                } else if (boolCartItem == true) {
+                    Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " already exists in the cart", Toast.LENGTH_LONG).show();
                 }
             }
-        }
+        /**
+         * Perform API query to Edamam
+         */
+        } else if (barcodeCheck == null) {
+            new EdamamQuery(ScanActivity.this, upc, isGlutenFree).execute();
+            barcodeCheck = dbOpener.selectProductByID(upc);
 
-        if (barcodeCheck != null && boolCartItem == false) {
-            if (barcodeCheck.isGlutenFree()){
-                alertDialog = new AlertDialog.Builder(this).setTitle("Add gluten item to cart?")
-                        .setMessage("Would you like to add this gluten item to the cart?")
-                        .setPositiveButton("Yes", dialogInterfaceListener).setNegativeButton("No", dialogInterfaceListener);
-                alertDialog.create().show();
-            } else {
-                CartActivity.getProductsArrayList().add(barcodeCheck);
-                Toast.makeText(this, barcodeCheck.getProductName() + " added to the cart from database", Toast.LENGTH_LONG).show();
+            if (!isGlutenFree && barcodeCheck != null) {
+                showGlutenToCartDialog();
             }
-        } else if (barcodeCheck == null && boolCartItem == false) {
-            new EdamamQuery(ScanActivity.this, upc, isGluten).execute();
         }
     }
 
-    // Get Edit text field
+    /**
+     *     Return Edit text field value
+      */
     private long getUPCEditText() {
         return Long.valueOf(upcBarcode.getText().toString());
     }
 
+    /**
+     * Overwrite onResume method, used to display camera only if camera permissions
+     * were accepted.
+     */
     @Override
     protected void onResume() {
         super.onResume();
-        codeScanner.startPreview();
+        if (cameraPermission){
+            codeScanner.startPreview();
+        }
     }
 
+    /**
+     * Method used to release resources used by CodeScanner when this method is called
+     */
     @Override
     protected void onPause() {
         codeScanner.releaseResources();
         super.onPause();
     }
 
+    /**
+     * Method to hide the icons of the currently selected activity (ScanActivity.java)
+     *
+     * @param menu instance of the menu for the top toolbar
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -187,26 +268,137 @@ public class ScanActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Method used to change activities when clicking/tapping on the toolbar icons
+     *
+     * @param item Item clicked/tapped on the main toolbar
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.scannerButton:
-                Intent goToScanner = new Intent(ScanActivity.this, ScanActivity.class);
-                startActivity(goToScanner);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_SCANNER);
+                finish();
                 break;
             case R.id.cartButton:
-                Intent goToCart = new Intent(ScanActivity.this, CartActivity.class);
-                startActivity(goToCart);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_CART);
+                finish();
                 break;
             case R.id.receiptButton:
-                Intent goToReceipt = new Intent(ScanActivity.this, ReceiptActivity.class);
-                startActivity(goToReceipt);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_RECEIPT);
+                finish();
                 break;
             case R.id.reportButton:
-                Intent goToReport = new Intent(ScanActivity.this, ReportActivity.class);
-                startActivity(goToReport);
+                setResult(MainMenuActivity.RESULT_CODE_NAVIGATE_TO_REPORT);
+                finish();
                 break;
         }
         return true;
+    }
+
+    public AlertDialog.Builder setAlertDialog(AlertDialog.Builder alertDialog, String title, String message, DialogInterface.OnClickListener listener) {
+        return alertDialog.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Yes", listener).setNegativeButton("No", listener);
+    }
+
+    public void showGlutenToCartDialog() {
+        setAlertDialog(glutenToCartDialog, "Add gluten item to cart", "Would you like to add this gluten item to the cart? By default, only gluten-free items are added.", glutenToCartListener);
+        glutenToCartDialog.create().show();
+    }
+
+    public void showGlutenMismatchDialog() {
+        setAlertDialog(glutenDatabaseMismatchDialog, "Mismatching gluten value", "The item previously retrieved does not match the selected item, would you like to change this?", glutenMismatchListener);
+        glutenDatabaseMismatchDialog.show();
+    }
+
+    /**
+     * Method used to change the gluten value of a product retrieved from the database. If the item exists in the cart, it will also update this item.
+     */
+    DialogInterface.OnClickListener glutenMismatchListener = (dialog, which) -> {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                dbOpener.getWritableDatabase();
+                barcodeCheck.setIsGlutenFree(checkBox.isChecked());
+                dbOpener.updateProductById(barcodeCheck);
+                boolean itemInCart = false;
+                int index;
+                String glutenString = "";
+                if (checkBox.isChecked()) {
+                    glutenString = "gluten-free";
+                } else {
+                    glutenString = "gluten";
+                }
+
+                Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " successfully changed to " + glutenString, Toast.LENGTH_LONG).show();
+                /**
+                 * Verify if the item exists in the cart. If it does, update the item in the cart.
+                 */
+                if (CartActivity.getProductsArrayList().size() != 0){
+                    for (Product prod : CartActivity.getProductsArrayList()) {
+                        index = 0;
+                        if (prod.getId() == barcodeCheck.getId()) {
+                            itemInCart = true;
+                            CartActivity.getProductsArrayList().set(index, barcodeCheck).setLinkedProduct(null);
+                            break;
+                        }
+                        index++;
+                    }
+                }
+                if (!barcodeCheck.isGlutenFree() && !productInCart(barcodeCheck.getId())) {
+                    showGlutenToCartDialog();
+                } else if (barcodeCheck.isGlutenFree() && !productInCart(barcodeCheck.getId())) {
+                    CartActivity.getProductsArrayList().add(barcodeCheck);
+                    Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " successfully added to cart ", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case DialogInterface.BUTTON_NEGATIVE:
+                Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " was not changed", Toast.LENGTH_LONG).show();
+                if (!barcodeCheck.isGlutenFree() && !productInCart(barcodeCheck.getId())) {
+                    showGlutenToCartDialog();
+                }
+                break;
+        }
+    };
+
+    DialogInterface.OnClickListener glutenToCartListener = (dialog, which) -> {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
+                CartActivity.getProductsArrayList().add(barcodeCheck);
+                Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " successfully added to the cart", Toast.LENGTH_LONG).show();
+                break;
+            case DialogInterface.BUTTON_NEGATIVE:
+                Toast.makeText(ScanActivity.this, barcodeCheck.getProductName() + " was not added to the cart", Toast.LENGTH_LONG).show();
+                break;
+        }
+    };
+
+    /**
+     * Method to verify if the item exists in the cart.
+     * @param upc Barcode to compare in the cart
+     * @return Return true if the product is found in the cart, return false if the item is not found.
+     */
+    public boolean productInCart(long upc) {
+        if (CartActivity.getProductsArrayList().size() != 0){
+            for (Product prod : CartActivity.getProductsArrayList()) {
+                if (prod.getId() == upc) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+    /**
+     * Overwritten method used to enable/disable camera based on permissions selected
+     * by the user.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            cameraPermission = true;
+            codeScanner.startPreview();
+        } else {
+            cameraPermission = false;
+        }
     }
 }
