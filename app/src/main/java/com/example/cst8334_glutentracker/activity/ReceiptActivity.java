@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -88,7 +89,8 @@ public class ReceiptActivity extends AppCompatActivity {
 
 
     private void readFromDatabase(){
-        List<Receipt> rec= dbOpener.selectAllReceipt();
+        //List<Receipt> rec= dbOpener.selectAllReceipt(); original
+        List<Receipt> rec = dbOpener.selectAllReceiptWithImage();
         if(rec!=null)
             receipt.addAll(rec);
 
@@ -171,6 +173,7 @@ public class ReceiptActivity extends AppCompatActivity {
         TextView amt;
         TextView dte;
         Button edit;
+        ImageView receiptImage;
 
         public ReceiptAdapter(ArrayList<Receipt> data, Context context)  {
             super(context,R.layout.receipt_layout,data);
@@ -188,11 +191,13 @@ public class ReceiptActivity extends AppCompatActivity {
                 img = (TextView) convertView.findViewById(R.id.rpt);
                 amt = (TextView) convertView.findViewById(R.id.deduction);
                 dte = (TextView) convertView.findViewById(R.id.summarydate);
+                receiptImage = convertView.findViewById(R.id.receiptImage);
                 edit=convertView.findViewById(R.id.edit);
                 id.setText(Long.toString(rS.getId()));
                 img.setText(rS.getReceiptFile());
                 amt.setText(Double.toString(rS.getTaxDeductionTotal()));
                 dte.setText(rS.getDate());
+                receiptImage.setImageBitmap(rS.getImage());
             return convertView;
         }
     }

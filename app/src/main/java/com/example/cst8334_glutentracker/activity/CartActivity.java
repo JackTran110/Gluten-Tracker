@@ -206,7 +206,8 @@ public class CartActivity extends AppCompatActivity {
                     // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                     db.insertIntoProductsTable(productsArrayList);
                     //helper.insertIntoReceiptsTable(db, productsArrayList, "file", totalDeductible, totalPrice, LocalDateTime.now().format(formatter));
-                    db.insertIntoReceiptsTable(productsArrayList, "file", totalDeductible, totalPaid, new Date().toString());
+                  //  db.insertIntoReceiptsTable(productsArrayList, "file", totalDeductible, totalPaid, new Date().toString()); original
+                    db.insertIntoReceiptsTableWithImage(productsArrayList, "file", totalDeductible, totalPaid, new Date().toString(), receiptImage);
                     getProductsArrayList().clear();
                     totalDeductibleDisplay.setText("");
                     total.setText("");

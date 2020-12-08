@@ -36,5 +36,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/claimamount"/>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/receiptImage"
+        android:layout_alignParentRight="true"/>
+
 
 </RelativeLayout>
