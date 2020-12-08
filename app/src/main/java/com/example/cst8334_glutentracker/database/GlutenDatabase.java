@@ -24,7 +24,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * Database's version number.
      */
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     /**
      * SQLite database object.
@@ -197,9 +197,10 @@ public class GlutenDatabase extends SQLiteOpenHelper {
      */
     private boolean insertIntoProductReceiptTable(List<Product> products, long receiptID){
         db = getWritableDatabase();
-        ContentValues cv = new ContentValues();
+        ContentValues cv;
 
         for(Product product: products) {
+            cv = new ContentValues();
             Product linkedProduct = null;
             linkedProduct=product.getLinkedProduct();
             if (linkedProduct != null) {
@@ -457,6 +458,19 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         return db.update(Products.TABLE_NAME,cv,
                 Products.COLUMN_NAME_ID+" = ? ",
                 new String[]{Long.toString(product.getId())}) != 0;
+    }
+
+    public boolean updateReceiptById(Receipt receipt){
+        db = getWritableDatabase();
+        ContentValues cv= new ContentValues();
+
+        cv.put(Receipts.COLUMN_NAME_FILE, receipt.getReceiptFile());
+        cv.put(Receipts.COLUMN_NAME_TOTAL_DEDUCTION, receipt.getTaxDeductionTotal());
+        cv.put(Receipts.COLUMN_NAME_TOTAL_PRICE, receipt.getTotalPrice());
+        cv.put(Receipts.COLUMN_NAME_DATE, receipt.getDate());
+        return db.update(Receipts.TABLE_NAME,cv,
+                Receipts.COLUMN_NAME_ID+" = ? ",
+                new String[]{Long.toString(receipt.getId())}) != 0;
     }
 
     public boolean updateProductReceiptById(Product product, long index){

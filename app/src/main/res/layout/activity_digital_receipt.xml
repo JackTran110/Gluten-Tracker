@@ -98,12 +98,12 @@
         android:layout_below="@+id/protitle"/>
 
 
-
     <ListView
         android:id="@+id/products"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/name"/>
+
     <TextView
         android:id="@+id/ded"
         android:layout_width="wrap_content"
@@ -119,4 +119,20 @@
         android:layout_toRightOf="@+id/ded"
         android:textSize="19dp"
         android:layout_alignParentBottom="true"/>
+    <TextView
+        android:id="@+id/totalamount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total: "
+        android:textSize="19dp"
+        android:layout_above="@+id/ded"
+        />
+    <TextView
+        android:id="@+id/ta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_toRightOf="@+id/totalamount"
+        android:textSize="19dp"
+        android:layout_above="@+id/ded"/>
 </RelativeLayout>

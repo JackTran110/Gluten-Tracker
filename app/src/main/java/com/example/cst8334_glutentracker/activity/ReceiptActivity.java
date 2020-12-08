@@ -114,9 +114,7 @@ public class ReceiptActivity extends AppCompatActivity {
         List<Receipt> rec= dbOpener.selectAllReceipt();
         if(rec!=null)
             receipt.addAll(rec);
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -157,11 +155,11 @@ public class ReceiptActivity extends AppCompatActivity {
         private ArrayList<Receipt> rData;
 
         Context mContext;
-        TextView id;
-        TextView img;
-        TextView amt;
-        TextView dte;
-        Button edit;
+        TextView id;// to display the receipt id
+        TextView img;// to the display the file path for image
+        TextView amt;// to display the claimable amount
+        TextView dte;//to display the date
+        Button edit;// to edit the quantity or price
 
         public ReceiptAdapter(ArrayList<Receipt> data, Context context)  {
             super(context,R.layout.receipt_layout,data);
@@ -187,10 +185,11 @@ public class ReceiptActivity extends AppCompatActivity {
                 amt = (TextView) convertView.findViewById(R.id.deduction);
                 dte = (TextView) convertView.findViewById(R.id.summarydate);
                 edit=convertView.findViewById(R.id.edit);
-                id.setText(Long.toString(rS.getId()));
-                img.setText(rS.getReceiptFile());
-                amt.setText(Double.toString(rS.getTaxDeductionTotal()));
-                dte.setText(rS.getDate());
+
+                id.setText(Long.toString(rS.getId()));//setting the receipt id
+                img.setText(rS.getReceiptFile());//setting the path to the image file
+                amt.setText(Double.toString(rS.getTaxDeductionTotal()));//setting the claimable amount
+                dte.setText(rS.getDate());//setting the date of transaction
             return convertView;
         }
     }
