@@ -3,25 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textTest"
-        android:text="Price : " />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/testPrice"
-        android:layout_toRightOf="@+id/textTest" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/testChange"
-        android:text="Test"
-        android:layout_alignParentRight="true" /> -->
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,26 +12,6 @@
         android:textSize="20sp"
         android:textColor="@color/colorBlack"
         android:fontFamily="serif"/>
-
-  <!--  <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/productFoundDescription"
-        android:layout_toRightOf="@+id/productFoundName"/> -->
-
-  <!--  <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/productFoundDollarSign"
-        android:text="$"
-        android:layout_below="@+id/productFoundName" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/productFoundPrice"
-        android:layout_below="@+id/productFoundName"
-        android:layout_toRightOf="@+id/productFoundDollarSign"/> -->
 
     <TextView
         android:layout_width="wrap_content"
@@ -63,13 +24,6 @@
         android:textColor="@color/colorBlack"
         android:fontFamily="serif"/>
 
-    <!--<EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/productFoundPrice"
-        android:inputType="numberDecimal"
-        android:layout_toRightOf="@+id/productFoundDescription"/> -->
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -81,21 +35,6 @@
         android:layout_marginBottom="10dp"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/editGlutenButton"/>
-
- <!--   <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/changeFoundPrice"
-        android:layout_below="@+id/linkCommit"
-        android:text="Change Price" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:id="@+id/changeFoundPriceAndQuantityText"
-        android:layout_toRightOf="@+id/changeFoundPrice"
-        android:layout_below="@+id/linkCommit"/> -->
 
     <Button
         android:layout_width="wrap_content"

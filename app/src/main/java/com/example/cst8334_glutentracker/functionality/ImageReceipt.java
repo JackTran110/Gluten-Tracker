@@ -1,4 +1,4 @@
-package com.example.cst8334_glutentracker;
+package com.example.cst8334_glutentracker.functionality;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,11 +6,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import com.example.cst8334_glutentracker.R;
 import com.example.cst8334_glutentracker.database.GlutenDatabase;
 import com.example.cst8334_glutentracker.entity.Receipt;
 
+/**
+ * This class is used to display the receipt image to the screen
+ */
 public class ImageReceipt extends AppCompatActivity {
 
+    /**
+     * This method is called when the activity is first opened
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
