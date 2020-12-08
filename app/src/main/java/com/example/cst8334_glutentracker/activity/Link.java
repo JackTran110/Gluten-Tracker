@@ -15,9 +15,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.cst8334_glutentracker.CartListViewHolder;
+import com.example.cst8334_glutentracker.functionality.CartListViewHolder;
 import com.example.cst8334_glutentracker.R;
-import com.example.cst8334_glutentracker.activity.CartActivity;
 import com.example.cst8334_glutentracker.database.GlutenDatabase;
 import com.example.cst8334_glutentracker.entity.Product;
 

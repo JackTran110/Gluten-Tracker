@@ -3,7 +3,9 @@ package com.example.cst8334_glutentracker.activity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -41,8 +43,11 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
 
     public final static String LOGIN = "Login";
-    public final static String CHECK_REGISTER = "Check REGISTER";
+    public final static String CHECK_LOGIN_NAME = "Check login name";
+    public final static String CHECK_EMAIL = "Check email";
+    public final static String REGISTER = "register";
     private static final String EMAIL = "email";
+    private static final String ACTIVITY = "Login activity";
 
     public final static int REQUEST_CODE_REGISTER = 1;
     public final static int RESULT_CODE_REGISTER = 1;
@@ -65,14 +70,18 @@ public class LoginActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         callbackManager = CallbackManager.Factory.create();
 
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("980537074160-bcnhvb9fhptsdi4ekvt034p5ntsdu488.apps.googleusercontent.com")
+                .requestEmail().build();
+
+        SharedPreferences pre = getSharedPreferences(ACTIVITY, Context.MODE_PRIVATE);
+        loginName.setText(pre.getString(RegisterActivity.KEY_LOGIN_NAME, ""));
+        password.setText(pre.getString(RegisterActivity.KEY_PASSWORD, ""));
+
         login.setOnClickListener((View v) -> {
             db = new FirebaseOnlineDatabase(LoginActivity.this);
             db.execute(LOGIN, loginName.getText().toString(), password.getText().toString());
         });
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("980537074160-bcnhvb9fhptsdi4ekvt034p5ntsdu488.apps.googleusercontent.com")
-                .requestEmail().build();
 
         signUp.setOnClickListener((View ) -> startActivityForResult(
                 new Intent(LoginActivity.this,
@@ -102,6 +111,8 @@ public class LoginActivity extends AppCompatActivity {
                 });
             LoginManager.getInstance().logIn(this, Collections.singletonList(EMAIL));
         });
+
+      //  startActivity(new Intent(LoginActivity.this, MainMenuActivity.class));
     }
 
     @Override
@@ -130,5 +141,17 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        SharedPreferences pre = getSharedPreferences(ACTIVITY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = pre.edit();
+
+        edit.putString(RegisterActivity.KEY_LOGIN_NAME, loginName.getText().toString());
+        edit.putString(RegisterActivity.KEY_PASSWORD, password.getText().toString());
+        edit.apply();
     }
 }
