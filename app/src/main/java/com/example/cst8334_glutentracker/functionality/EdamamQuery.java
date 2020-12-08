@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -92,9 +93,9 @@ public class EdamamQuery extends AsyncTask<String, Long, Product> {
                 }
                 ret = jProductLabel;
             } catch (MalformedURLException mfe) {
-            prod.setProductName("Malformed URL exception");
+            prod = new Product(0, "Malformed URL exception",null,0, true);
         } catch (IOException ioe) {
-            prod.setProductName("Internet not available or product not found");
+            prod = new Product(0, "Internet not available or product not found",null,0, true);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -102,7 +103,7 @@ public class EdamamQuery extends AsyncTask<String, Long, Product> {
     }
 
     /**
-     *
+     * This method returns a product to the UI thread
      *
      * @param result Name of the product that is added to the database/cart
      */

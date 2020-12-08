@@ -28,7 +28,6 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -74,6 +73,7 @@ public class ScanActivity extends AppCompatActivity {
     AlertDialog.Builder glutenDatabaseMismatchDialog;
     boolean cameraPermission;
     int CAMERA_PERMISSION_CODE;
+
     // Adding six second delay between scans, https://github.com/journeyapps/zxing-android-embedded/issues/59
     static final int DELAY = 6000;
     long delayTimeStamp = 0;
@@ -303,17 +303,31 @@ public class ScanActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     *
+     * @param alertDialog AlertDialog.Builder object that will be configured through this method
+     * @param title Title that will be given at the top of the alert dialog box
+     * @param message Message that will be given in the alert dialog box
+     * @param listener Specifies the listener that will be used in order to perform specific actions
+     * @return Returns the dialog box objects
+     */
     public AlertDialog.Builder setAlertDialog(AlertDialog.Builder alertDialog, String title, String message, DialogInterface.OnClickListener listener) {
         return alertDialog.setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("Yes", listener).setNegativeButton("No", listener);
     }
 
+    /**
+     * Method creating the message box to ask if users want to add the gluten item to the cart, calls the setAlertDialog() method
+     */
     public void showGlutenToCartDialog() {
         setAlertDialog(glutenToCartDialog, "Add gluten item to cart", "Would you like to add this gluten item to the cart? By default, only gluten-free items are added.", glutenToCartListener);
         glutenToCartDialog.create().show();
     }
 
+    /**
+     * Method creating the message box when gluten item values mismatch, calls the setAlertDialog() method
+     */
     public void showGlutenMismatchDialog() {
         setAlertDialog(glutenDatabaseMismatchDialog, "Mismatching gluten value", "The item previously retrieved does not match the selected item, would you like to change this?", glutenMismatchListener);
         glutenDatabaseMismatchDialog.show();
@@ -368,6 +382,9 @@ public class ScanActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Listener to perform actions when users click yes/no for the glutenToCart alert dialog
+     */
     DialogInterface.OnClickListener glutenToCartListener = (dialog, which) -> {
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
