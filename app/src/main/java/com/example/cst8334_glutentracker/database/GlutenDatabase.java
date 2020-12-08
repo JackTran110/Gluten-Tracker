@@ -27,7 +27,7 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * Database's version number.
      */
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     /**
      * SQLite database object.
@@ -269,7 +269,6 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                     null, null, null, null, null);
         cs.moveToFirst();
 
-        String test = cs.getString(0);
         product = new Product(cs.getLong(0),
                 cs.getString(1),
                 cs.getString(2),

@@ -6,6 +6,7 @@ public class User {
     private String loginName;
     private String email;
     private String password;
+    private boolean isSignInByAccount;
 
     private static final User INSTANCE = new User();
 
@@ -49,6 +50,15 @@ public class User {
 
     public User setPassword(String password) {
         this.password = password;
+        return this;
+    }
+
+    public boolean isSignInByAccount() {
+        return isSignInByAccount;
+    }
+
+    public User setSignInByAccount(boolean isSignInByAccount) {
+        this.isSignInByAccount = isSignInByAccount;
         return this;
     }
 }

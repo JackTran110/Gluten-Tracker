@@ -1,8 +1,10 @@
 package com.example.cst8334_glutentracker.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,6 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.cst8334_glutentracker.functionality.CartListViewHolder;
 import com.example.cst8334_glutentracker.R;
@@ -44,7 +47,10 @@ public class Link extends AppCompatActivity {
      * The index passed to this class. This is the position of the arraylist from the previous activity. This will be used to link a product to that specific product.
      */
     int passedIndex;
+    String passedName;
+    String linkedName;
     Context context;
+    AlertDialog.Builder alertDialog;
 
     static Context passedContext;
     private SQLiteDatabase database;
@@ -135,7 +141,7 @@ public class Link extends AppCompatActivity {
             context = newView.getContext();
             TextView nameText = newView.findViewById(R.id.productFoundName);
             TextView priceText = newView.findViewById(R.id.productFoundPrice);
-            nameText.setText(product.getProductName() + " ");
+            nameText.setText(getString(R.string.product_name) + " " + product.getProductName());
             priceText.setText(getString(R.string.price) + product.getDisplayedPriceAsString());
 
 
@@ -150,6 +156,38 @@ public class Link extends AppCompatActivity {
 
                 adapter.notifyDataSetChanged();
                 finish();
+
+                DialogInterface.OnClickListener dialogInterfaceListener = (dialog, which) -> {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            CartActivity.getProductsArrayList().get(passedIndex).setLinkedProduct(product);
+                            adapter.notifyDataSetChanged();
+                            finish();
+                            break;
+                        case DialogInterface.BUTTON_NEGATIVE:
+
+                            break;
+                    }
+                };
+
+                //Check if product names are similar
+                linkedName = nameText.getText().toString();
+                passedName = CartActivity.getProductsArrayList().get(passedIndex).getProductName();
+                //Split linkedName into an array containing each separate word
+                String[] passedNameArray = passedName.split(" ");
+                //Check if the linked name contains the last word from the passedNameArray
+                if(linkedName.toLowerCase().contains(passedNameArray[passedNameArray.length - 1].toLowerCase())) {
+                    CartActivity.getProductsArrayList().get(passedIndex).setLinkedProduct(product);
+                    adapter.notifyDataSetChanged();
+                    finish();
+                } else {
+                    // Create alert dialog
+                    alertDialog = new AlertDialog.Builder(context).setTitle("Products may not be the same")
+                            .setMessage("The products you are attempting to link can't be verified to be similar. " +
+                                    "Are you sure you want to link them?")
+                            .setPositiveButton("Yes", dialogInterfaceListener).setNegativeButton("No", dialogInterfaceListener);
+                    alertDialog.create().show();
+                }
             });
 
            Button editButton = newView.findViewById(R.id.editGlutenButton);
