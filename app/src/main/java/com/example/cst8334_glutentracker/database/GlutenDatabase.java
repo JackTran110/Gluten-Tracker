@@ -191,6 +191,17 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         return id;
     }
 
+    /**
+     * This method inserts a new receipt into the database with an image.
+     *
+     * @param products A list of products of the receipt.
+     * @param file
+     * @param totalDeduction The receipt's total deduction.
+     * @param totalPrice The receipt's total price.
+     * @param date The insert date of the receipt.
+     * @param image The image of the receipt
+     * @return The id of the receipt in the database. If insertion fails, return -1 instead.
+     */
     public long insertIntoReceiptsTableWithImage(List<Product> products, String file, double totalDeduction, double totalPrice, String date, Bitmap image){
         db = getWritableDatabase();
         // Learned how to convert Bitmap image to BLOB from https://stackoverflow.com/questions/11790104/how-to-storebitmap-image-and-retrieve-image-from-sqlite-database-in-android
@@ -357,6 +368,13 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         return receipt;
     }
 
+    /**
+     * This method uses an id to get a receipt with an image from the database.
+     *
+     * @param id Id of the receipt.
+     * @return A Receipt object that has the data from the database. Return null if the receipt
+     * can't be found or an error occurs.
+     */
     public Receipt selectReceiptByIDWithImage(long id){
         db = getWritableDatabase();
         Cursor cs;
@@ -384,6 +402,10 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         return receipt;
     }
 
+    /**
+     * This method gets all the receipts from the database
+     * @return All the receipts found in the database
+     */
     public List<Receipt> selectAllReceipt(){
         db = getWritableDatabase();
         Cursor cs;
@@ -409,6 +431,10 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         return receipts;
     }
 
+    /**
+     * This method gets all the receipts from the database with their images
+     * @return All the receipts found in the database
+     */
     public List<Receipt> selectAllReceiptWithImage(){
         db = getWritableDatabase();
         Cursor cs;
@@ -531,6 +557,11 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                 new String[]{Long.toString(product.getId())}) != 0;
     }
 
+    /**
+     * This method updates a receipt by its id
+     * @param receipt The receipt to be updated
+     * @return True if the receipt is updated, false otherwise
+     */
     public boolean updateReceiptById(Receipt receipt){
         db = getWritableDatabase();
         ContentValues cv= new ContentValues();
@@ -544,6 +575,12 @@ public class GlutenDatabase extends SQLiteOpenHelper {
                 new String[]{Long.toString(receipt.getId())}) != 0;
     }
 
+    /**
+     * This method updates the ProductReceipt table by the ProductID and ReceiptID
+     * @param product The product to be updated
+     * @param index The receiptId
+     * @return True if the row was updated, false otherwise
+     */
     public boolean updateProductReceiptById(Product product, long index){
         db = getWritableDatabase();
         ContentValues cv= new ContentValues();
@@ -557,10 +594,6 @@ public class GlutenDatabase extends SQLiteOpenHelper {
             cv.put(ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_ID, product.getLinkedProduct().getId());
             cv.put(ProductReceipt.COLUMN_NAME_LINKED_PRODUCT_PRICE, product.getLinkedProduct().getPrice());
         }
-//        return db.update(ProductReceipt.TABLE_NAME,cv,
-//                ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? ",
-//                new String[]{Long.toString(index)}) != 0;
-
         return db.update(ProductReceipt.TABLE_NAME,cv,
                 ProductReceipt.COLUMN_NAME_RECEIPT_ID+" = ? AND "+ProductReceipt.COLUMN_NAME_PRODUCT_ID+" = ? ",
                 new String[]{Long.toString(index),Long.toString(product.getId())}) != 0;
@@ -580,14 +613,6 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     /**
      * The query to create the receipts table.
      */
-  /*  private static final String SQL_CREATE_RECEIPTS = "CREATE TABLE " +
-            Receipts.TABLE_NAME + " (" +
-            Receipts.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            Receipts.COLUMN_NAME_FILE + " TEXT, " +
-            Receipts.COLUMN_NAME_TOTAL_PRICE + " REAL, " +
-            Receipts.COLUMN_NAME_TOTAL_DEDUCTION + " REAL, " +
-            Receipts.COLUMN_NAME_DATE + " TEXT)"; */
-
     private static final String SQL_CREATE_RECEIPTS = "CREATE TABLE " +
             Receipts.TABLE_NAME + " (" +
             Receipts.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -643,6 +668,9 @@ public class GlutenDatabase extends SQLiteOpenHelper {
     private static final String SQL_DELETE_PRODUCT_RECEIPT = "DROP TABLE IF EXISTS " +
             ProductReceipt.TABLE_NAME;
 
+    /**
+     * This class is used to hold the names of the table and columns for the Products table
+     */
     private static class Products {
         public static final String TABLE_NAME = "products";
         public static final String COLUMN_NAME_ID = "productID";
@@ -652,6 +680,9 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_GLUTEN = "isGlutenFree";
     }
 
+    /**
+     * This class is used to hold the names of the table and columns for the Receipts table
+     */
     private static class Receipts {
         public static final String TABLE_NAME = "receipts";
         public static final String COLUMN_NAME_ID = "receiptID";
@@ -662,6 +693,9 @@ public class GlutenDatabase extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_IMAGE = "image"; // added by Naimul
     }
 
+    /**
+     * This class is used to hold the names of the table and columns for the ProductReceipt table
+     */
     private static class ProductReceipt{
         public static final String TABLE_NAME = "productReceipt";
         public static final String COLUMN_NAME_PRODUCT_ID = "productID";
